@@ -1,0 +1,2 @@
+django<=2.3
+django-bootstrap4
