@@ -3,11 +3,13 @@ from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import Unit, UnitConversion, Tag, Ingredient, Recipe
 from .models import IngredientInRecipe
+from .forms import RecipeForm, IngredientInRecipeForm
 
 
 class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
 
     model = IngredientInRecipe
+    form = IngredientInRecipeForm
     extra = 10
 
     def get_extra(self, request, obj=None, **kwargs):
@@ -16,6 +18,7 @@ class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
 
 class RecipeAdmin(admin.ModelAdmin):
 
+    form = RecipeForm
     inlines = (IngredientInRecipeInline,)
 
     class Media:

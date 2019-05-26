@@ -17,6 +17,8 @@ INSTALLED_APPS = [
     'bootstrap4',
     'recipes',
     'adminsortable2',
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
