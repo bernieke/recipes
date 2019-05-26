@@ -17,7 +17,7 @@ def recipe(request, pk):
     return render(request, 'recipe.html', context={
         'recipe': recipe,
         'ingredients': ['{}{} {}'.format(
-            ingredient_in_recipe.amount,
+            ingredient_in_recipe.amount.normalize(),
             ingredient_in_recipe.ingredient.unit.name,
             ingredient_in_recipe.ingredient.name,
         ) for ingredient_in_recipe in recipe.ingredientinrecipe_set.all()],
