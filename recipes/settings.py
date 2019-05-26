@@ -119,9 +119,8 @@ STATICFILES_DIRS = [
 
 
 BOOTSTRAP3 = {
-    'jquery_url': '/static/bootstrap/js/jquery.min.js',
     'base_url': '/static/bootstrap/',
-    'include_jquery': True,
+    'include_jquery': False,
 }
 
 MEDIA_URL = '/images/'

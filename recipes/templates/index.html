@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+      <div class="row px-5">
+        <div class="col">
+          <table class="table table-borderless">
+            {% for tag, recipes in tag_recipes %}
+            <tr>
+              <td class="w-25 pt-5">
+                <h4>
+                  <a href="#" class="text-body">
+                    {{ tag.name }}
+                  </a>
+                </h4>
+              </td>
+            {% for recipe in recipes %}
+              {% if forloop.first %}
+              <td class="pt-5">
+              {% else %}
+            <tr>
+              <td>
+                &nbsp;
+              </td>
+              <td>
+              {% endif %}
+                <h4>
+                  <a href="/recipe/{{ recipe.pk }}/" class="text-body">
+                    {{ recipe.title }}
+                  </a>
+                </h4>
+              </td>
+            </tr>
+            {% endfor %}
+          {% endfor %}
+          </table>
+        </div>
+      </div>
+{% endblock %}

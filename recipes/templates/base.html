@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% load bootstrap4 %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Recipes</title>
+    <link href="https://fonts.googleapis.com/css?family=Great+Vibes&display=swap" rel="stylesheet">
+    {% bootstrap_css %}
+  </head>
+  <body>
+    <div class="container">
+      <div class="row text-center">
+        <div class="col">
+          <h1 class="display-1 px-5 pb-5 pt-4 mx-5 mb-5 mt-4 border-bottom">
+            <a href="/" class="text-body" style="font-family:'Great Vibes'">
+              Recipes
+            </a>
+          </h1>
+        </div>
+      </div>
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

@@ -9,6 +9,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
+    path('recipe/<int:pk>/', views.recipe, name='recipe'),
     path('autocomplete/tag/', views.TagAutoComplete.as_view(),
          name='autocomplete-tag'),
     path('autocomplete/ingredient/', views.IngredientAutoComplete.as_view(),
