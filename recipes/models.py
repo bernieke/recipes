@@ -22,6 +22,7 @@ class Unit(models.Model):
     measured = models.CharField(choices=MEASURED, max_length=1)
 
     class Meta:
+        ordering = ('name', 'measured')
         unique_together = [['name', 'measured']]
 
     def __str__(self):
@@ -36,6 +37,7 @@ class UnitConversion(models.Model):
     factor = models.DecimalField(max_digits=7, decimal_places=3)
 
     class Meta:
+        ordering = ('unit_from', 'unit_to')
         unique_together = [['unit_from', 'unit_to']]
 
     def __str__(self):
@@ -44,6 +46,9 @@ class UnitConversion(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=64)
+
+    class Meta:
+        ordering = ('name',)
 
     def __str__(self):
         return self.name
@@ -54,6 +59,7 @@ class Ingredient(models.Model):
     unit = models.ForeignKey('Unit', on_delete=models.PROTECT)
 
     class Meta:
+        ordering = ('name', 'unit')
         unique_together = [['name', 'unit']]
 
     def __str__(self):
@@ -62,11 +68,14 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     title = models.CharField(max_length=254, unique=True)
-    tags = models.ManyToManyField('Tag')
+    tags = models.ManyToManyField('Tag', blank=True)
     ingredients = models.ManyToManyField(
-        'Ingredient', through='IngredientInRecipe')
-    recipe = models.TextField()
-    image = models.ImageField(image_filename)
+        'Ingredient', through='IngredientInRecipe', blank=True)
+    recipe = models.TextField(blank=True)
+    image = models.ImageField(upload_to=image_filename, blank=True)
+
+    class Meta:
+        ordering = ('title',)
 
     def __str__(self):
         return self.title
@@ -76,4 +85,12 @@ class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=7, decimal_places=3)
-    order = models.PositiveSmallIntegerField()
+    order = models.PositiveSmallIntegerField(
+        default=0, db_index=True, blank=False, null=False)
+
+    class Meta:
+        ordering = ('order',)
+        verbose_name = 'Ingredient'
+
+    def __str__(self):
+        return ''
