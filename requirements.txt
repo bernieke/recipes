@@ -2,4 +2,5 @@ django<=2.3
 django-bootstrap4
 django-admin-sortable2
 django-autocomplete-light
+django-admin-interface
 pillow
