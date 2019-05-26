@@ -91,6 +91,3 @@ class IngredientInRecipe(models.Model):
     class Meta:
         ordering = ('order',)
         verbose_name = 'Ingredient'
-
-    def __str__(self):
-        return ''

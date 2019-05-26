@@ -10,10 +10,18 @@ class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
     model = IngredientInRecipe
     extra = 10
 
+    def get_extra(self, request, obj=None, **kwargs):
+        return 0 if obj else self.extra
+
 
 class RecipeAdmin(admin.ModelAdmin):
 
     inlines = (IngredientInRecipeInline,)
+
+    class Media:
+        css = {
+            'all': ('hide_admin_original.css',),
+        }
 
 
 admin.site.register(Unit, admin.ModelAdmin)
