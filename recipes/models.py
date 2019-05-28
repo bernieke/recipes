@@ -1,5 +1,3 @@
-import os.path
-
 from django.db import models
 
 
@@ -11,10 +9,6 @@ MEASURED = [
 
 def fahrenheit_to_celcius(fahrenheit):
     return (fahrenheit - 32) * 5 / 9
-
-
-def image_filename(instance, filename):
-    return instance.title + os.path.splitext(filename)[1]
 
 
 class Unit(models.Model):
@@ -44,8 +38,20 @@ class UnitConversion(models.Model):
         return '1 {} = {} {}'.format(self.unit_from, self.factor, self.unit_to)
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=64, unique=True)
+    order = models.PositiveSmallIntegerField(
+        default=0, db_index=True, blank=False, null=False)
+
+    class Meta:
+        ordering = ('order', 'name')
+
+    def __str__(self):
+        return self.name
+
+
 class Tag(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
 
     class Meta:
         ordering = ('name',)
@@ -56,7 +62,10 @@ class Tag(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=254)
-    unit = models.ForeignKey('Unit', on_delete=models.PROTECT)
+    unit = models.ForeignKey(
+        'Unit', on_delete=models.PROTECT, default=None, null=True)
+    category = models.ForeignKey('Category', on_delete=models.PROTECT)
+    packaged = models.PositiveSmallIntegerField(null=True, default=None)
 
     class Meta:
         ordering = ('name', 'unit')
@@ -66,13 +75,23 @@ class Ingredient(models.Model):
         return '{} ({})'.format(self.name, self.unit)
 
 
+class Alias(models.Model):
+    name = models.CharField(max_length=254, unique=True)
+    ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+
 class Recipe(models.Model):
     title = models.CharField(max_length=254, unique=True)
     tags = models.ManyToManyField('Tag', blank=True)
     ingredients = models.ManyToManyField(
         'Ingredient', through='IngredientInRecipe', blank=True)
     recipe = models.TextField(blank=True)
-    image = models.ImageField(upload_to=image_filename, blank=True)
 
     class Meta:
         ordering = ('title',)

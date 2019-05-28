@@ -1,6 +1,5 @@
 from django.db import migrations, models
 import django.db.models.deletion
-import recipes.models
 
 
 class Migration(migrations.Migration):
@@ -12,10 +11,23 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Category',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=64, unique=True)),
+                ('order', models.PositiveSmallIntegerField(db_index=True, default=0)),
+            ],
+            options={
+                'ordering': ('order', 'name'),
+            },
+        ),
+        migrations.CreateModel(
             name='Ingredient',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=254)),
+                ('packaged', models.PositiveSmallIntegerField(default=None, null=True)),
+                ('category', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='recipes.Category')),
             ],
             options={
                 'ordering': ('name', 'unit'),
@@ -38,7 +50,7 @@ class Migration(migrations.Migration):
             name='Tag',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=64)),
+                ('name', models.CharField(max_length=64, unique=True)),
             ],
             options={
                 'ordering': ('name',),
@@ -62,7 +74,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=254, unique=True)),
                 ('recipe', models.TextField(blank=True)),
-                ('image', models.ImageField(blank=True, upload_to=recipes.models.image_filename)),
                 ('ingredients', models.ManyToManyField(blank=True, through='recipes.IngredientInRecipe', to='recipes.Ingredient')),
                 ('tags', models.ManyToManyField(blank=True, to='recipes.Tag')),
             ],
@@ -78,7 +89,18 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ingredient',
             name='unit',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='recipes.Unit'),
+            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.PROTECT, to='recipes.Unit'),
+        ),
+        migrations.CreateModel(
+            name='Alias',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=254, unique=True)),
+                ('ingredient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='recipes.Ingredient')),
+            ],
+            options={
+                'ordering': ('name',),
+            },
         ),
         migrations.CreateModel(
             name='UnitConversion',
