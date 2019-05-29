@@ -2,7 +2,43 @@ from dal import autocomplete
 
 from django import forms
 
-from .models import Recipe, IngredientInRecipe
+from .models import Unit, UnitConversion, IngredientInRecipe, Recipe
+
+
+class IngredientInRecipeForm(forms.ModelForm):
+
+    unit = forms.ModelChoiceField(
+        queryset=Unit.objects.all(), empty_label=None, label='unit')
+
+    class Meta:
+        model = IngredientInRecipe
+        fields = '__all__'
+        widgets = {
+            'ingredient': autocomplete.ModelSelect2(
+                url='autocomplete-ingredient'),
+        }
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        if instance:
+            if 'initial' not in kwargs:
+                kwargs['initial'] = {}
+            kwargs['initial']['unit'] = instance.ingredient.unit
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        unit = self.cleaned_data['unit']
+        ingredient = self.cleaned_data['ingredient']
+        if not unit == ingredient.unit:
+            try:
+                uc = UnitConversion.objects.get(
+                    from_unit=unit, to_unit=ingredient.unit)
+            except UnitConversion.DoesNotExist:
+                raise forms.ValidationError(
+                    'No UnitConversion from {} to {}'.format(
+                        unit, ingredient.unit))
+            self.cleaned_data['amount'] *= uc.factor
+        return super().clean()
 
 
 class RecipeForm(forms.ModelForm):
@@ -12,15 +48,4 @@ class RecipeForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'tags': autocomplete.ModelSelect2Multiple(url='autocomplete-tag'),
-        }
-
-
-class IngredientInRecipeForm(forms.ModelForm):
-
-    class Meta:
-        model = IngredientInRecipe
-        fields = '__all__'
-        widgets = {
-            'ingredient': autocomplete.ModelSelect2(
-                url='autocomplete-ingredient'),
         }

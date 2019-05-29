@@ -107,12 +107,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('factor', models.DecimalField(decimal_places=3, max_digits=7)),
-                ('unit_from', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='unit_from', to='recipes.Unit')),
-                ('unit_to', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='unit_to', to='recipes.Unit')),
+                ('from_unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='from_unit', to='recipes.Unit')),
+                ('to_unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='to_unit', to='recipes.Unit')),
             ],
             options={
-                'ordering': ('unit_from', 'unit_to'),
-                'unique_together': {('unit_from', 'unit_to')},
+                'ordering': ('from_unit', 'to_unit'),
+                'unique_together': {('from_unit', 'to_unit')},
             },
         ),
         migrations.AlterUniqueTogether(

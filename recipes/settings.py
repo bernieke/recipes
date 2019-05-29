@@ -125,3 +125,5 @@ BOOTSTRAP3 = {
 
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'images/')
+
+AMOUNT_PRECISION = 2

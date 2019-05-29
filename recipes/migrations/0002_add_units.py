@@ -49,12 +49,12 @@ def create_units(apps, schema_editor):
         units[(measured, name)] = Unit.objects.create(
             name=name, measured=measured)
 
-    for measured, unit_from_name, unit_to_name, factor in UNIT_CONVERSIONS:
-        unit_from = units[(measured, unit_from_name)]
-        unit_to = units[(measured, unit_from_name)]
+    for measured, from_unit_name, to_unit_name, factor in UNIT_CONVERSIONS:
+        from_unit = units[(measured, from_unit_name)]
+        to_unit = units[(measured, to_unit_name)]
         UnitConversion.objects.create(
-            unit_from=unit_from,
-            unit_to=unit_to,
+            from_unit=from_unit,
+            to_unit=to_unit,
             factor=factor)
 
 

@@ -1,7 +1,16 @@
+from decimal import Context
+
+from django.conf import settings
 from django.shortcuts import render
 from dal import autocomplete
 
 from .models import Tag, Ingredient, Recipe
+
+
+def normalize(d):
+    normalized = d.normalize(Context(settings.AMOUNT_PRECISION))
+    threshold = 10 ** settings.AMOUNT_PRECISION
+    return int(normalized) if d >= threshold else normalized
 
 
 def index(request):
@@ -17,7 +26,7 @@ def recipe(request, pk):
     return render(request, 'recipe.html', context={
         'recipe': recipe,
         'ingredients': ['{}{} {}'.format(
-            ingredient_in_recipe.amount.normalize(),
+            normalize(ingredient_in_recipe.amount),
             ingredient_in_recipe.ingredient.unit.name,
             ingredient_in_recipe.ingredient.name,
         ) for ingredient_in_recipe in recipe.ingredientinrecipe_set.all()],

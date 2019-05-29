@@ -24,18 +24,18 @@ class Unit(models.Model):
 
 
 class UnitConversion(models.Model):
-    unit_from = models.ForeignKey(
-        'Unit', on_delete=models.CASCADE, related_name='unit_from')
-    unit_to = models.ForeignKey(
-        'Unit', on_delete=models.CASCADE, related_name='unit_to')
+    from_unit = models.ForeignKey(
+        'Unit', on_delete=models.CASCADE, related_name='from_unit')
+    to_unit = models.ForeignKey(
+        'Unit', on_delete=models.CASCADE, related_name='to_unit')
     factor = models.DecimalField(max_digits=7, decimal_places=3)
 
     class Meta:
-        ordering = ('unit_from', 'unit_to')
-        unique_together = [['unit_from', 'unit_to']]
+        ordering = ('from_unit', 'to_unit')
+        unique_together = [['from_unit', 'to_unit']]
 
     def __str__(self):
-        return '1 {} = {} {}'.format(self.unit_from, self.factor, self.unit_to)
+        return '1 {} = {} {}'.format(self.from_unit, self.factor, self.to_unit)
 
 
 class Category(models.Model):
