@@ -51,9 +51,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=64, unique=True)),
+                ('order', models.PositiveSmallIntegerField(db_index=True, default=32767)),
             ],
             options={
-                'ordering': ('name',),
+                'ordering': ('order', 'name'),
             },
         ),
         migrations.CreateModel(

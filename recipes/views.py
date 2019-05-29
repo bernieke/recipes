@@ -1,7 +1,7 @@
 from decimal import Context
 
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from dal import autocomplete
 
 from .models import Tag, Ingredient, Recipe
@@ -14,16 +14,23 @@ def normalize(d):
 
 
 def index(request):
+    return redirect(Tag.objects.first())
+
+
+def tag(request, pk):
+    tag = Tag.objects.get(pk=pk)
     return render(request, 'index.html', context={
-        'tag_recipes': [
-            (tag, tag.recipe_set.all()) for tag in Tag.objects.all()
-        ]
+        'page': 'index',
+        'tags': Tag.objects.all(),
+        'selected_tag': tag,
+        'recipes': tag.recipe_set.all(),
     })
 
 
 def recipe(request, pk):
     recipe = Recipe.objects.get(pk=pk)
     return render(request, 'recipe.html', context={
+        'page': 'recipe',
         'recipe': recipe,
         'ingredients': ['{}{} {}'.format(
             normalize(ingredient_in_recipe.amount),

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 MEASURED = [
@@ -52,12 +53,17 @@ class Category(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=64, unique=True)
+    order = models.PositiveSmallIntegerField(
+        default=32767, db_index=True, blank=False, null=False)
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('order', 'name')
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('tag', args=[str(self.id)])
 
 
 class Ingredient(models.Model):
@@ -98,6 +104,9 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('recipe', args=[str(self.id)])
 
 
 class IngredientInRecipe(models.Model):

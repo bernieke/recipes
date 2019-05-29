@@ -12,11 +12,39 @@
     <div class="container">
       <div class="row text-center">
         <div class="col">
-          <h1 class="display-1 px-5 pb-5 pt-4 mx-5 mb-5 mt-4 border-bottom">
-            <a href="/" class="text-body" style="font-family:'Great Vibes'">
-              Recipes
+          <h1 class="display-1 px-5 pt-4 pb-2 mx-5 mb-2 mt-4"
+              style="font-family:'Great Vibes'">Recipes</h1>
+        </div>
+      </div>
+      <div class="row text-center pb-3 mb-3 border-bottom">
+        <div class="col">
+          <h4>
+            <a href="/" class="text-body" style="font-family:serif">
+            {% if page == 'index' %}
+              <b>index</b>
+            {% else %}
+              index
+            {% endif %}
             </a>
-          </h1>
+          </h4>
+        </div>
+        <div class="col">
+          <h4>
+            <a href="/cart/" class="text-body" style="font-family:serif">
+            {% if page == 'cart' %}
+              <b>shopping list</b>
+            {% else %}
+              shopping list
+            {% endif %}
+            </a>
+          </h4>
+        </div>
+        <div class="col">
+          <h4>
+            <a href="/admin/" class="text-body" style="font-family:serif">
+              admin
+            </a>
+          </h4>
         </div>
       </div>
       {% block content %}{% endblock %}
