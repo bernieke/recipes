@@ -2,6 +2,7 @@ from decimal import Context
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.db.models import Sum
 from django.shortcuts import render, redirect
 from dal import autocomplete
 
@@ -19,10 +20,20 @@ def index(request):
 
 
 def cart(request):
-    IngredientInRecipe.objects.filter(pk__in=request.session.get('cart', []))
+    recipes = Recipe.objects.filter(pk__in=request.session.get('cart', []))
+    ingredients = (IngredientInRecipe.objects
+                   .filter(recipe__in=recipes,
+                           ingredient__category__isnull=False)
+                   .select_related('ingredient', 'ingredient__unit')
+                   .values('ingredient__pk', 'ingredient__name',
+                           'ingredient__unit__name')
+                   .annotate(total=Sum('amount'))
+                   .order_by('ingredient__category'))
+    print(ingredients)
     return render(request, 'cart.html', context={
         'page': 'cart',
-        'ingredients': request.session.get('cart'),
+        'recipes': recipes,
+        'ingredients': ingredients,
     })
 
 
