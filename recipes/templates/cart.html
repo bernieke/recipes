@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+      <div class="row px-5 pt-5">
+        <div class="col">
+          {% for ingredient in ingredients %}
+          {{ ingredient }}
+          {% endfor %}
+        </div>
+      </div>
+{% endblock %}

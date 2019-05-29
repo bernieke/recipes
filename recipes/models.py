@@ -108,6 +108,9 @@ class Recipe(models.Model):
     def get_absolute_url(self):
         return reverse('recipe', args=[str(self.id)])
 
+    def get_add_to_cart_url(self):
+        return reverse('add_to_cart', args=[str(self.id)])
+
 
 class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)

@@ -1,5 +1,6 @@
 django<=2.3
 django-bootstrap4
+django-fontawesome-5
 django-admin-sortable2
 django-autocomplete-light
 django-admin-interface

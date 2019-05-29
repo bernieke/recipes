@@ -1,10 +1,11 @@
 from decimal import Context
 
 from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from dal import autocomplete
 
-from .models import Tag, Ingredient, Recipe
+from .models import Tag, Ingredient, IngredientInRecipe, Recipe
 
 
 def normalize(d):
@@ -15,6 +16,22 @@ def normalize(d):
 
 def index(request):
     return redirect(Tag.objects.first())
+
+
+def cart(request):
+    IngredientInRecipe.objects.filter(pk__in=request.session.get('cart', []))
+    return render(request, 'cart.html', context={
+        'page': 'cart',
+        'ingredients': request.session.get('cart'),
+    })
+
+
+def add_to_cart(request, pk):
+    if not request.session.get('cart'):
+        request.session['cart'] = []
+    request.session['cart'].append(pk)
+    request.session.save()
+    return HttpResponse('')
 
 
 def tag(request, pk):

@@ -11,6 +11,8 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('tag/<int:pk>/', views.tag, name='tag'),
     path('recipe/<int:pk>/', views.recipe, name='recipe'),
+    path('cart/', views.cart, name='cart'),
+    path('cart/<int:pk>/', views.add_to_cart, name='add_to_cart'),
     path('autocomplete/tag/', views.TagAutoComplete.as_view(),
          name='autocomplete-tag'),
     path('autocomplete/ingredient/', views.IngredientAutoComplete.as_view(),

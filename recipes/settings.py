@@ -15,6 +15,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'bootstrap4',
+    'fontawesome_5',
     'recipes',
     'adminsortable2',
     'dal',
@@ -38,6 +39,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
 ROOT_URLCONF = 'recipes.urls'
 
@@ -118,9 +120,9 @@ STATICFILES_DIRS = [
 ]
 
 
-BOOTSTRAP3 = {
+BOOTSTRAP4 = {
     'base_url': '/static/bootstrap/',
-    'include_jquery': False,
+    'include_jquery': True,
 }
 
 MEDIA_URL = '/images/'
