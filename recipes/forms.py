@@ -8,7 +8,7 @@ from .models import Unit, UnitConversion, IngredientInRecipe, Recipe
 class IngredientInRecipeForm(forms.ModelForm):
 
     unit = forms.ModelChoiceField(
-        queryset=Unit.objects.all(), empty_label=None, label='unit')
+        queryset=Unit.objects.all(), empty_label='unit', label='unit')
 
     class Meta:
         model = IngredientInRecipe

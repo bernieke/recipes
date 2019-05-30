@@ -2,6 +2,8 @@ from django.db import migrations
 
 
 UNITS = [
+    ('', 'pc'),
+
     ('W', 'g'),
     ('W', 'kg'),
     ('W', 'lb'),
@@ -21,7 +23,8 @@ UNITS = [
     ('V', 'oz'),
     ('V', 'cup'),
 
-    ('W', 'st'),
+    ('L', 'cm'),
+    ('L', 'in'),
 ]
 
 UNIT_CONVERSIONS = [
@@ -37,6 +40,8 @@ UNIT_CONVERSIONS = [
     ('V', 'tbsp', 'ml', '15'),
     ('V', 'oz', 'ml', '30'),
     ('V', 'cup', 'ml', '240'),
+
+    ('L', 'in', 'cm', '2.54'),
 ]
 
 

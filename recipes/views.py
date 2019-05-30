@@ -29,7 +29,6 @@ def cart(request):
                            'ingredient__unit__name')
                    .annotate(total=Sum('amount'))
                    .order_by('ingredient__category'))
-    print(ingredients)
     return render(request, 'cart.html', context={
         'page': 'cart',
         'recipes': recipes,

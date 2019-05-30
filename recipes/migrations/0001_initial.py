@@ -26,7 +26,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=254)),
-                ('packaged', models.PositiveSmallIntegerField(default=None, null=True)),
                 ('category', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='recipes.Category')),
             ],
             options={
@@ -62,7 +61,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=16)),
-                ('measured', models.CharField(choices=[('W', 'weight'), ('V', 'volume')], max_length=1)),
+                ('measured', models.CharField(choices=[('', 'piece'), ('W', 'weight'), ('V', 'volume'), ('L', 'length')], max_length=1)),
             ],
             options={
                 'ordering': ('name', 'measured'),

@@ -3,8 +3,10 @@ from django.urls import reverse
 
 
 MEASURED = [
+    ('', 'piece'),
     ('W', 'weight'),
     ('V', 'volume'),
+    ('L', 'length'),
 ]
 
 
@@ -21,7 +23,10 @@ class Unit(models.Model):
         unique_together = [['name', 'measured']]
 
     def __str__(self):
-        return '{} [{}]'.format(self.name, self.measured)
+        if self.measured:
+            return '{} [{}]'.format(self.name, self.measured)
+        else:
+            return self.name
 
 
 class UnitConversion(models.Model):
@@ -71,7 +76,6 @@ class Ingredient(models.Model):
     unit = models.ForeignKey(
         'Unit', on_delete=models.PROTECT, default=None, null=True)
     category = models.ForeignKey('Category', on_delete=models.PROTECT)
-    packaged = models.PositiveSmallIntegerField(null=True, default=None)
 
     class Meta:
         ordering = ('name', 'unit')
