@@ -24,7 +24,8 @@
       <div class="row text-center pb-3 mb-3 border-bottom">
         <div class="col">
           <h4>
-            <a href="/" class="text-body" style="font-family:serif">
+            <a href="{% url 'index' %}"
+               class="text-body" style="font-family:serif">
             {% if page == 'index' %}
               {# Translators: index of recipes #}
               <b>{% trans "index" %}</b>
@@ -36,7 +37,8 @@
         </div>
         <div class="col">
           <h4>
-            <a href="/cart/" class="text-body" style="font-family:serif">
+            <a href="{% url 'cart' %}"
+               class="text-body" style="font-family:serif">
             {% if page == 'cart' %}
               <b>{% trans "shopping list" %}</b>
             {% else %}
@@ -47,7 +49,8 @@
         </div>
         <div class="col">
           <h4>
-            <a href="/admin/" class="text-body" style="font-family:serif">
+            <a href="{% url 'admin:index' %}"
+               class="text-body" style="font-family:serif">
               {# Translators: link to administration part of the website #}
               {% trans "admin" %}
             </a>

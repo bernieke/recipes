@@ -1,12 +1,13 @@
 from django.contrib import admin
 from django.urls import path
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 
 from . import views
 
 
-urlpatterns = [
+urlpatterns = i18n_patterns(
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('tag/<int:pk>/', views.tag, name='tag'),
@@ -16,5 +17,6 @@ urlpatterns = [
     path('autocomplete/tag/', views.TagAutoComplete.as_view(),
          name='autocomplete-tag'),
     path('autocomplete/ingredient/', views.IngredientAutoComplete.as_view(),
-         name='autocomplete-ingredient'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+         name='autocomplete-ingredient')
+)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

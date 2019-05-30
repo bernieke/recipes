@@ -4,4 +4,5 @@ django-fontawesome-5
 django-admin-sortable2
 django-autocomplete-light
 django-admin-interface
+django-constance[database]
 pillow
