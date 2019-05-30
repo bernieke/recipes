@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.db.models import Sum
 from django.shortcuts import render, redirect
+from django.utils.formats import localize
 from dal import autocomplete
 
 from .models import Tag, Ingredient, IngredientInRecipe, Recipe
@@ -60,7 +61,7 @@ def recipe(request, pk):
         'page': 'recipe',
         'recipe': recipe,
         'ingredients': ['{}{} {}'.format(
-            normalize(ingredient_in_recipe.amount),
+            localize(normalize(ingredient_in_recipe.amount)),
             ingredient_in_recipe.ingredient.unit.name,
             ingredient_in_recipe.ingredient.name,
         ) for ingredient_in_recipe in recipe.ingredientinrecipe_set.all()],

@@ -5,6 +5,14 @@ from django import forms
 from .models import Unit, UnitConversion, IngredientInRecipe, Recipe
 
 
+class UnitConversionForm(forms.ModelForm):
+
+    class Meta:
+        model = UnitConversion
+        fields = '__all__'
+        localized_fields = ('factor',)
+
+
 class IngredientInRecipeForm(forms.ModelForm):
 
     unit = forms.ModelChoiceField(
@@ -13,6 +21,7 @@ class IngredientInRecipeForm(forms.ModelForm):
     class Meta:
         model = IngredientInRecipe
         fields = '__all__'
+        localized_fields = ('amount',)
         widgets = {
             'ingredient': autocomplete.ModelSelect2(
                 url='autocomplete-ingredient'),

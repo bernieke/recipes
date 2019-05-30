@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.formats import localize
 
 
 MEASURED = [
@@ -41,7 +42,8 @@ class UnitConversion(models.Model):
         unique_together = [['from_unit', 'to_unit']]
 
     def __str__(self):
-        return '1 {} = {} {}'.format(self.from_unit, self.factor, self.to_unit)
+        return '1 {} = {} {}'.format(
+            self.from_unit, localize(self.factor), self.to_unit)
 
 
 class Category(models.Model):

@@ -3,7 +3,12 @@ from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import Unit, UnitConversion, Tag, Ingredient, Recipe
 from .models import IngredientInRecipe
-from .forms import RecipeForm, IngredientInRecipeForm
+from .forms import UnitConversionForm, RecipeForm, IngredientInRecipeForm
+
+
+class UnitConversionAdmin(admin.ModelAdmin):
+
+    form = UnitConversionForm
 
 
 class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
@@ -28,7 +33,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Unit, admin.ModelAdmin)
-admin.site.register(UnitConversion, admin.ModelAdmin)
+admin.site.register(UnitConversion, UnitConversionAdmin)
 admin.site.register(Tag, admin.ModelAdmin)
 admin.site.register(Ingredient, admin.ModelAdmin)
 admin.site.register(Recipe, RecipeAdmin)
