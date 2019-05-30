@@ -30,6 +30,8 @@ def cart(request):
                            'ingredient__unit__name')
                    .annotate(total=Sum('amount'))
                    .order_by('ingredient__category'))
+    for ingredient in ingredients:
+        ingredient['total'] = normalize(ingredient['total'])
     return render(request, 'cart.html', context={
         'page': 'cart',
         'recipes': recipes,
