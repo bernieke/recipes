@@ -1,14 +1,15 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
       <div class="row px-5 pt-5">
         <div class="col">
-          <h4>Recipes</h4>
+          <h4>{% trans "Recipes" %}</h4>
           {% for recipe in recipes %}
           {{ recipe.title }}<br />
           {% endfor %}
           <br />
-          <h4>Ingredients</h4>
+          <h4>{% trans "Ingredients" %}</h4>
           {% for ingredient in ingredients %}
             {{ ingredient.ingredient__name }}
             ({{ ingredient.total }} {{ ingredient.ingredient__unit__name }})

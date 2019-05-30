@@ -38,6 +38,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
@@ -105,10 +106,9 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Brussels'
 
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 
 
 # Static files (CSS, JavaScript, Images)

@@ -1,0 +1,7 @@
+# Create or update the po files
+django-admin makemessages -l <locale-name>  # locale-name fi. nl_BE
+
+# Modify the po file in locale/<locale-name>/django.po
+
+# Create or update the mo files
+django-admin compilemessages

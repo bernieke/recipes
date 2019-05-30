@@ -1,11 +1,13 @@
 <!DOCTYPE html>
+{% load i18n %}
 {% load bootstrap4 %}
 {% load fontawesome_5 %}
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Recipes</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% trans "Recipes" %}</title>
     <link href="/static/greatvibes.css" rel="stylesheet">
     {% fontawesome_5_static %}
     {% bootstrap_css %}
@@ -16,7 +18,7 @@
       <div class="row text-center">
         <div class="col">
           <h1 class="display-1 px-5 pt-4 pb-2 mx-5 mb-2 mt-4"
-              style="font-family:'Great Vibes'">Recipes</h1>
+              style="font-family:'Great Vibes'">{% trans "Recipes" %}</h1>
         </div>
       </div>
       <div class="row text-center pb-3 mb-3 border-bottom">
@@ -24,9 +26,10 @@
           <h4>
             <a href="/" class="text-body" style="font-family:serif">
             {% if page == 'index' %}
-              <b>index</b>
+              {# Translators: index of recipes #}
+              <b>{% trans "index" %}</b>
             {% else %}
-              index
+              {% trans "index" %}
             {% endif %}
             </a>
           </h4>
@@ -35,9 +38,9 @@
           <h4>
             <a href="/cart/" class="text-body" style="font-family:serif">
             {% if page == 'cart' %}
-              <b>shopping list</b>
+              <b>{% trans "shopping list" %}</b>
             {% else %}
-              shopping list
+              {% trans "shopping list" %}
             {% endif %}
             </a>
           </h4>
@@ -45,7 +48,8 @@
         <div class="col">
           <h4>
             <a href="/admin/" class="text-body" style="font-family:serif">
-              admin
+              {# Translators: link to administration part of the website #}
+              {% trans "admin" %}
             </a>
           </h4>
         </div>
