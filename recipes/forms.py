@@ -1,6 +1,7 @@
 from dal import autocomplete
 
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from .models import Unit, UnitConversion, IngredientInRecipe, Recipe
 
@@ -16,7 +17,7 @@ class UnitConversionForm(forms.ModelForm):
 class IngredientInRecipeForm(forms.ModelForm):
 
     unit = forms.ModelChoiceField(
-        queryset=Unit.objects.all(), empty_label='unit', label='unit')
+        queryset=Unit.objects.all(), empty_label=None, label=_('unit'))
 
     class Meta:
         model = IngredientInRecipe

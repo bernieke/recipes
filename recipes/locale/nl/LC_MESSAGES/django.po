@@ -1,0 +1,149 @@
+# Copyright (C) 2019 Bernard kerckenaere
+# This file is distributed under the same license as the recipes package.
+# Bernard Kerckenaere <bernieke@bernieke.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-30 10:45+0200\n"
+"PO-Revision-Date: 2019-05-30 10:32+0200\n"
+"Last-Translator: Bernard Kerckenaere <bernieke@bernieke.com>\n"
+"Language-Team: Nederlands <bernieke@bernieke.com>\n"
+"Language: Nederlands\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: recipes/forms.py:20 recipes/models.py:27 recipes/models.py:95
+msgid "unit"
+msgstr "eenheid"
+
+#: recipes/models.py:8
+msgid "piece"
+msgstr "stuk"
+
+#: recipes/models.py:9
+msgid "weight"
+msgstr "gewicht"
+
+#: recipes/models.py:10
+msgid "volume"
+msgstr "volume"
+
+#: recipes/models.py:11
+msgid "length"
+msgstr "lengte"
+
+#: recipes/models.py:20 recipes/models.py:59 recipes/models.py:74
+#: recipes/models.py:92 recipes/models.py:111
+msgid "name"
+msgstr "naam"
+
+#: recipes/models.py:22
+msgid "measured"
+msgstr "gemeten"
+
+#: recipes/models.py:28
+msgid "units"
+msgstr "eenheden"
+
+#: recipes/models.py:40
+msgid "from unit"
+msgstr "van eenheid"
+
+#: recipes/models.py:43
+msgid "to unit"
+msgstr "naar eenheid"
+
+#: recipes/models.py:45
+msgid "factor"
+msgstr "factor"
+
+#: recipes/models.py:50
+msgid "unit conversion"
+msgstr "eenheid omzetting"
+
+#: recipes/models.py:51
+msgid "unit conversions"
+msgstr "eenheid omzettingen"
+
+#: recipes/models.py:62 recipes/models.py:77 recipes/models.py:157
+msgid "order"
+msgstr "volgorde"
+
+#: recipes/models.py:66 recipes/models.py:97
+msgid "category"
+msgstr "categorie"
+
+#: recipes/models.py:67
+msgid "categories"
+msgstr "categoriën"
+
+#: recipes/models.py:81
+msgid "tag"
+msgstr "tag"
+
+#: recipes/models.py:82 recipes/models.py:127
+msgid "tags"
+msgstr "tags"
+
+#: recipes/models.py:102 recipes/models.py:113 recipes/models.py:152
+#: recipes/models.py:161
+msgid "ingredient"
+msgstr "ingrediënt"
+
+#: recipes/models.py:103 recipes/models.py:130 recipes/models.py:162
+msgid "ingredients"
+msgstr "ingrediënten"
+
+#: recipes/models.py:117
+msgid "alias"
+msgstr "alias"
+
+#: recipes/models.py:118
+msgid "aliases"
+msgstr "aliases"
+
+#: recipes/models.py:126
+msgid "title"
+msgstr "titel"
+
+#: recipes/models.py:131 recipes/models.py:135 recipes/models.py:150
+msgid "recipe"
+msgstr "recept"
+
+#: recipes/models.py:136
+msgid "recipes"
+msgstr "recepten"
+
+#: recipes/models.py:154
+msgid "amount"
+msgstr "hoeveelheid"
+
+#: recipes/templates/base.html:10 recipes/templates/base.html:21
+#: recipes/templates/cart.html:7
+msgid "Recipes"
+msgstr "Recepten"
+
+#. Translators: index of recipes
+#: recipes/templates/base.html:31 recipes/templates/base.html:33
+msgid "index"
+msgstr "index"
+
+#: recipes/templates/base.html:43 recipes/templates/base.html:45
+msgid "shopping list"
+msgstr "boodschappen"
+
+#. Translators: link to administration part of the website
+#: recipes/templates/base.html:55
+msgid "admin"
+msgstr "admin"
+
+#: recipes/templates/cart.html:12 recipes/templates/recipe.html:8
+msgid "Ingredients"
+msgstr "Ingrediënten"
+
+#: recipes/templates/recipe.html:14
+msgid "Recipe"
+msgstr "Recept"

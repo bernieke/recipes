@@ -1,18 +1,36 @@
 from django.contrib import admin
-from adminsortable2.admin import SortableInlineAdminMixin
+from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 
-from .models import Unit, UnitConversion, Tag, Ingredient, Recipe
-from .models import IngredientInRecipe
+from .models import (
+    Unit, UnitConversion,
+    Category, Tag,
+    Ingredient, Alias,
+    Recipe, IngredientInRecipe)
 from .forms import UnitConversionForm, RecipeForm, IngredientInRecipeForm
 
 
 class UnitConversionAdmin(admin.ModelAdmin):
-
     form = UnitConversionForm
 
 
-class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
+class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
+    pass
 
+
+class TagAdmin(SortableAdminMixin, admin.ModelAdmin):
+    pass
+
+
+class AliasInline(admin.TabularInline):
+    model = Alias
+    extra = 0
+
+
+class IngredientAdmin(admin.ModelAdmin):
+    inlines = (AliasInline,)
+
+
+class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
     model = IngredientInRecipe
     form = IngredientInRecipeForm
     extra = 10
@@ -22,7 +40,6 @@ class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-
     form = RecipeForm
     inlines = (IngredientInRecipeInline,)
 
@@ -34,6 +51,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 admin.site.register(Unit, admin.ModelAdmin)
 admin.site.register(UnitConversion, UnitConversionAdmin)
-admin.site.register(Tag, admin.ModelAdmin)
-admin.site.register(Ingredient, admin.ModelAdmin)
+admin.site.register(Category, CategoryAdmin)
+admin.site.register(Tag, TagAdmin)
+admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
