@@ -15,7 +15,6 @@ class UnitConversionForm(forms.ModelForm):
 
 
 class IngredientInRecipeForm(forms.ModelForm):
-
     unit = forms.ModelChoiceField(
         queryset=Unit.objects.all(), empty_label=None, label=_('unit'))
 

@@ -1,5 +1,5 @@
 # Create or update the po files
-django-admin makemessages -l <locale-name>  # locale-name fi. nl
+./update_translations.sh
 
 # Modify the po file in recipes/locale/<locale-name>/django.po
 

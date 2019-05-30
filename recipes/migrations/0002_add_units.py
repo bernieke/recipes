@@ -2,7 +2,7 @@ from django.db import migrations
 
 
 UNITS = [
-    ('', 'pc'),
+    ('P', 'pc'),
 
     ('W', 'g'),
     ('W', 'kg'),

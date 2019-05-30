@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 MEASURED = [
-    ('', _('piece')),
+    ('P', _('piece')),
     ('W', _('weight')),
     ('V', _('volume')),
     ('L', _('length')),
