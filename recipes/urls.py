@@ -20,7 +20,5 @@ urlpatterns += i18n_patterns(
     path('recipe/<int:pk>/', views.recipe, name='recipe'),
     path('cart/', views.cart, name='cart'),
     path('cart/add/<str:pk>/', views.add_to_cart, name='add_to_cart'),
-    path('cart/remove/<str:pk>/', views.remove_from_cart,
-         name='remove_from_cart'),
 )
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

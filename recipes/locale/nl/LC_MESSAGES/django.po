@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-31 11:33+0200\n"
-"PO-Revision-Date: 2019-05-31 11:39+0200\n"
+"POT-Creation-Date: 2019-05-31 15:57+0200\n"
+"PO-Revision-Date: 2019-05-31 16:12+0200\n"
 "Last-Translator: Bernard Kerckenaere <bernieke@bernieke.com>\n"
 "Language-Team: Nederlands <bernieke@bernieke.com>\n"
 "Language: Nederlands\n"
@@ -91,7 +91,7 @@ msgstr "tags"
 msgid "ingredient"
 msgstr "ingrediënt"
 
-#: models.py:103 models.py:130 models.py:162 templates/cart.html:22
+#: models.py:103 models.py:130 models.py:162 templates/cart.html:25
 #: templates/recipe.html:13
 msgid "ingredients"
 msgstr "ingrediënten"
@@ -135,27 +135,39 @@ msgstr "boodschappen"
 msgid "admin"
 msgstr "admin"
 
-#: templates/cart.html:43
+#: templates/cart.html:46
 msgid "add to OurGroceries"
 msgstr "toevoegen aan OurGroceries"
 
-#: views.py:57
+#: templates/cart.html:65
+msgid "Edit quantity"
+msgstr "Hoeveelheid aanpassen"
+
+#: templates/cart.html:85
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: templates/cart.html:89
+msgid "Save"
+msgstr "Opslaan"
+
+#: views.py:58
 msgid "No recipes were added to the cart yet"
 msgstr "Er zijn nog geen recepten aan de boodschappenlijst toegevoegd"
 
-#: views.py:65
+#: views.py:67
 msgid "OurGroceries is not completely configured yet"
 msgstr "OurGroceries is nog niet volledige geconfigureerd"
 
-#: views.py:71
+#: views.py:73
 msgid "Items succesfully added to OurGroceries"
 msgstr "Artikelen succesvol toegevoegd aan OurGroceries"
 
-#: views.py:74
+#: views.py:76
 msgid "Encountered an error adding items to OurGroceries"
 msgstr "Fout bij het toevoegen van artikelen aan OurGroceries"
 
-#: views.py:80
+#: views.py:82
 msgid "Nothing has been selected"
 msgstr "Er is nog niets geselecteerd"
 

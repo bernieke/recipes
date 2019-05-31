@@ -4,7 +4,7 @@ import csv
 import requests
 import traceback
 
-from decimal import Context
+from decimal import Context, Decimal
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -35,9 +35,20 @@ def index(request):
 
 def cart(request):
     message, error, tb = None, None, None
+    action = request.POST.get('action')
+
+    if action == 'edit':
+        pk = request.POST.get('pk')
+        qty = request.POST.get('qty')
+        if request.session.get('cart') and pk in request.session['cart']:
+            if qty:
+                request.session['cart'][pk] = qty
+            else:
+                del request.session['cart'][pk]
+            request.session.save()
 
     recipes = [
-        (recipe, request.session['cart'][str(recipe.pk)])
+        (recipe, Decimal(request.session['cart'][str(recipe.pk)]))
         for recipe in Recipe.objects.filter(
             pk__in=request.session.get('cart', {}))]
     ingredients = (IngredientInRecipe.objects
@@ -53,10 +64,10 @@ def cart(request):
                    .order_by('ingredient__category'))
     for ingredient in ingredients:
         ingredient['total'] = normalize(ingredient['total'])
-
     if not ingredients:
         message = _('No recipes were added to the cart yet')
-    if request.method == 'POST':
+
+    if action == 'OurGroceries':
         if not request.user.is_authenticated:
             return redirect(
                 '{}?next={}'.format(reverse(settings.LOGIN_URL), request.path)
@@ -98,15 +109,6 @@ def add_to_cart(request, pk):
         request.session['cart'][pk] = 0
     request.session['cart'][pk] += 1
     request.session.save()
-    return HttpResponse('')
-
-
-def remove_from_cart(request, pk):
-    if request.session.get('cart') and pk in request.session['cart']:
-        request.session['cart'][pk] -= 1
-        if request.session['cart'][pk] <= 0:
-            del request.session['cart'][pk]
-        request.session.save()
     return HttpResponse('')
 
 

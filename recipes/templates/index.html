@@ -22,7 +22,9 @@
             <a href="{{ recipe.get_absolute_url }}" class="text-body">
               {{ recipe.title }}
             </a>
-            <a href="#" onclick="$.get('{{ recipe.get_add_to_cart_url }}')">
+            <a href="#"
+               onclick="$.get('{{ recipe.get_add_to_cart_url }}');
+                        event.preventDefault();">
               <i class="fas fa-cart-plus text-body"></i>
             </a>
           </h4>
