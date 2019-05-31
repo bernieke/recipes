@@ -36,9 +36,12 @@ def index(request):
 def cart(request):
     message, error, tb = None, None, None
 
-    recipes = Recipe.objects.filter(pk__in=request.session.get('cart', []))
+    recipes = [
+        (recipe, request.session['cart'][str(recipe.pk)])
+        for recipe in Recipe.objects.filter(
+            pk__in=request.session.get('cart', {}))]
     ingredients = (IngredientInRecipe.objects
-                   .filter(recipe__in=recipes,
+                   .filter(recipe__in=[recipe for recipe, qty in recipes],
                            ingredient__category__isnull=False)
                    .select_related('ingredient', 'ingredient__unit')
                    .values('ingredient__pk',
@@ -73,7 +76,7 @@ def cart(request):
                 error = _('Encountered an error adding items to OurGroceries')
                 tb = traceback.format_exc()
             else:
-                request.session['cart'] = []
+                request.session['cart'] = {}
                 request.session.save()
         else:
             error = _('Nothing has been selected')
@@ -90,16 +93,19 @@ def cart(request):
 
 def add_to_cart(request, pk):
     if not request.session.get('cart'):
-        request.session['cart'] = []
+        request.session['cart'] = {}
     if pk not in request.session['cart']:
-        request.session['cart'].append(pk)
-        request.session.save()
+        request.session['cart'][pk] = 0
+    request.session['cart'][pk] += 1
+    request.session.save()
     return HttpResponse('')
 
 
 def remove_from_cart(request, pk):
     if request.session.get('cart') and pk in request.session['cart']:
-        request.session['cart'].remove(pk)
+        request.session['cart'][pk] -= 1
+        if request.session['cart'][pk] <= 0:
+            del request.session['cart'][pk]
         request.session.save()
     return HttpResponse('')
 

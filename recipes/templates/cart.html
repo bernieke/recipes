@@ -6,9 +6,9 @@
         <div class="col col-3 text-right">
           <h3>{% filter capfirst %}{% trans 'recipes' %}{% endfilter %}</h3>
           <ul class="list-unstyled">
-            {% for recipe in recipes %}
+            {% for recipe, qty in recipes %}
               <li>
-                {{ recipe.title }}
+                {{ qty }} {{ recipe.title }}
                 <a href="{% url 'cart' %}"
                    onclick="$.get('{% url 'remove_from_cart' recipe.pk %}')">
                     <i class="far fa-minus-square text-body"></i>
