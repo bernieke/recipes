@@ -16,7 +16,7 @@ from django.utils.translation import gettext as _
 from dal import autocomplete
 from constance import config
 
-from .models import Tag, Ingredient, IngredientInRecipe, Recipe
+from .models import Tag, Alias, Ingredient, IngredientInRecipe, Recipe
 
 
 OURGROCERIES_SIGNIN_URL = 'https://www.ourgroceries.com/sign-in'
@@ -210,8 +210,28 @@ class TagAutoComplete(autocomplete.Select2QuerySetView):
 
 class IngredientAutoComplete(autocomplete.Select2QuerySetView):
 
+    class IngredientOrAlias:
+
+        def __init__(self, ingredient_or_alias):
+            if isinstance(ingredient_or_alias, Ingredient):
+                ingredient = ingredient_or_alias
+            elif isinstance(ingredient_or_alias, Alias):
+                ingredient = ingredient_or_alias.ingredient
+
+            self.name = ingredient_or_alias.name
+            self.pk = ingredient.pk
+            self.unit = ingredient.unit
+
+        def __str__(self):
+            return '{} ({})'.format(self.name, self.unit)
+
     def get_queryset(self):
         if self.q:
-            return Ingredient.objects.filter(name__istartswith=self.q)
+            ingredients = Ingredient.objects.filter(name__icontains=self.q)
+            aliases = Alias.objects.filter(name__icontains=self.q)
         else:
-            return Ingredient.objects.all()
+            ingredients = Ingredient.objects.all()
+            aliases = Alias.objects.all()
+        l1 = [self.IngredientOrAlias(ingredient) for ingredient in ingredients]
+        l2 = [self.IngredientOrAlias(alias) for alias in aliases]
+        return sorted(l1 + l2, key=lambda x: str(x))

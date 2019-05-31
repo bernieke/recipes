@@ -28,10 +28,10 @@ class Unit(models.Model):
         verbose_name_plural = _('units')
 
     def __str__(self):
-        if self.measured:
-            return '{} [{}]'.format(self.name, self.measured)
-        else:
+        if self.measured == 'P':
             return self.name
+        else:
+            return '{} [{}]'.format(self.name, self.measured)
 
 
 class UnitConversion(models.Model):
