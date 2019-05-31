@@ -8,6 +8,7 @@ from decimal import Context
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.urls import reverse
 from django.db.models import Sum
 from django.shortcuts import render, redirect
 from django.utils.formats import localize
@@ -55,7 +56,8 @@ def cart(request):
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect(
-                '{}?next={}'.format(settings.LOGIN_URL, request.path))
+                '{}?next={}'.format(reverse(settings.LOGIN_URL), request.path)
+            )
         if not (config.OURGROCERIES_USERNAME and
                 config.OURGROCERIES_PASSWORD and
                 config.OURGROCERIES_LIST):
