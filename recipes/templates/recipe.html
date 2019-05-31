@@ -2,16 +2,26 @@
 {% load i18n %}
 
 {% block content %}
-      <div class="row px-5 pt-5">
-        <div class="col">
-          <h1 class="text-center">{{ recipe.title }}</h1>
-          <h3 class="pt-3">{% trans "Ingredients" %}</h3>
-          <ul>
+      <div class="row pt-4 justify-content-end">
+        <div class="col col-9">
+          <h1>{{ recipe.title }}</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-3 text-right">
+          <h3 class="pt-3">
+            {% filter capfirst %}{% trans 'ingredients' %}{% endfilter %}
+          </h3>
+          <ul class="list-unstyled">
           {% for ingredient in ingredients %}
             <li>{{ ingredient }}</li>
           {% endfor %}
           </ul>
-          <h3 class="pt-3">{% trans "Recipe" %}</h3>
+        </div>
+        <div class="col col-9">
+          <h3 class="pt-3">
+            {% filter capfirst %}{% trans 'recipe' %}{% endfilter %}
+          </h3>
           {{ recipe.recipe|linebreaks }}
         </div>
       </div>

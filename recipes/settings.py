@@ -112,6 +112,8 @@ BOOTSTRAP4 = {
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'images/')
 
+LOGIN_URL = 'admin:login'
+
 AMOUNT_PRECISION = 2
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'

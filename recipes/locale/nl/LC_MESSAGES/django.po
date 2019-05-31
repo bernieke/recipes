@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-30 11:47+0200\n"
-"PO-Revision-Date: 2019-05-30 11:56+0200\n"
+"POT-Creation-Date: 2019-05-31 11:33+0200\n"
+"PO-Revision-Date: 2019-05-31 11:39+0200\n"
 "Last-Translator: Bernard Kerckenaere <bernieke@bernieke.com>\n"
 "Language-Team: Nederlands <bernieke@bernieke.com>\n"
 "Language: Nederlands\n"
@@ -91,7 +91,8 @@ msgstr "tags"
 msgid "ingredient"
 msgstr "ingrediënt"
 
-#: models.py:103 models.py:130 models.py:162
+#: models.py:103 models.py:130 models.py:162 templates/cart.html:22
+#: templates/recipe.html:13
 msgid "ingredients"
 msgstr "ingrediënten"
 
@@ -107,11 +108,12 @@ msgstr "aliases"
 msgid "title"
 msgstr "titel"
 
-#: models.py:131 models.py:135 models.py:150
+#: models.py:131 models.py:135 models.py:150 templates/recipe.html:23
 msgid "recipe"
 msgstr "recept"
 
-#: models.py:136
+#: models.py:136 templates/base.html:10 templates/base.html:22
+#: templates/cart.html:7
 msgid "recipes"
 msgstr "recepten"
 
@@ -119,31 +121,43 @@ msgstr "recepten"
 msgid "amount"
 msgstr "hoeveelheid"
 
-#: templates/base.html:10 templates/base.html:21 templates/cart.html:7
-msgid "Recipes"
-msgstr "Recepten"
-
 #. Translators: index of recipes
-#: templates/base.html:31 templates/base.html:33
+#: templates/base.html:33 templates/base.html:35
 msgid "index"
 msgstr "index"
 
-#: templates/base.html:43 templates/base.html:45
+#: templates/base.html:45 templates/base.html:47
 msgid "shopping list"
 msgstr "boodschappen"
 
 #. Translators: link to administration part of the website
-#: templates/base.html:55
+#: templates/base.html:57
 msgid "admin"
 msgstr "admin"
 
-#: templates/cart.html:12 templates/recipe.html:8
-msgid "Ingredients"
-msgstr "Ingrediënten"
+#: templates/cart.html:43
+msgid "add to OurGroceries"
+msgstr "toevoegen aan OurGroceries"
 
-#: templates/recipe.html:14
-msgid "Recipe"
-msgstr "Recept"
+#: views.py:57
+msgid "No recipes were added to the cart yet"
+msgstr "Er zijn nog geen recepten aan de boodschappenlijst toegevoegd"
+
+#: views.py:65
+msgid "OurGroceries is not completely configured yet"
+msgstr "OurGroceries is nog niet volledige geconfigureerd"
+
+#: views.py:71
+msgid "Items succesfully added to OurGroceries"
+msgstr "Artikelen succesvol toegevoegd aan OurGroceries"
+
+#: views.py:74
+msgid "Encountered an error adding items to OurGroceries"
+msgstr "Fout bij het toevoegen van artikelen aan OurGroceries"
+
+#: views.py:80
+msgid "Nothing has been selected"
+msgstr "Er is nog niets geselecteerd"
 
 #: vinaigrette-deleteme.py:2
 msgid "pc"

@@ -7,3 +7,4 @@ django-admin-interface
 django-constance[database]
 django-vinaigrette
 pillow
+requests

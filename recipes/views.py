@@ -1,3 +1,9 @@
+import io
+import re
+import csv
+import requests
+import traceback
+
 from decimal import Context
 
 from django.conf import settings
@@ -5,9 +11,15 @@ from django.http import HttpResponse
 from django.db.models import Sum
 from django.shortcuts import render, redirect
 from django.utils.formats import localize
+from django.utils.translation import gettext as _
 from dal import autocomplete
+from constance import config
 
 from .models import Tag, Ingredient, IngredientInRecipe, Recipe
+
+
+OURGROCERIES_SIGNIN_URL = 'https://www.ourgroceries.com/sign-in'
+OURGROCERIES_LIST_URL = 'https://www.ourgroceries.com/your-lists/'
 
 
 def normalize(d):
@@ -21,30 +33,144 @@ def index(request):
 
 
 def cart(request):
+    message, error, tb = None, None, None
+
     recipes = Recipe.objects.filter(pk__in=request.session.get('cart', []))
     ingredients = (IngredientInRecipe.objects
                    .filter(recipe__in=recipes,
                            ingredient__category__isnull=False)
                    .select_related('ingredient', 'ingredient__unit')
-                   .values('ingredient__pk', 'ingredient__name',
-                           'ingredient__unit__name')
+                   .values('ingredient__pk',
+                           'ingredient__name',
+                           'ingredient__category__name',
+                           'ingredient__unit__name',
+                           'ingredient__unit__measured')
                    .annotate(total=Sum('amount'))
                    .order_by('ingredient__category'))
     for ingredient in ingredients:
         ingredient['total'] = normalize(ingredient['total'])
+
+    if not ingredients:
+        message = _('No recipes were added to the cart yet')
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect(
+                '{}?next={}'.format(settings.LOGIN_URL, request.path))
+        if not (config.OURGROCERIES_USERNAME and
+                config.OURGROCERIES_PASSWORD and
+                config.OURGROCERIES_LIST):
+            error = _('OurGroceries is not completely configured yet')
+
+        selected = [int(pk) for pk in request.POST.getlist('ingredient')]
+        if selected:
+            try:
+                add_to_ourgroceries(ingredients, selected)
+                message = _('Items succesfully added to OurGroceries')
+                recipes, ingredients = [], []
+            except Exception:
+                error = _('Encountered an error adding items to OurGroceries')
+                tb = traceback.format_exc()
+            else:
+                request.session['cart'] = []
+                request.session.save()
+        else:
+            error = _('Nothing has been selected')
+
     return render(request, 'cart.html', context={
         'page': 'cart',
         'recipes': recipes,
         'ingredients': ingredients,
+        'message': message,
+        'error': error,
+        'traceback': tb,
     })
 
 
 def add_to_cart(request, pk):
     if not request.session.get('cart'):
         request.session['cart'] = []
-    request.session['cart'].append(pk)
-    request.session.save()
+    if pk not in request.session['cart']:
+        request.session['cart'].append(pk)
+        request.session.save()
     return HttpResponse('')
+
+
+def remove_from_cart(request, pk):
+    if request.session.get('cart') and pk in request.session['cart']:
+        request.session['cart'].remove(pk)
+        request.session.save()
+    return HttpResponse('')
+
+
+def add_to_ourgroceries(ingredients, selected):
+    # Build csv
+    rows = [
+        (
+            '{} ({})'.format(
+                ingredient['ingredient__name'],
+                ingredient['total']
+                if ingredient['ingredient__unit__measured'] == 'P'
+                else '{}{}'.format(
+                    ingredient['total'], ingredient['ingredient__unit__name'])
+            ),
+            ingredient['ingredient__category__name']
+        )
+        for ingredient in ingredients
+        if ingredient['ingredient__pk'] in selected
+    ]
+    f = io.StringIO()
+    csv.writer(f).writerows([('description', 'category')] + rows)
+    f.seek(0)
+
+    # Login
+    s = requests.Session()
+    s.post('https://www.ourgroceries.com/sign-in', data={
+        'emailAddress': config.OURGROCERIES_USERNAME,
+        'action': 'sign-me-in',
+        'password': config.OURGROCERIES_PASSWORD,
+        'staySignedIn': 'off',
+    }, headers={
+        'Referer': OURGROCERIES_SIGNIN_URL,
+        'Origin': 'https://www.ourgroceries.com',
+    }).raise_for_status()
+
+    r = s.get(OURGROCERIES_LIST_URL)
+    r.raise_for_status()
+
+    # Get list id
+    team_id = re.search('g_teamId = "(.*)"', r.text).groups(0)[0]
+    r = s.post(OURGROCERIES_LIST_URL, json={
+        'command': 'getOverview',
+        'teamId': team_id,
+    }, headers={
+        'Referer': OURGROCERIES_LIST_URL,
+        'Origin': 'https://www.ourgroceries.com',
+        'Accept': 'application/json, text/javascript, */*',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Host': 'www.ourgroceries.com',
+        'Content-Type': 'application/json',
+    })
+    r.raise_for_status()
+
+    # Post csv
+    for shopping_list in r.json()['shoppingLists']:
+        if shopping_list['name'] == config.OURGROCERIES_LIST:
+            list_id = shopping_list['id']
+            break
+    else:
+        raise RuntimeError(
+            'No shopping list named {} on OurGroceries for {}'.format(
+                config.OURGROCERIES_LIST, config.OURGROCERIES_USERNAME))
+    s.post(OURGROCERIES_LIST_URL, files={
+        'command': 'importItems',
+        'listId': list_id,
+        'items': '',
+        'importFile': ('shopping.csv', f)
+    }, headers={
+        'Referer': '{}list/{}'.format(OURGROCERIES_LIST_URL, list_id),
+        'Origin': 'https://www.ourgroceries.com',
+        'Host': 'www.ourgroceries.com',
+    }).raise_for_status()
 
 
 def tag(request, pk):

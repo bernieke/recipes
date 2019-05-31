@@ -2,19 +2,57 @@
 {% load i18n %}
 
 {% block content %}
-      <div class="row px-5 pt-5">
-        <div class="col">
-          <h4>{% trans "Recipes" %}</h4>
-          {% for recipe in recipes %}
-          {{ recipe.title }}<br />
-          {% endfor %}
-          <br />
-          <h4>{% trans "Ingredients" %}</h4>
-          {% for ingredient in ingredients %}
-            {{ ingredient.ingredient__name }}
-            ({{ ingredient.total }} {{ ingredient.ingredient__unit__name }})
-            <br />
-          {% endfor %}
+      <div class="row px-5 pt-5 justify-content-end">
+        <div class="col col-3 text-right">
+          <h3>{% filter capfirst %}{% trans 'recipes' %}{% endfilter %}</h3>
+          <ul class="list-unstyled">
+            {% for recipe in recipes %}
+              <li>
+                {{ recipe.title }}
+                <a href="{% url 'cart' %}"
+                   onclick="$.get('{% url 'remove_from_cart' recipe.pk %}')">
+                    <i class="far fa-minus-square text-body"></i>
+                  </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="col col-9">
+          <h3>
+            {% filter capfirst %}{% trans 'ingredients' %}{% endfilter %}
+          </h3>
+          <form action="{% url 'cart' %}" method="POST">
+            {% csrf_token %}
+            {% for ingredient in ingredients %}
+              <div class="form-group form-check">
+                <input type="checkbox"
+                       class="form-check-input"
+                       name="ingredient"
+                       value="{{ ingredient.ingredient__pk }}"
+                       id="ingredient_{{ ingredient.ingredient__pk }}">
+                <label class="form-check-label"
+                       for="ingredient_{{ ingredient.ingredient__pk }}">
+                  {{ ingredient.ingredient__name }}
+                  ({{ ingredient.total }}
+                  {{ ingredient.ingredient__unit__name }})
+                </label>
+              </div>
+            {% endfor %}
+            {% if ingredients %}
+            <button type="submit" class="btn btn-body">
+              {% trans 'add to OurGroceries' %}
+            </button>
+            {% endif %}
+            {% if message %}
+            <p class="pt-3 text-body font-weight-bold">{{ message }}</p>
+            {% endif %}
+            {% if error %}
+            <p class="pt-3 text-danger font-weight-bold">{{ error }}</p>
+            {% if traceback %}
+            <pre class="text-danger">{{ traceback }}</pre>
+            {% endif %}
+            {% endif %}
+          </form>
         </div>
       </div>
 {% endblock %}

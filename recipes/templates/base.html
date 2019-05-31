@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% trans "Recipes" %}</title>
+    <title>{% filter capfirst %}{% trans 'recipes' %}{% endfilter %}</title>
     <link href="/static/greatvibes.css" rel="stylesheet">
     {% fontawesome_5_static %}
     {% bootstrap_css %}
@@ -18,7 +18,9 @@
       <div class="row text-center">
         <div class="col">
           <h1 class="display-1 px-5 pt-4 pb-2 mx-5 mb-2 mt-4"
-              style="font-family:'Great Vibes'">{% trans "Recipes" %}</h1>
+              style="font-family:'Great Vibes'">
+            {% filter capfirst %}{% trans 'recipes' %}{% endfilter %}
+            </h1>
         </div>
       </div>
       <div class="row text-center pb-3 mb-3 border-bottom">
@@ -28,9 +30,9 @@
                class="text-body" style="font-family:serif">
             {% if page == 'index' %}
               {# Translators: index of recipes #}
-              <b>{% trans "index" %}</b>
+              <b>{% trans 'index' %}</b>
             {% else %}
-              {% trans "index" %}
+              {% trans 'index' %}
             {% endif %}
             </a>
           </h4>
@@ -40,9 +42,9 @@
             <a href="{% url 'cart' %}"
                class="text-body" style="font-family:serif">
             {% if page == 'cart' %}
-              <b>{% trans "shopping list" %}</b>
+              <b>{% trans 'shopping list' %}</b>
             {% else %}
-              {% trans "shopping list" %}
+              {% trans 'shopping list' %}
             {% endif %}
             </a>
           </h4>
@@ -52,7 +54,7 @@
             <a href="{% url 'admin:index' %}"
                class="text-body" style="font-family:serif">
               {# Translators: link to administration part of the website #}
-              {% trans "admin" %}
+              {% trans 'admin' %}
             </a>
           </h4>
         </div>
