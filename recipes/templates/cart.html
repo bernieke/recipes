@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load l10n %}
 
 {% block content %}
       <div class="row px-5 pt-5 justify-content-end">
@@ -11,7 +12,7 @@
                 {{ qty }} {{ recipe.title }}
                 <a href="#"
                    onclick="$('#pk').val('{{ recipe.pk }}');
-                            $('#qty').val({{ qty }});
+                            $('#qty').val({{ qty|unlocalize }});
                             $('#editQty').modal();
                             event.preventDefault();">
                     <i class="far fa-edit text-body"></i>
@@ -27,7 +28,7 @@
           <form action="{% url 'cart' %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="action" value="OurGroceries">
-            {% for ingredient in ingredients %}
+            {% for ingredient, total in ingredients %}
               <div class="form-group form-check">
                 <input type="checkbox"
                        class="form-check-input"
@@ -37,7 +38,7 @@
                 <label class="form-check-label"
                        for="ingredient_{{ ingredient.ingredient__pk }}">
                   {{ ingredient.ingredient__name }}
-                  ({{ ingredient.total }}
+                  ({{ total }}
                   {{ ingredient.ingredient__unit__name }})
                 </label>
               </div>

@@ -9,7 +9,6 @@ from decimal import Context, Decimal
 from django.conf import settings
 from django.http import HttpResponse
 from django.urls import reverse
-from django.db.models import Sum
 from django.shortcuts import render, redirect
 from django.utils.formats import localize
 from django.utils.translation import gettext as _
@@ -41,29 +40,40 @@ def cart(request):
         pk = request.POST.get('pk')
         qty = request.POST.get('qty')
         if request.session.get('cart') and pk in request.session['cart']:
-            if qty:
+            if Decimal(qty) > 0:
                 request.session['cart'][pk] = qty
             else:
                 del request.session['cart'][pk]
             request.session.save()
 
+    recipe_pks = request.session.get('cart', {})
     recipes = [
         (recipe, Decimal(request.session['cart'][str(recipe.pk)]))
-        for recipe in Recipe.objects.filter(
-            pk__in=request.session.get('cart', {}))]
-    ingredients = (IngredientInRecipe.objects
-                   .filter(recipe__in=[recipe for recipe, qty in recipes],
-                           ingredient__category__isnull=False)
-                   .select_related('ingredient', 'ingredient__unit')
-                   .values('ingredient__pk',
-                           'ingredient__name',
-                           'ingredient__category__name',
-                           'ingredient__unit__name',
-                           'ingredient__unit__measured')
-                   .annotate(total=Sum('amount'))
-                   .order_by('ingredient__category'))
-    for ingredient in ingredients:
-        ingredient['total'] = normalize(ingredient['total'])
+        for recipe in Recipe.objects.filter(pk__in=recipe_pks)]
+    ingredients = [
+        [ingredient, 0] for ingredient in (
+            IngredientInRecipe.objects
+            .filter(recipe__pk__in=recipe_pks,
+                    ingredient__category__isnull=False)
+            .select_related('ingredient', 'ingredient__unit')
+            .values('ingredient__pk',
+                    'ingredient__name',
+                    'ingredient__category__name',
+                    'ingredient__unit__name',
+                    'ingredient__unit__measured')
+            .order_by('ingredient__category')
+            .distinct()
+        )
+    ]
+
+    totals = {ingredient['ingredient__pk']: total
+              for ingredient, total in ingredients}
+    for recipe, qty in recipes:
+        for ingredient_in_recipe in recipe.ingredientinrecipe_set.all():
+            pk = ingredient_in_recipe.ingredient.pk
+            totals[pk] += ingredient_in_recipe.amount * qty
+    for i, (ingredient, total) in enumerate(ingredients):
+        ingredients[i][1] = normalize(totals[ingredient['ingredient__pk']])
     if not ingredients:
         message = _('No recipes were added to the cart yet')
 
@@ -118,14 +128,12 @@ def add_to_ourgroceries(ingredients, selected):
         (
             '{} ({})'.format(
                 ingredient['ingredient__name'],
-                ingredient['total']
-                if ingredient['ingredient__unit__measured'] == 'P'
-                else '{}{}'.format(
-                    ingredient['total'], ingredient['ingredient__unit__name'])
+                total if ingredient['ingredient__unit__measured'] == 'P'
+                else '{}{}'.format(total, ingredient['ingredient__unit__name'])
             ),
             ingredient['ingredient__category__name']
         )
-        for ingredient in ingredients
+        for ingredient, total in ingredients
         if ingredient['ingredient__pk'] in selected
     ]
     f = io.StringIO()
