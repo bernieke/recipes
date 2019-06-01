@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.urls import reverse_lazy
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 
 from .models import (
@@ -7,6 +8,9 @@ from .models import (
     Ingredient, Alias,
     Recipe, IngredientInRecipe)
 from .forms import UnitConversionForm, RecipeForm, IngredientInRecipeForm
+
+
+admin.site.site_url = reverse_lazy('index')
 
 
 class UnitConversionAdmin(admin.ModelAdmin):
