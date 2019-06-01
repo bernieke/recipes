@@ -128,8 +128,10 @@ def add_to_ourgroceries(ingredients, selected):
         (
             '{} ({})'.format(
                 ingredient['ingredient__name'],
-                total if ingredient['ingredient__unit__measured'] == 'P'
-                else '{}{}'.format(total, ingredient['ingredient__unit__name'])
+                localize(total)
+                if ingredient['ingredient__unit__measured'] == 'P'
+                else '{}{}'.format(
+                    localize(total), ingredient['ingredient__unit__name'])
             ),
             ingredient['ingredient__category__name']
         )
