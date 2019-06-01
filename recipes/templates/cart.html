@@ -25,7 +25,10 @@
           <h3>
             {% filter capfirst %}{% trans 'ingredients' %}{% endfilter %}
           </h3>
-          <form action="{% url 'cart' %}" method="POST">
+          <form action="{% url 'cart' %}"
+                method="POST"
+                onsubmit="$('#spinner').removeClass('invisible');
+                          $('#submit').prop('disabled', true);">
             {% csrf_token %}
             <input type="hidden" name="action" value="OurGroceries">
             {% for ingredient, total in ingredients %}
@@ -44,8 +47,10 @@
               </div>
             {% endfor %}
             {% if ingredients %}
-            <button type="submit" class="btn btn-body">
+            <button type="submit" class="btn btn-body" id="submit">
+              <i id="spinner" class="fas fa-spinner invisible"></i>
               {% trans 'add to OurGroceries' %}
+              &nbsp;&nbsp;&nbsp;
             </button>
             {% endif %}
             {% if message %}
