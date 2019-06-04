@@ -17,8 +17,6 @@ services:
     depends_on:
       - postgres
       - nginx
-    secrets:
-      - recipes_secret_key
   postgres:
     image: postgres
     volumes:
