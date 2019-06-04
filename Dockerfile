@@ -22,5 +22,4 @@ RUN python3 manage.py collectstatic --no-input
 USER recipes
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN python3 manage.py migrate
 CMD ["./run.sh"]
