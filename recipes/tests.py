@@ -61,12 +61,12 @@ class RecipesTestCase(TestCase):
             amount=1, order=2)
 
     def test_index(self):
-        # Index redirect
+        # Index
         ctx = self.client.get(reverse('index'), follow=True).context
         self.assertEqual(ctx['page'], 'index')
         self.assertEqual(list(ctx['tags']), [self.tag1, self.tag2])
-        self.assertEqual(ctx['selected_tag'], self.tag1)
-        self.assertEqual(list(ctx['recipes']), [self.recipe1])
+        self.assertEqual(ctx['selected_tag'], None)
+        self.assertEqual(list(ctx['recipes']), [self.recipe1, self.recipe2])
 
         # Tag
         ctx = self.client.get(reverse('tag', args=[self.tag2.pk])).context
