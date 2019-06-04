@@ -1,0 +1,4 @@
+sut:
+  build: .
+  working_dir: /opt/recipes
+  command: ./manage.py test
