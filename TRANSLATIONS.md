@@ -1,3 +1,4 @@
+```
 # Create or update the po files
 ./update_translations.sh
 
@@ -5,3 +6,4 @@
 
 # Create or update the mo files
 django-admin compilemessages
+```
