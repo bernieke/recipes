@@ -13,7 +13,10 @@ if not os.path.exists(SECRET_KEY_FILE):
 SECRET_KEY = open(SECRET_KEY_FILE).read().strip()
 
 DEBUG = int(os.environ.get('DEBUG', '0'))
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+if os.environ.get('GUNICORN'):
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 INSTALLED_APPS = [
     'bootstrap4',
