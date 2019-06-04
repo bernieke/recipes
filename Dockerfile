@@ -4,7 +4,7 @@ MAINTAINER Bernard Kerckenaere <bernieke@bernieke.com>
 EXPOSE 8000
 
 # Deploy the code and create the support folders
-RUN useradd -m recipes -s /bin/bash
+RUN useradd -m recipes -s /bin/bash -d /opt/recipes
 RUN mkdir -p /opt/recipes /var/lib/recipes /var/www/recipes
 RUN chown recipes:recipes /var/lib/recipes
 COPY . /opt/recipes/

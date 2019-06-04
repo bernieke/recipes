@@ -29,7 +29,36 @@ def normalize(d):
 
 
 def index(request):
-    return redirect(Tag.objects.first())
+    return render(request, 'index.html', context={
+        'page': 'index',
+        'tags': Tag.objects.all(),
+        'selected_tag': None,
+        'recipes': Recipe.objects.all(),
+    })
+
+
+def tag(request, pk):
+    tag = Tag.objects.get(pk=pk)
+    return render(request, 'index.html', context={
+        'page': 'index',
+        'tags': Tag.objects.all(),
+        'selected_tag': tag,
+        'recipes': tag.recipe_set.all(),
+    })
+
+
+def recipe(request, pk):
+    recipe = Recipe.objects.get(pk=pk)
+    return render(request, 'recipe.html', context={
+        'page': 'recipe',
+        'recipe': recipe,
+        'ingredients': ['{}{} {}'.format(
+            localize(normalize(ingredient_in_recipe.amount)),
+            ingredient_in_recipe.ingredient.unit.name,
+            ingredient_in_recipe.ingredient.name,
+        ) for ingredient_in_recipe in recipe.ingredientinrecipe_set.all()],
+        'tags': recipe.tags.all().values_list('name', flat=True),
+    })
 
 
 def cart(request):
@@ -191,30 +220,6 @@ def add_to_ourgroceries(ingredients, selected):
         'Origin': 'https://www.ourgroceries.com',
         'Host': 'www.ourgroceries.com',
     }).raise_for_status()
-
-
-def tag(request, pk):
-    tag = Tag.objects.get(pk=pk)
-    return render(request, 'index.html', context={
-        'page': 'index',
-        'tags': Tag.objects.all(),
-        'selected_tag': tag,
-        'recipes': tag.recipe_set.all(),
-    })
-
-
-def recipe(request, pk):
-    recipe = Recipe.objects.get(pk=pk)
-    return render(request, 'recipe.html', context={
-        'page': 'recipe',
-        'recipe': recipe,
-        'ingredients': ['{}{} {}'.format(
-            localize(normalize(ingredient_in_recipe.amount)),
-            ingredient_in_recipe.ingredient.unit.name,
-            ingredient_in_recipe.ingredient.name,
-        ) for ingredient_in_recipe in recipe.ingredientinrecipe_set.all()],
-        'tags': recipe.tags.all().values_list('name', flat=True),
-    })
 
 
 class TagAutoComplete(autocomplete.Select2QuerySetView):

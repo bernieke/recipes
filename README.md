@@ -2,10 +2,16 @@ deploy using docker-compose
 ===========================
 
 ```
-SECRET_KEY=<DJANGO-SECRET-KEY> docker-compose up -d
+docker-compose up -d
+docker exec -it recipes_recipes_1 /opt/recipes/manage.py createsuperuser
 ```
 
-If you don't provide the SECRET_KEY environment variable, a new SECRET_KEY will be generated for the recipes container.
+When upgrading you will need to capture the Django SECRET_KEY to avoid having all your existing sessions invalidated.
+```
+docker pull bernieke/recipes
+DJANGO_SECRET_KEY="`docker exec recipes_recipes_1 cat /opt/recipes/secret.key`" docker-compose up -d
+docker image prune -f
+```
 
 
 configuration
