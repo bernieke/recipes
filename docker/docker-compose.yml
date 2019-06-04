@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  recipes:
+    image: bernieke/recipes
+    environment:
+      - GUNICORN=1
+      - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - SQL_ENGINE=django.db.backends.postgresql
+      - SQL_DATABASE=recipes
+      - SQL_USER=recipes
+      - SQL_PASSWORD=recipes
+      - SQL_HOST=postgres
+      - SQL_PORT=5432
+    volumes:
+      - static:/var/www/recipes
+    depends_on:
+      - postgres
+      - nginx
+    secrets:
+      - recipes_secret_key
+  postgres:
+    image: postgres
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=recipes
+      - POSTGRES_USER=recipes
+      - POSTGRES_PASSWORD=recipes
+  nginx:
+    image: nginx
+    volumes:
+      - static:/var/www/recipes:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 80:80
+
+volumes:
+  database:
+  static:
+
+secrets:
+  recipes_secret_key:
+    file: /tmp/recipes_secret_key
