@@ -2,15 +2,18 @@ import os
 
 from collections import OrderedDict
 
+from django.core.management.utils import get_random_secret_key
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SECRET_KEY_FILE = os.path.join(BASE_DIR, 'secret.key')
 
-# TODO move to config file
-SECRET_KEY = '&2g1@+@g#n#!r)qe5j(x-py2x5c)rqn_8_rt2n0@t^6t&6hhap'
-# TODO turn off
-DEBUG = True
-# TODO move to config file
-ALLOWED_HOSTS = ['*']
+if not os.path.exists(SECRET_KEY_FILE):
+    open(SECRET_KEY_FILE, 'w').write(get_random_secret_key())
+SECRET_KEY = open(SECRET_KEY_FILE).read().strip()
+
+DEBUG = int(os.environ.get('DEBUG', '0'))
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 INSTALLED_APPS = [
     'bootstrap4',
@@ -61,11 +64,20 @@ TEMPLATES = [
 ]
 WSGI_APPLICATION = 'recipes.wsgi.application'
 
-# TODO move to config file
+SQL_DATABASE = os.environ.get('SQL_DATABASE')
+if not SQL_DATABASE:
+    if os.path.exists('/var/lib/recipes'):
+        SQL_DATABASE = '/var/lib/recipes/db.sqlite3'
+    else:
+        SQL_DATABASE = os.path.join(BASE_DIR, 'db.sqlite3')
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': SQL_DATABASE,
+        'USER': os.environ.get('SQL_USER', 'user'),
+        'PASSWORD': os.environ.get('SQL_PASSWORD', 'password'),
+        'HOST': os.environ.get('SQL_HOST', 'localhost'),
+        'PORT': os.environ.get('SQL_PORT', '5432'),
     }
 }
 
@@ -100,6 +112,7 @@ USE_THOUSAND_SEPARATOR = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/var/www/recipes'
 
 BOOTSTRAP4 = {
     'base_url': '/static/bootstrap/',

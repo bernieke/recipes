@@ -1,4 +1,4 @@
-django<=2.3
+django>=2.2,<3.0
 django-bootstrap4
 django-fontawesome-5
 django-admin-sortable2
