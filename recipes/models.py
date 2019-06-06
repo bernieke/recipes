@@ -10,9 +10,12 @@ def fahrenheit_to_celcius(fahrenheit):
 
 class Unit(models.Model):
     name = models.CharField(max_length=16, verbose_name=_('name'))
+    order = models.PositiveSmallIntegerField(
+        default=0, db_index=True, blank=False, null=False,
+        verbose_name=_('order'))
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('order', 'name')
         verbose_name = _('unit')
         verbose_name_plural = _('units')
 
