@@ -48,7 +48,7 @@ class IngredientInRecipeForm(forms.ModelForm):
                     from_unit=unit, to_unit=ingredient.unit)
             except UnitConversion.DoesNotExist:
                 raise forms.ValidationError(
-                    _('No UnitConversion from {} to {}'.format(
+                    _('No unit conversion from {} to {}'.format(
                         unit, ingredient.unit)))
             self.cleaned_data['amount'] *= uc.factor
         return super().clean()
