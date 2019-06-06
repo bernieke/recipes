@@ -2,6 +2,7 @@ from dal import autocomplete
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from django_markdown.fields import MarkdownFormField
 
 from .models import Unit, UnitConversion, IngredientInRecipe, Recipe
 
@@ -54,6 +55,7 @@ class IngredientInRecipeForm(forms.ModelForm):
 
 
 class RecipeForm(forms.ModelForm):
+    recipe = MarkdownFormField()
 
     class Meta:
         model = Recipe

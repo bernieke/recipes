@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.formats import localize
 from django.utils.translation import gettext_lazy as _
+from django_markdown.models import MarkdownField
 
 
 def fahrenheit_to_celcius(fahrenheit):
@@ -117,7 +118,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         'Ingredient', through='IngredientInRecipe', blank=True,
         verbose_name=_('ingredients'))
-    recipe = models.TextField(blank=True, verbose_name=_('recipe'))
+    recipe = MarkdownField(blank=True, verbose_name=_('recipe'))
 
     class Meta:
         ordering = ('title',)

@@ -12,7 +12,7 @@
                 {{ qty }} {{ recipe.title }}
                 <a href="#"
                    onclick="$('#pk').val('{{ recipe.pk }}');
-                            $('#qty').val({{ qty|unlocalize }});
+                            $('#qty').val({{ qty | unlocalize }});
                             $('#editQty').modal();
                             event.preventDefault();">
                     <i class="far fa-edit text-body"></i>
