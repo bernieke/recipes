@@ -2,6 +2,7 @@
 
 cd "$(dirname "$(type -p "$0")")"
 
+python3 manage.py collectstatic --no-input
 python3 manage.py migrate
 
 if [[ "$GUNICORN" == "1" ]]
