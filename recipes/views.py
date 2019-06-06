@@ -88,8 +88,8 @@ def cart(request):
             .values('ingredient__pk',
                     'ingredient__name',
                     'ingredient__category__name',
-                    'ingredient__unit__name',
-                    'ingredient__unit__measured')
+                    'ingredient__unit__pk',
+                    'ingredient__unit__name')
             .order_by('ingredient__category')
             .distinct()
         )
@@ -155,12 +155,15 @@ def add_to_ourgroceries(ingredients, selected):
     # Build csv
     rows = [
         (
-            '{} ({})'.format(
+            '{}{}'.format(
                 ingredient['ingredient__name'],
-                localize(total)
-                if ingredient['ingredient__unit__measured'] == 'P'
-                else '{}{}'.format(
-                    localize(total), ingredient['ingredient__unit__name'])
+                ' ({})'.format(
+                    localize(total)
+                    if ingredient['ingredient__unit__pk'] == 1
+                    else '{}{}'.format(
+                        localize(total), ingredient['ingredient__unit__name']))
+                if not ingredient['ingredient__unit__pk'] == 1 or total > 1
+                else ''
             ),
             ingredient['ingredient__category__name']
         )
