@@ -2,6 +2,7 @@ FROM python:3
 MAINTAINER Bernard Kerckenaere <bernieke@bernieke.com>
 
 EXPOSE 8000
+VOLUME /var/lib/recipes
 
 # Deploy the code and create the support folders
 RUN useradd -m recipes -s /bin/bash -d /opt/recipes
