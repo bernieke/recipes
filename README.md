@@ -1,3 +1,24 @@
+recipes
+=======
+
+This is a Django application for keeping recipes and creating shopping lists which can be sent to [OurGroceries](https://www.ourgroceries.com).
+
+It can be easily deployed using docker (against an existing PostgreSQL database or using an internal SQLite database) or as a full stack with PostgreSQL and nginx using docker-compose.
+
+screenshots
+===========
+
+![recipe](screenshots/1-recipe.png)
+
+![index](screenshots/2-index.png)
+
+![quantity](screenshots/3-quantity.png)
+
+![shopping list](screenshots/4-shopping_list.png)
+
+![admin](screenshots/5-admin.png)
+
+
 deploy using docker-compose
 ===========================
 
