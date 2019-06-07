@@ -72,5 +72,5 @@ run directly
 
 ```
 pip install -r requirements.txt
-DEBUG=1 ./manage.py runserver
+GUNICORN=0 DEBUG=1 ./manage.py runserver
 ```
