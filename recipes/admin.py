@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import reverse_lazy
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
+from django_markdown.admin import AdminMarkdownWidget
 
 from .models import (
     Unit, UnitConversion,
@@ -11,6 +12,10 @@ from .forms import UnitConversionForm, RecipeForm, IngredientInRecipeForm
 
 
 admin.site.site_url = reverse_lazy('index')
+
+
+class UnitAdmin(SortableAdminMixin, admin.ModelAdmin):
+    pass
 
 
 class UnitConversionAdmin(admin.ModelAdmin):
@@ -46,6 +51,7 @@ class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     form = RecipeForm
     inlines = (IngredientInRecipeInline,)
+    formfield_overrides = {'recipe': {'widget': AdminMarkdownWidget}}
 
     class Media:
         css = {
@@ -53,7 +59,7 @@ class RecipeAdmin(admin.ModelAdmin):
         }
 
 
-admin.site.register(Unit, admin.ModelAdmin)
+admin.site.register(Unit, UnitAdmin)
 admin.site.register(UnitConversion, UnitConversionAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Tag, TagAdmin)

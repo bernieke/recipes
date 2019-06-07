@@ -2,14 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.formats import localize
 from django.utils.translation import gettext_lazy as _
-
-
-MEASURED = [
-    ('P', _('piece')),
-    ('W', _('weight')),
-    ('V', _('volume')),
-    ('L', _('length')),
-]
+from django_markdown.models import MarkdownField
 
 
 def fahrenheit_to_celcius(fahrenheit):
@@ -18,20 +11,17 @@ def fahrenheit_to_celcius(fahrenheit):
 
 class Unit(models.Model):
     name = models.CharField(max_length=16, verbose_name=_('name'))
-    measured = models.CharField(
-        choices=MEASURED, max_length=1, verbose_name=_('measured'))
+    order = models.PositiveSmallIntegerField(
+        default=0, db_index=True, blank=False, null=False,
+        verbose_name=_('order'))
 
     class Meta:
-        ordering = ('name', 'measured')
-        unique_together = [['name', 'measured']]
+        ordering = ('order', 'name')
         verbose_name = _('unit')
         verbose_name_plural = _('units')
 
     def __str__(self):
-        if self.measured == 'P':
-            return self.name
-        else:
-            return '{} [{}]'.format(self.name, self.measured)
+        return self.name
 
 
 class UnitConversion(models.Model):
@@ -128,7 +118,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         'Ingredient', through='IngredientInRecipe', blank=True,
         verbose_name=_('ingredients'))
-    recipe = models.TextField(blank=True, verbose_name=_('recipe'))
+    recipe = MarkdownField(blank=True, verbose_name=_('recipe'))
 
     class Meta:
         ordering = ('title',)

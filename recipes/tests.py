@@ -20,8 +20,8 @@ class RecipesTestCase(TestCase):
             'ingredient__pk': ingredient.pk,
             'ingredient__name': ingredient.name,
             'ingredient__category__name': ingredient.category.name,
+            'ingredient__unit__pk': ingredient.unit.pk,
             'ingredient__unit__name': ingredient.unit.name,
-            'ingredient__unit__measured': ingredient.unit.measured,
         }, Decimal(total)]
 
     def setUp(self):
@@ -31,9 +31,9 @@ class RecipesTestCase(TestCase):
         self.cat2 = Category.objects.create(name='cat2', order=2)
         self.tag1 = Tag.objects.create(name='tag1', order=1)
         self.tag2 = Tag.objects.create(name='tag2', order=2)
-        self.pc, _ = Unit.objects.get_or_create(name='pc', measured='P')
-        self.ts, _ = Unit.objects.get_or_create(name='ts', measured='V')
-        self.g, _ = Unit.objects.get_or_create(name='g', measured='W')
+        self.pc, _ = Unit.objects.get_or_create(name='pc')
+        self.ts, _ = Unit.objects.get_or_create(name='ts')
+        self.g, _ = Unit.objects.get_or_create(name='g')
         self.ingredient1 = Ingredient.objects.create(
             name='ingredient1', unit=self.pc, category=self.cat1)
         self.ingredient2ts = Ingredient.objects.create(

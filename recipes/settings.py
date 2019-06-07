@@ -26,6 +26,8 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
     'admin_interface',
+    'django_markdown',
+    'markdownify',
     'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -142,3 +144,7 @@ CONSTANCE_CONFIG_FIELDSETS = {
         'OURGROCERIES_LIST'
     ),
 }
+
+MARKDOWN_EDITOR_SKIN = 'simple'
+MARKDOWN_PROTECT_PREVIEW = True
+MARKDOWNIFY_BLEACH = False
