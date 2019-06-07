@@ -1,6 +1,7 @@
 from dal import autocomplete
 
 from django import forms
+from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from django_markdown.fields import MarkdownFormField
 
@@ -48,8 +49,8 @@ class IngredientInRecipeForm(forms.ModelForm):
                     from_unit=unit, to_unit=ingredient.unit)
             except UnitConversion.DoesNotExist:
                 raise forms.ValidationError(
-                    _('No unit conversion from {} to {}'.format(
-                        unit, ingredient.unit)))
+                    format_lazy(_('No unit conversion from {} to {}'),
+                                unit, ingredient.unit))
             self.cleaned_data['amount'] *= uc.factor
         return super().clean()
 
