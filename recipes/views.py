@@ -156,7 +156,8 @@ def add_to_ourgroceries(ingredients, selected):
                     if ingredient['ingredient__unit__pk'] == 1
                     else '{}{}'.format(
                         localize(total), ingredient['ingredient__unit__name']))
-                if not ingredient['ingredient__unit__pk'] == 1 or total > 1
+                if (total and
+                    (not ingredient['ingredient__unit__pk'] == 1 or total > 1))
                 else ''
             ),
             ingredient['ingredient__category__name']
