@@ -11,10 +11,6 @@ from .models import Category, Unit, Tag, Ingredient, IngredientInRecipe, Recipe
 
 class RecipesTestCase(TestCase):
 
-    def ingredient_to_recipe(self, ingredient, amount):
-        return '{}{} {}'.format(
-            amount, ingredient.unit.name, ingredient.name)
-
     def ingredient_to_cart(self, ingredient, total):
         return [{
             'ingredient__pk': ingredient.pk,
@@ -47,18 +43,18 @@ class RecipesTestCase(TestCase):
         self.recipe1.tags.add(self.tag1)
         self.recipe1.tags.add(self.tag2)
         self.recipe2.tags.add(self.tag2)
-        IngredientInRecipe.objects.create(
+        self.iir1_1 = IngredientInRecipe.objects.create(
             recipe=self.recipe1, ingredient=self.ingredient1,
-            amount=3, order=1)
-        IngredientInRecipe.objects.create(
+            amount=Decimal('3'), order=1)
+        self.iir1_2ts = IngredientInRecipe.objects.create(
             recipe=self.recipe1, ingredient=self.ingredient2ts,
-            amount=2, order=2)
-        IngredientInRecipe.objects.create(
+            amount=Decimal('2'), order=2)
+        self.iir2_1 = IngredientInRecipe.objects.create(
             recipe=self.recipe2, ingredient=self.ingredient1,
-            amount=2, order=1)
-        IngredientInRecipe.objects.create(
+            amount=Decimal('2'), order=1)
+        self.iir2_2g = IngredientInRecipe.objects.create(
             recipe=self.recipe2, ingredient=self.ingredient2g,
-            amount=1, order=2)
+            amount=Decimal('1'), order=2)
 
     def test_index(self):
         # Index
@@ -96,9 +92,8 @@ class RecipesTestCase(TestCase):
         ctx = self.client.get(
             reverse('recipe', args=[self.recipe1.pk])).context
         # ingredient in recipe order
-        self.assertEqual(ctx['ingredients'], [
-            self.ingredient_to_recipe(self.ingredient2ts, 2),
-            self.ingredient_to_recipe(self.ingredient1, 3)])
+        self.assertEqual(list(ctx['ingredients']),
+                         [self.iir1_2ts, self.iir1_1])
 
         ctx = self.client.get(reverse('cart')).context
         # recipe order by title on cart
@@ -115,9 +110,8 @@ class RecipesTestCase(TestCase):
             reverse('recipe', args=[self.recipe1.pk])).context
         self.assertEqual(ctx['page'], 'recipe')
         self.assertEqual(ctx['recipe'], self.recipe1)
-        self.assertEqual(ctx['ingredients'], [
-            self.ingredient_to_recipe(self.ingredient1, 3),
-            self.ingredient_to_recipe(self.ingredient2ts, 2)])
+        self.assertEqual(list(ctx['ingredients']),
+                         [self.iir1_1, self.iir1_2ts])
 
     def test_cart(self):
         # Add to cart
@@ -149,7 +143,7 @@ class RecipesTestCase(TestCase):
 
     def test_localization(self):
         recipe = Recipe.objects.create(title='localization_test', recipe='')
-        IngredientInRecipe.objects.create(
+        iir = IngredientInRecipe.objects.create(
             recipe=recipe, ingredient=self.ingredient1, amount=1.5, order=1)
         self.client.get(reverse('add_to_cart', args=[recipe.pk]))
         self.client.post(reverse('cart'), {
@@ -161,8 +155,7 @@ class RecipesTestCase(TestCase):
         # EN
         # On recipe page
         ctx = self.client.get(reverse('recipe', args=[recipe.pk])).context
-        self.assertEqual(ctx['ingredients'], [
-            self.ingredient_to_recipe(self.ingredient1, '1.5')])
+        self.assertEqual(list(ctx['ingredients']), [iir])
         # On cart page
         ct = self.client.get(reverse('cart')).content.decode()
         self.assertTrue('0.5 localization_test' in ct)
@@ -172,8 +165,7 @@ class RecipesTestCase(TestCase):
         activate('nl')
         # On recipe page
         ctx = self.client.get(reverse('recipe', args=[recipe.pk])).context
-        self.assertEqual(ctx['ingredients'], [
-            self.ingredient_to_recipe(self.ingredient1, '1,5')])
+        self.assertEqual(list(ctx['ingredients']), [iir])
         # On cart page
         ct = self.client.get(reverse('cart')).content.decode()
         self.assertTrue('0,5 localization_test' in ct)

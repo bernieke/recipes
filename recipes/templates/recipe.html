@@ -20,8 +20,14 @@
             {% filter capfirst %}{% trans 'ingredients' %}{% endfilter %}
           </h3>
           <ul class="list-unstyled">
-          {% for ingredient in ingredients %}
-            <li>{{ ingredient }}</li>
+          {% for ingredient_in_recipe in ingredients %}
+            <li>
+              {% if ingredient_in_recipe.ingredient.name %}
+              {{ ingredient_in_recipe }}
+              {% else %}
+              &nbsp;
+              {% endif %}
+            </li>
           {% endfor %}
           </ul>
         </div>
