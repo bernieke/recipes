@@ -1,3 +1,6 @@
+from decimal import Context
+
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.formats import localize
@@ -7,6 +10,12 @@ from django_markdown.models import MarkdownField
 
 def fahrenheit_to_celcius(fahrenheit):
     return (fahrenheit - 32) * 5 / 9
+
+
+def normalize(d):
+    normalized = d.normalize(Context(settings.AMOUNT_PRECISION))
+    threshold = 10 ** settings.AMOUNT_PRECISION
+    return int(normalized) if d >= threshold else normalized
 
 
 class Unit(models.Model):
@@ -65,6 +74,7 @@ class Tag(models.Model):
     order = models.PositiveSmallIntegerField(
         default=32767, db_index=True, blank=False, null=False,
         verbose_name=_('order'))
+    break_after = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('order', 'name')
@@ -79,12 +89,12 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=254, verbose_name=_('name'))
+    name = models.CharField(max_length=254, blank=True, verbose_name=_('name'))
     unit = models.ForeignKey(
-        'Unit', on_delete=models.PROTECT, default=None, null=True,
-        verbose_name=_('unit'))
+        'Unit', on_delete=models.PROTECT, verbose_name=_('unit'))
     category = models.ForeignKey(
-        'Category', on_delete=models.PROTECT, verbose_name=_('category'))
+        'Category', on_delete=models.PROTECT, null=True, blank=True,
+        verbose_name=_('category'))
 
     class Meta:
         ordering = ('name', 'unit')
@@ -150,3 +160,13 @@ class IngredientInRecipe(models.Model):
         ordering = ('order',)
         verbose_name = _('ingredient')
         verbose_name_plural = _('ingredients')
+
+    def __str__(self):
+        if not self.ingredient.name:
+            return ''
+        if not self.amount:
+            return self.ingredient.name
+        return '{}{} {}'.format(
+            localize(normalize(self.amount)),
+            self.ingredient.unit.name,
+            self.ingredient.name)

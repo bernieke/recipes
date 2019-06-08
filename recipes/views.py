@@ -4,7 +4,7 @@ import csv
 import requests
 import traceback
 
-from decimal import Context, Decimal
+from decimal import Decimal
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -16,16 +16,11 @@ from dal import autocomplete
 from constance import config
 
 from .models import Tag, Alias, Ingredient, IngredientInRecipe, Recipe
+from .models import normalize
 
 
 OURGROCERIES_SIGNIN_URL = 'https://www.ourgroceries.com/sign-in'
 OURGROCERIES_LIST_URL = 'https://www.ourgroceries.com/your-lists/'
-
-
-def normalize(d):
-    normalized = d.normalize(Context(settings.AMOUNT_PRECISION))
-    threshold = 10 ** settings.AMOUNT_PRECISION
-    return int(normalized) if d >= threshold else normalized
 
 
 def index(request):
@@ -52,11 +47,7 @@ def recipe(request, pk):
     return render(request, 'recipe.html', context={
         'page': 'recipe',
         'recipe': recipe,
-        'ingredients': ['{}{} {}'.format(
-            localize(normalize(ingredient_in_recipe.amount)),
-            ingredient_in_recipe.ingredient.unit.name,
-            ingredient_in_recipe.ingredient.name,
-        ) for ingredient_in_recipe in recipe.ingredientinrecipe_set.all()],
+        'ingredients': recipe.ingredientinrecipe_set.all(),
         'tags': recipe.tags.all().values_list('name', flat=True),
     })
 
@@ -82,9 +73,11 @@ def cart(request):
     ingredients = [
         [ingredient, 0] for ingredient in (
             IngredientInRecipe.objects
-            .filter(recipe__pk__in=recipe_pks,
-                    ingredient__category__isnull=False)
+            .filter(recipe__pk__in=recipe_pks)
             .select_related('ingredient', 'ingredient__unit')
+            .exclude(ingredient__name='')
+            .exclude(ingredient__unit__isnull=True)
+            .exclude(ingredient__category__isnull=True)
             .values('ingredient__pk',
                     'ingredient__name',
                     'ingredient__category__name',
@@ -100,7 +93,8 @@ def cart(request):
     for recipe, qty in recipes:
         for ingredient_in_recipe in recipe.ingredientinrecipe_set.all():
             pk = ingredient_in_recipe.ingredient.pk
-            totals[pk] += ingredient_in_recipe.amount * qty
+            if pk in totals:
+                totals[pk] += ingredient_in_recipe.amount * qty
     for i, (ingredient, total) in enumerate(ingredients):
         ingredients[i][1] = normalize(totals[ingredient['ingredient__pk']])
     if not ingredients:

@@ -41,8 +41,9 @@
                 <label class="form-check-label"
                        for="ingredient_{{ ingredient.ingredient__pk }}">
                   {{ ingredient.ingredient__name }}
-                  ({{ total }}
-                  {{ ingredient.ingredient__unit__name }})
+                  {% if total %}
+                  ({{ total }} {{ ingredient.ingredient__unit__name }})
+                  {% endif %}
                 </label>
               </div>
             {% endfor %}
