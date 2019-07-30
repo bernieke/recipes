@@ -16,7 +16,7 @@ DEBUG = int(os.environ.get('DEBUG', '0'))
 if os.environ.get('GUNICORN'):
     ALLOWED_HOSTS = ['*']
 else:
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'rincewind.ooike.local']
 
 INSTALLED_APPS = [
     'bootstrap4',

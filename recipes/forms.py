@@ -19,9 +19,9 @@ class UnitConversionForm(forms.ModelForm):
 class IngredientInRecipeForm(forms.ModelForm):
     unit = forms.ModelChoiceField(
         queryset=Unit.objects.all(),
-        empty_label=None,
-        label=_('unit'),
-        initial=1)
+        empty_label='',
+        required=False,
+        label=_('unit'))
 
     class Meta:
         model = IngredientInRecipe
@@ -41,8 +41,10 @@ class IngredientInRecipeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
     def clean(self):
-        unit = self.cleaned_data['unit']
         ingredient = self.cleaned_data['ingredient']
+        unit = self.cleaned_data.get('unit')
+        if unit is None:
+            unit = ingredient.unit
         if not unit == ingredient.unit:
             try:
                 uc = UnitConversion.objects.get(
