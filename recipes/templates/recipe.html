@@ -30,6 +30,16 @@
             </li>
           {% endfor %}
           </ul>
+          <h3 class="pt-3">
+            {% filter capfirst %}{% trans 'tags' %}{% endfilter %}
+          </h3>
+          {% for tag in recipe.tags.all %}
+          <h4>
+            <a href="{{ tag.get_absolute_url }}" class="text-body">
+              {{ tag.name }}
+            </a>
+          </h4>
+          {% endfor %}
         </div>
         <div class="col col-9">
           <h3 class="pt-3">

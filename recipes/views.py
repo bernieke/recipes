@@ -48,7 +48,6 @@ def recipe(request, pk):
         'page': 'recipe',
         'recipe': recipe,
         'ingredients': recipe.ingredientinrecipe_set.all(),
-        'tags': recipe.tags.all().values_list('name', flat=True),
     })
 
 
