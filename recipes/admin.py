@@ -27,7 +27,7 @@ class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 
 class TagAdmin(SortableAdminMixin, admin.ModelAdmin):
-    pass
+    list_display = ('name', 'break_after')
 
 
 class AliasInline(admin.TabularInline):
@@ -36,6 +36,7 @@ class AliasInline(admin.TabularInline):
 
 
 class IngredientAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category')
     inlines = (AliasInline,)
 
 
