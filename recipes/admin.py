@@ -35,9 +35,19 @@ class AliasInline(admin.TabularInline):
     extra = 0
 
 
+class RecipeInline(admin.TabularInline):
+    model = IngredientInRecipe
+    extra = 0
+    max_num = 0
+    fields = ('recipe',)
+    readonly_fields = ('recipe',)
+    can_delete = False
+    verbose_name_plural = 'Recipes'
+
+
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'category')
-    inlines = (AliasInline,)
+    inlines = (AliasInline, RecipeInline)
 
 
 class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
