@@ -5,7 +5,7 @@
       <div class="row px-5 pt-4">
         <div class="col col-3 text-right">
           {% for tag in tags%}
-          <h4 {% if tag.break_after %}class="pb-3"{% endif %}>
+          <h4>
             {% if tag == selected_tag %}
             <b>{{ tag.name }}</b>
             {% else %}
@@ -14,6 +14,7 @@
             </a>
             {% endif %}
           </h4>
+          {% if tag.break_after %}<h4>&nbsp;</h4>{% endif %}
           {% endfor %}
         </div>
         <div class="col col-9">
