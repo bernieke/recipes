@@ -5,6 +5,7 @@
       <div class="row px-5 pt-4">
         <div class="col col-3 text-right">
           {% for tag in tags%}
+          {% if tag.recipe_set.all %}
           <h4>
             {% if tag == selected_tag %}
             <b>{{ tag.name }}</b>
@@ -14,6 +15,7 @@
             </a>
             {% endif %}
           </h4>
+          {% endif %}
           {% if tag.break_after %}<h4>&nbsp;</h4>{% endif %}
           {% endfor %}
         </div>
