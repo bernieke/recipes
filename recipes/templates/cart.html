@@ -9,14 +9,27 @@
           <ul class="list-unstyled">
             {% for recipe, qty in recipes %}
               <li>
-                {{ qty }} {{ recipe.title }}
-                <a href="#"
-                   onclick="$('#pk').val('{{ recipe.pk }}');
-                            $('#qty').val({{ qty | unlocalize }});
-                            $('#editQty').modal();
-                            event.preventDefault();">
-                    <i class="far fa-edit text-body"></i>
+                <form action="{% url 'cart' %}"
+                      method="POST"
+                      name="del_{{ recipe.pk }}">
+                  {{ qty }} {{ recipe.title }}
+                  <a href="#"
+                     onclick="$('#pk').val('{{ recipe.pk }}');
+                              $('#qty').val({{ qty | unlocalize }});
+                              $('#editQty').modal();
+                              event.preventDefault();">
+                      <i class="far fa-edit text-body"></i>
+                    </a>
+
+                  <input type="hidden" name="action" value="edit">
+                  <input type="hidden" name="pk" value="{{ recipe.pk }}">
+                  <input type="hidden" name="qty" value=0>
+                  {% csrf_token %}
+                  <a href="javascript:;"
+                     onclick="document.forms['del_{{ recipe.pk }}'].submit();">
+                    <i class="far fa-trash-alt text-body"></i>
                   </a>
+                </form>
               </li>
             {% endfor %}
           </ul>
