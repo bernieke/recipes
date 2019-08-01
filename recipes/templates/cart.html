@@ -79,7 +79,7 @@
           </form>
           <div class="modal fade" id="editQty" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-              <form action="{% url 'cart' %}" method="POST">
+              <form action="{% url 'cart' %}" method="POST" novalidate>
                 <input type="hidden" name="action" value="edit">
                 {% csrf_token %}
                 <div class="modal-content">
