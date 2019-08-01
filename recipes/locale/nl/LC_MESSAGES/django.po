@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-31 09:06+0200\n"
-"PO-Revision-Date: 2019-07-31 09:07+0200\n"
+"POT-Creation-Date: 2019-08-01 09:11+0200\n"
+"PO-Revision-Date: 2019-08-01 09:12+0200\n"
 "Last-Translator: Bernard Kerckenaere <bernieke@bernieke.com>\n"
 "Language-Team: Nederlands <bernieke@bernieke.com>\n"
 "Language: Nederlands\n"
@@ -27,7 +27,7 @@ msgstr "Geen eenheid omzetting van {} naar {}"
 msgid "name"
 msgstr "naam"
 
-#: models.py:25 models.py:61 models.py:76 models.py:157
+#: models.py:25 models.py:61 models.py:76 models.py:162
 msgid "order"
 msgstr "volgorde"
 
@@ -67,15 +67,15 @@ msgstr "categoriën"
 msgid "tag"
 msgstr "tag"
 
-#: models.py:82 models.py:127 templates/recipe.html:34
+#: models.py:82 models.py:127 models.py:150 templates/recipe.html:34
 msgid "tags"
 msgstr "tags"
 
-#: models.py:102 models.py:113 models.py:152 models.py:161
+#: models.py:102 models.py:113 models.py:157 models.py:166
 msgid "ingredient"
 msgstr "ingrediënt"
 
-#: models.py:103 models.py:130 models.py:162 templates/cart.html:26
+#: models.py:103 models.py:130 models.py:167 templates/cart.html:39
 #: templates/recipe.html:20
 msgid "ingredients"
 msgstr "ingrediënten"
@@ -92,7 +92,7 @@ msgstr "aliases"
 msgid "title"
 msgstr "titel"
 
-#: models.py:131 models.py:135 models.py:150 templates/recipe.html:46
+#: models.py:131 models.py:135 models.py:155 templates/recipe.html:46
 msgid "recipe"
 msgstr "recept"
 
@@ -101,7 +101,7 @@ msgstr "recept"
 msgid "recipes"
 msgstr "recepten"
 
-#: models.py:154
+#: models.py:159
 msgid "amount"
 msgstr "hoeveelheid"
 
@@ -119,19 +119,19 @@ msgstr "boodschappen"
 msgid "admin"
 msgstr "admin"
 
-#: templates/cart.html:53
+#: templates/cart.html:66
 msgid "add to OurGroceries"
 msgstr "toevoegen aan OurGroceries"
 
-#: templates/cart.html:75
+#: templates/cart.html:88
 msgid "Edit quantity"
 msgstr "Hoeveelheid aanpassen"
 
-#: templates/cart.html:95
+#: templates/cart.html:108
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: templates/cart.html:99
+#: templates/cart.html:112
 msgid "Save"
 msgstr "Opslaan"
 

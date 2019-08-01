@@ -21,3 +21,4 @@ When adding an ingredient to a recipe the unit now defaults to empty. Leaving it
 1.4
 ===
 * Add delete button to shopping cart.
+* Add tag list to recipes admin list view.

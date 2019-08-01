@@ -138,11 +138,16 @@ class Recipe(models.Model):
     def __str__(self):
         return self.title
 
+    def tag_list(self):
+        return ', '.join(self.tags.all().values_list('name', flat=True))
+
     def get_absolute_url(self):
         return reverse('recipe', args=[str(self.id)])
 
     def get_add_to_cart_url(self):
         return reverse('add_to_cart', args=[str(self.id)])
+
+    tag_list.short_description = _('tags')
 
 
 class IngredientInRecipe(models.Model):

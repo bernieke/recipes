@@ -61,6 +61,7 @@ class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
 
 class RecipeAdmin(admin.ModelAdmin):
     form = RecipeForm
+    list_display = ('title', 'tag_list')
     inlines = (IngredientInRecipeInline,)
     formfield_overrides = {'recipe': {'widget': AdminMarkdownWidget}}
 
