@@ -33,13 +33,15 @@
           <h3 class="pt-3">
             {% filter capfirst %}{% trans 'tags' %}{% endfilter %}
           </h3>
+          <ul class="list-unstyled">
           {% for tag in recipe.tags.all %}
-          <h4>
-            <a href="{{ tag.get_absolute_url }}" class="text-body">
-              {{ tag.name }}
-            </a>
-          </h4>
+            <li>
+              <a href="{{ tag.get_absolute_url }}" class="text-body">
+                {{ tag.name }}
+              </a>
+            </li>
           {% endfor %}
+          </ul>
         </div>
         <div class="col col-8">
           <h3 class="pt-3">

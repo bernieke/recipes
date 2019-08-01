@@ -28,3 +28,4 @@ When adding an ingredient to a recipe the unit now defaults to empty. Leaving it
 ===
 * Fix layout discrepancy between recipe and index/cart.
 * Increase tag/ingredient column size.
+* Change tag font size on recipe page to match ingredients.
