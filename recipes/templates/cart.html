@@ -3,8 +3,8 @@
 {% load l10n %}
 
 {% block content %}
-      <div class="row px-5 pt-4 justify-content-end">
-        <div class="col col-3 text-right">
+      <div class="row pt-4 justify-content-end">
+        <div class="col col-4 text-right">
           <h3>{% filter capfirst %}{% trans 'recipes' %}{% endfilter %}</h3>
           <ul class="list-unstyled">
             {% for recipe, qty in recipes %}
@@ -34,7 +34,7 @@
             {% endfor %}
           </ul>
         </div>
-        <div class="col col-9">
+        <div class="col col-8">
           <h3>
             {% filter capfirst %}{% trans 'ingredients' %}{% endfilter %}
           </h3>

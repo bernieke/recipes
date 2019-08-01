@@ -2,8 +2,8 @@
 {% load i18n %}
 
 {% block content %}
-      <div class="row px-5 pt-4">
-        <div class="col col-3 text-right">
+      <div class="row pt-4">
+        <div class="col col-4 text-right">
           {% for tag in tags%}
           {% if tag.recipe_set.all %}
           <h4>
@@ -19,7 +19,7 @@
           {% if tag.break_after %}<h4>&nbsp;</h4>{% endif %}
           {% endfor %}
         </div>
-        <div class="col col-9">
+        <div class="col col-8">
           {% for recipe in recipes %}
           <h4>
             <a href="{{ recipe.get_absolute_url }}" class="text-body">

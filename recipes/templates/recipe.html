@@ -4,7 +4,7 @@
 
 {% block content %}
       <div class="row pt-4 justify-content-end">
-        <div class="col col-9">
+        <div class="col col-8">
           <h1>
             {{ recipe.title }}
             <a href="{% url 'cart' %}"
@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col col-3 text-right">
+        <div class="col col-4 text-right">
           <h3 class="pt-3">
             {% filter capfirst %}{% trans 'ingredients' %}{% endfilter %}
           </h3>
@@ -41,7 +41,7 @@
           </h4>
           {% endfor %}
         </div>
-        <div class="col col-9">
+        <div class="col col-8">
           <h3 class="pt-3">
             {% filter capfirst %}{% trans 'recipe' %}{% endfilter %}
           </h3>
