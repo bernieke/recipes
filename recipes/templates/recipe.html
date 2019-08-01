@@ -7,8 +7,14 @@
         <div class="col col-8">
           <h1>
             {{ recipe.title }}
-            <a href="{% url 'cart' %}"
-               onclick="$.get('{{ recipe.get_add_to_cart_url }}')">
+            <a href="#"
+               onclick="$.get(
+                          '{{ recipe.get_add_to_cart_url }}',
+                          function (data) {
+                            location.href = '{% url 'cart' %}';
+                          }
+                        );
+                        return false;">
               <i class="fas fa-cart-plus text-body"></i>
             </a>
           </h1>
