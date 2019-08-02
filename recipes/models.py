@@ -138,8 +138,12 @@ class Ingredient(models.Model):
             return self.name
 
     def units(self):
-        return ', '.join(self.ingredientunit_set.all()
-                         .values_list('unit__name', flat=True))
+        return mark_safe(', '.join(
+            (['<b>{}</b>'.format(self.primary_unit)]
+             if self.primary_unit else []) +
+            list(self.ingredientunit_set.all()
+                 .exclude(unit=self.primary_unit)
+                 .values_list('unit__name', flat=True))))
 
     def recipes(self):
         ingredient_in_recipes = (IngredientInRecipe.objects

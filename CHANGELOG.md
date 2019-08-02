@@ -59,3 +59,8 @@ print('\n'.join(Ingredient.objects
 2.1
 ===
 * Add the admin pages for categories and units back.
+
+2.2
+===
+* Update translations.
+* Show primary unit bold on ingredient admin list display.
