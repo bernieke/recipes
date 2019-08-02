@@ -55,3 +55,7 @@ print('\n'.join(Ingredient.objects
                 .annotate(units=Count('ingredientunit'))
                 .filter(units__gt=1).values_list('name', flat=True)))"
 ```
+
+2.1
+===
+* Add the admin pages for categories and units back.

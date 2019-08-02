@@ -4,7 +4,7 @@ from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 from django_markdown.admin import AdminMarkdownWidget
 
 from .models import (
-    UnitConversion, IngredientUnit, Tag, Ingredient, Alias,
+    Unit, UnitConversion, IngredientUnit, Category, Tag, Ingredient, Alias,
     Recipe, IngredientInRecipe)
 from .forms import (
     IngredientForm, IngredientUnitInlineForm, UnitConversionForm,
@@ -14,8 +14,16 @@ from .forms import (
 admin.site.site_url = reverse_lazy('index')
 
 
+class UnitAdmin(SortableAdminMixin, admin.ModelAdmin):
+    pass
+
+
 class UnitConversionAdmin(admin.ModelAdmin):
     form = UnitConversionForm
+
+
+class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
+    pass
 
 
 class TagAdmin(SortableAdminMixin, admin.ModelAdmin):
@@ -64,7 +72,9 @@ class RecipeAdmin(admin.ModelAdmin):
         }
 
 
+admin.site.register(Unit, UnitAdmin)
 admin.site.register(UnitConversion, UnitConversionAdmin)
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
