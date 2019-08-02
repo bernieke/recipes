@@ -26,9 +26,9 @@
             {% filter capfirst %}{% trans 'ingredients' %}{% endfilter %}
           </h3>
           <ul class="list-unstyled">
-          {% for ingredient_in_recipe in ingredients %}
+          {% for ingredient_in_recipe in ingredient_units %}
             <li>
-              {% if ingredient_in_recipe.ingredient.name %}
+              {% if ingredient_in_recipe.ingredient_unit.ingredient.name %}
               {{ ingredient_in_recipe }}
               {% else %}
               &nbsp;

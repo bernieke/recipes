@@ -4,30 +4,30 @@ from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 from django_markdown.admin import AdminMarkdownWidget
 
 from .models import (
-    Unit, UnitConversion,
-    Category, Tag,
-    Ingredient, Alias,
+    UnitConversion, IngredientUnit, Tag, Ingredient, Alias,
     Recipe, IngredientInRecipe)
-from .forms import UnitConversionForm, RecipeForm, IngredientInRecipeForm
+from .forms import (
+    IngredientForm, IngredientUnitInlineForm, UnitConversionForm,
+    RecipeForm, IngredientInRecipeForm)
 
 
 admin.site.site_url = reverse_lazy('index')
-
-
-class UnitAdmin(SortableAdminMixin, admin.ModelAdmin):
-    pass
 
 
 class UnitConversionAdmin(admin.ModelAdmin):
     form = UnitConversionForm
 
 
-class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
-    pass
-
-
 class TagAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ('name', 'break_after')
+    fields = ('name', 'break_after', 'recipes')
+    readonly_fields = ('recipes',)
+
+
+class IngredientUnitInline(admin.TabularInline):
+    model = IngredientUnit
+    form = IngredientUnitInlineForm
+    extra = 0
 
 
 class AliasInline(admin.TabularInline):
@@ -35,19 +35,12 @@ class AliasInline(admin.TabularInline):
     extra = 0
 
 
-class RecipeInline(admin.TabularInline):
-    model = IngredientInRecipe
-    extra = 0
-    max_num = 0
-    fields = ('recipe',)
-    readonly_fields = ('recipe',)
-    can_delete = False
-    verbose_name_plural = 'Recipes'
-
-
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category')
-    inlines = (AliasInline, RecipeInline)
+    list_display = ('name', 'category', 'units')
+    form = IngredientForm
+    inlines = (IngredientUnitInline, AliasInline)
+    fields = ('name', 'primary_unit', 'category', 'recipes')
+    readonly_fields = ('recipes',)
 
 
 class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
@@ -71,9 +64,7 @@ class RecipeAdmin(admin.ModelAdmin):
         }
 
 
-admin.site.register(Unit, UnitAdmin)
 admin.site.register(UnitConversion, UnitConversionAdmin)
-admin.site.register(Category, CategoryAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)

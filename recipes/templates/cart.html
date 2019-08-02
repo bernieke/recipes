@@ -44,23 +44,23 @@
                           $('#submit').prop('disabled', true);">
             {% csrf_token %}
             <input type="hidden" name="action" value="OurGroceries">
-            {% for ingredient, total in ingredients %}
+            {% for iu, total in ingredient_units %}
               <div class="form-group form-check">
                 <input type="checkbox"
                        class="form-check-input"
-                       name="ingredient"
-                       value="{{ ingredient.ingredient__pk }}"
-                       id="ingredient_{{ ingredient.ingredient__pk }}">
+                       name="ingredient_unit"
+                       value="{{ iu.ingredient_unit__pk }}"
+                       id="ingredient_unit_{{ iu.ingredient_unit__pk }}">
                 <label class="form-check-label"
-                       for="ingredient_{{ ingredient.ingredient__pk }}">
-                  {{ ingredient.ingredient__name }}
+                       for="ingredient_unit_{{ iu.ingredient_unit__pk }}">
+                  {{ iu.ingredient_unit__ingredient__name }}
                   {% if total %}
-                  ({{ total }} {{ ingredient.ingredient__unit__name }})
+                  ({{ total }} {{ iu.ingredient_unit__unit__name }})
                   {% endif %}
                 </label>
               </div>
             {% endfor %}
-            {% if ingredients %}
+            {% if ingredient_units %}
             <button type="submit" class="btn btn-body" id="submit">
               <i id="spinner" class="fas fa-spinner invisible"></i>
               {% trans 'add to OurGroceries' %}

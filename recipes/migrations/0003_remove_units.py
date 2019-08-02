@@ -16,7 +16,7 @@ def remove_units(apps, schema_editor):
         try:
             unit_from = Unit.objects.get(name=name, measured=measured)
             unit_to = Unit.objects.get(name=name, measured='V')
-        except:
+        except Exception:
             continue
         Ingredient.objects.filter(unit=unit_from).update(unit=unit_to)
         unit_from.delete()

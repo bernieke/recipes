@@ -2,6 +2,7 @@ import io
 import re
 import csv
 import requests
+import itertools
 import traceback
 
 from decimal import Decimal
@@ -9,13 +10,14 @@ from decimal import Decimal
 from django.conf import settings
 from django.http import HttpResponse
 from django.urls import reverse
+from django.db.models import F, Q
 from django.shortcuts import render, redirect
 from django.utils.formats import localize
 from django.utils.translation import gettext as _
 from dal import autocomplete
 from constance import config
 
-from .models import Tag, Alias, Ingredient, IngredientInRecipe, Recipe
+from .models import Tag, Alias, IngredientUnit, IngredientInRecipe, Recipe
 from .models import normalize
 
 
@@ -47,7 +49,7 @@ def recipe(request, pk):
     return render(request, 'recipe.html', context={
         'page': 'recipe',
         'recipe': recipe,
-        'ingredients': recipe.ingredientinrecipe_set.all(),
+        'ingredient_units': recipe.ingredientinrecipe_set.all(),
     })
 
 
@@ -69,34 +71,63 @@ def cart(request):
     recipes = [
         (recipe, Decimal(request.session['cart'][str(recipe.pk)]))
         for recipe in Recipe.objects.filter(pk__in=recipe_pks)]
-    ingredients = [
-        [ingredient, 0] for ingredient in (
-            IngredientInRecipe.objects
-            .filter(recipe__pk__in=recipe_pks)
-            .select_related('ingredient', 'ingredient__unit')
-            .exclude(ingredient__name='')
-            .exclude(ingredient__unit__isnull=True)
-            .exclude(ingredient__category__isnull=True)
-            .values('ingredient__pk',
-                    'ingredient__name',
-                    'ingredient__category__name',
-                    'ingredient__unit__pk',
-                    'ingredient__unit__name')
-            .order_by('ingredient__category')
+
+    base_qs = (IngredientInRecipe.objects
+               .filter(recipe__pk__in=recipe_pks)
+               .exclude(ingredient_unit__ingredient__name='')
+               .exclude(ingredient_unit__unit__isnull=True)
+               .exclude(ingredient_unit__ingredient__category__isnull=True))
+    primary_filter = (
+        Q(ingredient_unit__ingredient__primary_unit__isnull=True) |
+        Q(ingredient_unit__factor__isnull=True) |
+        Q(ingredient_unit__unit=F('ingredient_unit__ingredient__primary_unit'))
+    )
+    primary_qs = base_qs.filter(primary_filter)
+    not_primary_qs = base_qs.exclude(primary_filter)
+
+    totals = {
+        pk: 0
+        for pk in primary_qs.values_list('ingredient_unit__pk', flat=True)
+    }
+    new_primary = set()
+    for recipe, qty in recipes:
+        for ingredient_in_recipe in recipe.ingredientinrecipe_set.all():
+            if not_primary_qs.filter(pk=ingredient_in_recipe.pk).exists():
+                ingredient = ingredient_in_recipe.ingredient_unit.ingredient
+                pk = (IngredientUnit.objects
+                      .get(ingredient=ingredient, unit=ingredient.primary_unit)
+                      .pk)
+                factor = ingredient_in_recipe.ingredient_unit.factor
+                if pk not in totals:
+                    totals[pk] = 0
+                    new_primary.add(pk)
+            else:
+                pk = ingredient_in_recipe.ingredient_unit.pk
+                factor = 1
+            if pk in totals:
+                totals[pk] += ingredient_in_recipe.amount * qty * factor
+
+    ingredient_units = [
+        [ingredient_unit, 0] for ingredient_unit in (
+            base_qs
+            .filter(ingredient_unit__pk__in=totals)
+            .select_related('ingredient_unit',
+                            'ingredient_unit__ingredient',
+                            'ingredient_unit__unit')
+            .values('ingredient_unit__pk',
+                    'ingredient_unit__ingredient__name',
+                    'ingredient_unit__ingredient__category__name',
+                    'ingredient_unit__unit__pk',
+                    'ingredient_unit__unit__name')
+            .order_by('ingredient_unit__ingredient__category')
             .distinct()
         )
     ]
 
-    totals = {ingredient['ingredient__pk']: total
-              for ingredient, total in ingredients}
-    for recipe, qty in recipes:
-        for ingredient_in_recipe in recipe.ingredientinrecipe_set.all():
-            pk = ingredient_in_recipe.ingredient.pk
-            if pk in totals:
-                totals[pk] += ingredient_in_recipe.amount * qty
-    for i, (ingredient, total) in enumerate(ingredients):
-        ingredients[i][1] = normalize(totals[ingredient['ingredient__pk']])
-    if not ingredients:
+    for i, (ingredient_unit, total) in enumerate(ingredient_units):
+        ingredient_units[i][1] = normalize(
+            totals[ingredient_unit['ingredient_unit__pk']])
+    if not ingredient_units:
         message = _('No recipes were added to the cart yet')
 
     if action == 'OurGroceries':
@@ -109,12 +140,12 @@ def cart(request):
                 config.OURGROCERIES_LIST):
             error = _('OurGroceries is not completely configured yet')
 
-        selected = [int(pk) for pk in request.POST.getlist('ingredient')]
+        selected = [int(pk) for pk in request.POST.getlist('ingredient_unit')]
         if selected:
             try:
-                add_to_ourgroceries(ingredients, selected)
+                add_to_ourgroceries(ingredient_units, selected)
                 message = _('Items succesfully added to OurGroceries')
-                recipes, ingredients = [], []
+                recipes, ingredient_units = [], []
             except Exception:
                 error = _('Encountered an error adding items to OurGroceries')
                 tb = traceback.format_exc()
@@ -127,7 +158,7 @@ def cart(request):
     return render(request, 'cart.html', context={
         'page': 'cart',
         'recipes': recipes,
-        'ingredients': ingredients,
+        'ingredient_units': ingredient_units,
         'message': message,
         'error': error,
         'traceback': tb,
@@ -144,25 +175,27 @@ def add_to_cart(request, pk):
     return HttpResponse('')
 
 
-def add_to_ourgroceries(ingredients, selected):
+def add_to_ourgroceries(ingredient_units, selected):
     # Build csv
     rows = [
         (
             '{}{}'.format(
-                ingredient['ingredient__name'],
+                ingredient_unit['ingredient_unit__ingredient__name'],
                 ' ({})'.format(
                     localize(total)
-                    if ingredient['ingredient__unit__pk'] == 1
+                    if ingredient_unit['ingredient_unit__unit__pk'] == 1
                     else '{}{}'.format(
-                        localize(total), ingredient['ingredient__unit__name']))
+                        localize(total),
+                        ingredient_unit['ingredient_unit__unit__name']))
                 if (total and
-                    (not ingredient['ingredient__unit__pk'] == 1 or total > 1))
+                    (not ingredient_unit['ingredient_unit__unit__pk'] == 1 or
+                     total > 1))
                 else ''
             ),
-            ingredient['ingredient__category__name']
+            ingredient_unit['ingredient_unit__ingredient__category__name']
         )
-        for ingredient, total in ingredients
-        if ingredient['ingredient__pk'] in selected
+        for ingredient_unit, total in ingredient_units
+        if ingredient_unit['ingredient_unit__pk'] in selected
     ]
     f = io.StringIO()
     csv.writer(f).writerows([('description', 'category')] + rows)
@@ -230,28 +263,31 @@ class TagAutoComplete(autocomplete.Select2QuerySetView):
 
 class IngredientAutoComplete(autocomplete.Select2QuerySetView):
 
-    class IngredientOrAlias:
+    class IngredientUnitOrAlias:
 
-        def __init__(self, ingredient_or_alias):
-            if isinstance(ingredient_or_alias, Ingredient):
-                ingredient = ingredient_or_alias
-            elif isinstance(ingredient_or_alias, Alias):
-                ingredient = ingredient_or_alias.ingredient
-
-            self.name = ingredient_or_alias.name
-            self.pk = ingredient.pk
-            self.unit = ingredient.unit
+        def __init__(self, ingredient_unit, alias=None):
+            if alias:
+                self.name = alias.ingredient.name
+            else:
+                self.name = ingredient_unit.ingredient.name
+            self.pk = ingredient_unit.pk
+            self.unit = ingredient_unit.unit
 
         def __str__(self):
             return '{} ({})'.format(self.name, self.unit)
 
     def get_queryset(self):
         if self.q:
-            ingredients = Ingredient.objects.filter(name__icontains=self.q)
+            ingredient_units = IngredientUnit.objects.filter(
+                ingredient__name__icontains=self.q)
             aliases = Alias.objects.filter(name__icontains=self.q)
         else:
-            ingredients = Ingredient.objects.all()
+            ingredient_units = IngredientUnit.objects.all()
             aliases = Alias.objects.all()
-        l1 = [self.IngredientOrAlias(ingredient) for ingredient in ingredients]
-        l2 = [self.IngredientOrAlias(alias) for alias in aliases]
-        return sorted(l1 + l2, key=lambda x: str(x))
+        l1 = [self.IngredientUnitOrAlias(ingredient_unit)
+              for ingredient_unit in ingredient_units]
+        l2 = list(itertools.chain(*[
+            [self.IngredientUnitOrAlias(ingredient_unit, alias)
+             for ingredient_unit in alias.ingredient.ingredientunit_set.all()]
+            for alias in aliases]))
+        return sorted(l1 + l2, key=lambda x: str(x).lower())

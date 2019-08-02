@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.formats import localize
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django_markdown.models import MarkdownField
 
@@ -54,6 +55,23 @@ class UnitConversion(models.Model):
             self.from_unit, localize(self.factor), self.to_unit)
 
 
+class IngredientUnit(models.Model):
+    ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
+    unit = models.ForeignKey(
+        'Unit', on_delete=models.PROTECT, verbose_name=_('unit'))
+    factor = models.DecimalField(
+        max_digits=7, decimal_places=3, blank=True, null=True, default=None,
+        verbose_name=_('factor'))
+
+    class Meta:
+        unique_together = [['ingredient', 'unit']]
+        verbose_name = _('unit')
+        verbose_name_plural = _('units')
+
+    def __str__(self):
+        return '{} ({})'.format(self.ingredient.name, self.unit.name)
+
+
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True, verbose_name=_('name'))
     order = models.PositiveSmallIntegerField(
@@ -87,23 +105,56 @@ class Tag(models.Model):
     def get_absolute_url(self):
         return reverse('tag', args=[str(self.id)])
 
+    def recipes(self):
+        return mark_safe('<br>'.join(
+            ['<a href="{}"><b>{}</b></a>'.format(
+                reverse('admin:recipes_recipe_change', args=[recipe.pk]),
+                recipe.title)
+             for recipe in self.recipe_set.all()]))
+
+    recipes.short_description = _('recipes')
+
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=254, blank=True, verbose_name=_('name'))
-    unit = models.ForeignKey(
-        'Unit', on_delete=models.PROTECT, verbose_name=_('unit'))
+    name = models.CharField(
+        max_length=254, blank=True, unique=True, verbose_name=_('name'))
+    primary_unit = models.ForeignKey(
+        'Unit', on_delete=models.PROTECT, null=True, blank=True,
+        default=None, related_name='primary_unit',
+        verbose_name=_('primary unit'))
     category = models.ForeignKey(
         'Category', on_delete=models.PROTECT, null=True, blank=True,
         verbose_name=_('category'))
 
     class Meta:
-        ordering = ('name', 'unit')
-        unique_together = [['name', 'unit']]
+        ordering = ('name',)
         verbose_name = _('ingredient')
         verbose_name_plural = _('ingredients')
 
     def __str__(self):
-        return '{} ({})'.format(self.name, self.unit)
+        if self.primary_unit:
+            return '{} ({})'.format(self.name, self.primary_unit.name)
+        else:
+            return self.name
+
+    def units(self):
+        return ', '.join(self.ingredientunit_set.all()
+                         .values_list('unit__name', flat=True))
+
+    def recipes(self):
+        ingredient_in_recipes = (IngredientInRecipe.objects
+                                 .filter(ingredient_unit__ingredient=self))
+        return mark_safe('<br>'.join(
+            ['{} {} in <a href="{}"><b>{}</b></a>'.format(
+                localize(normalize(ingredient_in_recipe.amount)),
+                ingredient_in_recipe.ingredient_unit.unit.name,
+                reverse('admin:recipes_recipe_change',
+                        args=[ingredient_in_recipe.recipe.pk]),
+                ingredient_in_recipe.recipe.title)
+             for ingredient_in_recipe in ingredient_in_recipes]))
+
+    units.short_description = _('units')
+    recipes.short_description = _('recipes')
 
 
 class Alias(models.Model):
@@ -125,8 +176,8 @@ class Recipe(models.Model):
     title = models.CharField(
         max_length=254, unique=True, verbose_name=_('title'))
     tags = models.ManyToManyField('Tag', blank=True, verbose_name=_('tags'))
-    ingredients = models.ManyToManyField(
-        'Ingredient', through='IngredientInRecipe', blank=True,
+    ingredient_units = models.ManyToManyField(
+        'IngredientUnit', through='IngredientInRecipe', blank=True,
         verbose_name=_('ingredients'))
     recipe = MarkdownField(blank=True, verbose_name=_('recipe'))
 
@@ -153,8 +204,8 @@ class Recipe(models.Model):
 class IngredientInRecipe(models.Model):
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, verbose_name=_('recipe'))
-    ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.PROTECT, verbose_name=_('ingredient'))
+    ingredient_unit = models.ForeignKey(
+        IngredientUnit, on_delete=models.PROTECT, verbose_name=_('ingredient'))
     amount = models.DecimalField(
         max_digits=7, decimal_places=3, verbose_name=_('amount'))
     order = models.PositiveSmallIntegerField(
@@ -167,11 +218,11 @@ class IngredientInRecipe(models.Model):
         verbose_name_plural = _('ingredients')
 
     def __str__(self):
-        if not self.ingredient.name:
+        if not self.ingredient_unit.ingredient.name:
             return ''
         if not self.amount:
-            return self.ingredient.name
-        return '{}{} {}'.format(
+            return self.ingredient_unit.ingredient.name
+        return '{} {} {}'.format(
             localize(normalize(self.amount)),
-            self.ingredient.unit.name,
-            self.ingredient.name)
+            self.ingredient_unit.unit.name,
+            self.ingredient_unit.ingredient.name)

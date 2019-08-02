@@ -33,3 +33,25 @@ When adding an ingredient to a recipe the unit now defaults to empty. Leaving it
 1.6
 ===
 * Fix cart button on recipe page.
+
+2.0
+===
+* Add ingredient units.
+* Make ingredient names unique.
+* Group shopping cart ingredients by primary unit.
+* Add links to recipes on ingredient and tag admin pages.
+* Remove admin pages for categories and units.
+
+NOTE:
+All duplicate ingredient names will be merged. Their different units will now be ingredient units.
+You will need to choose a primary unit on the ingredient admin page for all ingredients which had duplicate names, and add conversion factors to the non-primary ingredient units.
+Run following command to get a list of all these ingredients:
+```
+./manage.py shell -c "
+from recipes.models import Ingredient
+from django.db.models import Count
+print('\n'.join(Ingredient.objects
+                .all()
+                .annotate(units=Count('ingredientunit'))
+                .filter(units__gt=1).values_list('name', flat=True)))"
+```
