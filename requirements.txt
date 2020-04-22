@@ -2,7 +2,8 @@ django>=2.2,<3.0
 django-bootstrap4
 django-fontawesome-5
 django-admin-sortable2
-django-autocomplete-light
+# Until the jquery loading order problem is fixed upstream
+django-autocomplete-light==3.5.0
 django-admin-interface
 django-constance[database]
 django-vinaigrette

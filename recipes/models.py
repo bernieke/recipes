@@ -230,3 +230,13 @@ class IngredientInRecipe(models.Model):
             localize(normalize(self.amount)),
             self.ingredient_unit.unit.name,
             self.ingredient_unit.ingredient.name)
+
+
+def create_ingredient_unit_for_primary_unit(sender, instance, **kwargs):
+    if instance.primary_unit:
+        IngredientUnit.objects.update_or_create(
+            ingredient=instance, unit=instance.primary_unit, factor=None)
+
+
+models.signals.post_save.connect(
+    create_ingredient_unit_for_primary_unit, sender=Ingredient)

@@ -64,3 +64,9 @@ print('\n'.join(Ingredient.objects
 ===
 * Update translations.
 * Show primary unit bold on ingredient admin list display.
+
+2.3
+===
+* Fix adding new ingredient.
+* Fix grab_production.sh
+* Pin django-autocomplete-light until the jquery loading order issue is fixed.
