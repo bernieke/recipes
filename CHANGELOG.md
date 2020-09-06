@@ -70,3 +70,7 @@ print('\n'.join(Ingredient.objects
 * Fix adding new ingredient.
 * Fix grab_production.sh
 * Pin django-autocomplete-light until the jquery loading order issue is fixed.
+
+2.4
+===
+* Fix adding non-primary unit ingredient to shopping cart.

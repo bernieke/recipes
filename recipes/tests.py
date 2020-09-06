@@ -18,11 +18,11 @@ class RecipesTestCase(TestCase):
         category = ingredient.category
         unit = ingredient_unit.unit
         return [{
-            'ingredient_unit__pk': ingredient_unit.pk,
-            'ingredient_unit__ingredient__name': ingredient.name,
-            'ingredient_unit__ingredient__category__name': category.name,
-            'ingredient_unit__unit__pk': unit.pk,
-            'ingredient_unit__unit__name': unit.name,
+            'pk': ingredient_unit.pk,
+            'ingredient__name': ingredient.name,
+            'ingredient__category__name': category.name,
+            'unit__pk': unit.pk,
+            'unit__name': unit.name,
         }, Decimal(total)]
 
     def setUp(self):

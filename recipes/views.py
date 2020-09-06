@@ -109,24 +109,22 @@ def cart(request):
 
     ingredient_units = [
         [ingredient_unit, 0] for ingredient_unit in (
-            base_qs
-            .filter(ingredient_unit__pk__in=totals)
-            .select_related('ingredient_unit',
-                            'ingredient_unit__ingredient',
-                            'ingredient_unit__unit')
-            .values('ingredient_unit__pk',
-                    'ingredient_unit__ingredient__name',
-                    'ingredient_unit__ingredient__category__name',
-                    'ingredient_unit__unit__pk',
-                    'ingredient_unit__unit__name')
-            .order_by('ingredient_unit__ingredient__category')
+            IngredientUnit.objects
+            .filter(pk__in=totals)
+            .select_related('ingredient', 'unit')
+            .values('pk',
+                    'ingredient__name',
+                    'ingredient__category__name',
+                    'unit__pk',
+                    'unit__name')
+            .order_by('ingredient__category')
             .distinct()
         )
     ]
 
     for i, (ingredient_unit, total) in enumerate(ingredient_units):
         ingredient_units[i][1] = normalize(
-            totals[ingredient_unit['ingredient_unit__pk']])
+            totals[ingredient_unit['pk']])
     if not ingredient_units:
         message = _('No recipes were added to the cart yet')
 
@@ -180,22 +178,22 @@ def add_to_ourgroceries(ingredient_units, selected):
     rows = [
         (
             '{}{}'.format(
-                ingredient_unit['ingredient_unit__ingredient__name'],
+                ingredient_unit['ingredient__name'],
                 ' ({})'.format(
                     localize(total)
-                    if ingredient_unit['ingredient_unit__unit__pk'] == 1
+                    if ingredient_unit['unit__pk'] == 1
                     else '{}{}'.format(
                         localize(total),
-                        ingredient_unit['ingredient_unit__unit__name']))
+                        ingredient_unit['unit__name']))
                 if (total and
-                    (not ingredient_unit['ingredient_unit__unit__pk'] == 1 or
+                    (not ingredient_unit['unit__pk'] == 1 or
                      total > 1))
                 else ''
             ),
-            ingredient_unit['ingredient_unit__ingredient__category__name']
+            ingredient_unit['ingredient__category__name']
         )
         for ingredient_unit, total in ingredient_units
-        if ingredient_unit['ingredient_unit__pk'] in selected
+        if ingredient_unit['pk'] in selected
     ]
     f = io.StringIO()
     csv.writer(f).writerows([('description', 'category')] + rows)
