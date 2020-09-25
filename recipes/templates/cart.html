@@ -53,9 +53,9 @@
                        id="ingredient_unit_{{ iu.pk }}">
                 <label class="form-check-label"
                        for="ingredient_unit_{{ iu.pk }}">
-                  {{ iu.ingredient__name }}
+                  {{ iu.name }}
                   {% if total %}
-                  ({{ total }} {{ iu.unit__name }})
+                  ({{ total }} {{ iu.unit }})
                   {% endif %}
                 </label>
               </div>

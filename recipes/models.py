@@ -1,4 +1,4 @@
-from decimal import Context
+from decimal import Context, Decimal
 
 from django.conf import settings
 from django.db import models
@@ -17,6 +17,52 @@ def normalize(d):
     normalized = d.normalize(Context(settings.AMOUNT_PRECISION))
     threshold = 10 ** settings.AMOUNT_PRECISION
     return int(normalized) if d >= threshold else normalized
+
+
+def get_factor(ingredient_unit, unit):
+    if unit == ingredient_unit.unit:
+        return 1
+
+    else:
+        factor = None
+
+        # First see if we can convert through the ingredient units
+        try:
+            if ingredient_unit.factor:
+                factor1 = Decimal(1) / ingredient_unit.factor
+            else:
+                factor1 = Decimal(1)
+            factor2 = (ingredient_unit
+                       .ingredient
+                       .ingredientunit_set
+                       .get(unit=unit)).factor
+            if factor2:
+                factor = factor1 * factor2
+            else:
+                factor = factor1
+        except IngredientUnit.DoesNotExist:
+            pass
+
+        # Then try the unit conversion
+        if factor is None:
+            try:
+                factor = UnitConversion.objects.get(
+                    from_unit=unit, to_unit=ingredient_unit.unit).factor
+            except UnitConversion.DoesNotExist:
+                pass
+
+        # And finally the reverse unit conversion
+        if factor is None:
+            try:
+                factor = 1 / UnitConversion.objects.get(
+                    from_unit=ingredient_unit.unit, to_unit=unit).factor
+            except UnitConversion.DoesNotExist:
+                pass
+
+        if factor:
+            return factor
+        else:
+            return None
 
 
 class Unit(models.Model):
@@ -69,7 +115,7 @@ class IngredientUnit(models.Model):
         verbose_name_plural = _('units')
 
     def __str__(self):
-        return '{} ({})'.format(self.ingredient.name, self.unit.name)
+        return '{} ({})'.format(self.ingredient.display_name, self.unit.name)
 
 
 class Category(models.Model):
@@ -131,11 +177,23 @@ class Ingredient(models.Model):
         verbose_name = _('ingredient')
         verbose_name_plural = _('ingredients')
 
-    def __str__(self):
-        if self.primary_unit:
-            return '{} ({})'.format(self.name, self.primary_unit.name)
+    @property
+    def display_name(self):
+        if ', ' in self.name:
+            try:
+                return self.alias_set.first().name
+            except AttributeError:
+                parts = self.name.split(', ')
+                parts.reverse()
+                return ' '.join(parts)
         else:
             return self.name
+
+    def __str__(self):
+        if self.primary_unit:
+            return '{} ({})'.format(self.display_name, self.primary_unit.name)
+        else:
+            return self.display_name
 
     def units(self):
         return mark_safe(', '.join(
@@ -166,9 +224,12 @@ class Alias(models.Model):
         max_length=254, unique=True, verbose_name=_('name'))
     ingredient = models.ForeignKey(
         'Ingredient', on_delete=models.CASCADE, verbose_name=_('ingredient'))
+    order = models.PositiveSmallIntegerField(
+        default=0, db_index=True, blank=False, null=False,
+        verbose_name=_('order'))
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('order',)
         verbose_name = _('alias')
         verbose_name_plural = _('aliases')
 
@@ -225,11 +286,11 @@ class IngredientInRecipe(models.Model):
         if not self.ingredient_unit.ingredient.name:
             return ''
         if not self.amount:
-            return self.ingredient_unit.ingredient.name
+            return self.ingredient_unit.ingredient.display_name
         return '{} {} {}'.format(
             localize(normalize(self.amount)),
             self.ingredient_unit.unit.name,
-            self.ingredient_unit.ingredient.name)
+            self.ingredient_unit.ingredient.display_name)
 
 
 def create_ingredient_unit_for_primary_unit(sender, instance, **kwargs):

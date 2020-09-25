@@ -38,17 +38,21 @@ class IngredientUnitInline(admin.TabularInline):
     extra = 0
 
 
-class AliasInline(admin.TabularInline):
+class AliasInline(SortableInlineAdminMixin, admin.TabularInline):
     model = Alias
     extra = 0
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'units')
+    list_display = ('name', 'category', 'units', 'aliases')
     form = IngredientForm
     inlines = (IngredientUnitInline, AliasInline)
     fields = ('name', 'primary_unit', 'category', 'recipes')
     readonly_fields = ('recipes',)
+    search_fields = ('name', 'alias__name')
+
+    def aliases(self, obj):
+        return ', '.join(alias.name for alias in obj.alias_set.all())
 
 
 class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):

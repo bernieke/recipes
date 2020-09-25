@@ -7,7 +7,7 @@ from django_markdown.fields import MarkdownFormField
 
 from .models import (
     Ingredient, IngredientUnit, Unit, UnitConversion, IngredientInRecipe,
-    Recipe)
+    Recipe, get_factor)
 
 
 class IngredientForm(forms.ModelForm):
@@ -69,15 +69,15 @@ class IngredientInRecipeForm(forms.ModelForm):
         unit = self.cleaned_data.get('unit')
         if unit is None:
             unit = ingredient_unit.unit
-        if not unit == ingredient_unit.unit:
-            try:
-                uc = UnitConversion.objects.get(
-                    from_unit=unit, to_unit=ingredient_unit.unit)
-            except UnitConversion.DoesNotExist:
-                raise forms.ValidationError(
-                    format_lazy(_('No unit conversion from {} to {}'),
-                                unit, ingredient_unit.unit))
-            self.cleaned_data['amount'] *= uc.factor
+
+        factor = get_factor(ingredient_unit, unit)
+        if factor is None:
+            raise forms.ValidationError(
+                format_lazy(_('No unit conversion from {} to {}'),
+                            unit, ingredient_unit.unit))
+        elif not factor == 1:
+            amount = self.cleaned_data['amount'] * factor
+            self.cleaned_data['amount'] = round(amount, 3)
         return super().clean()
 
 

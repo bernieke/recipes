@@ -74,3 +74,12 @@ print('\n'.join(Ingredient.objects
 2.4
 ===
 * Fix adding non-primary unit ingredient to shopping cart.
+
+2.5
+===
+* Add search on name and alias to admin ingredient list
+* Add alias to admin ingredient list
+* Fix ingredient name for aliases in admin dropdown
+* Generate ingredient display name for use on recipe and cart pages
+* Allow for reverse unit conversion
+* Allow for unit conversion through ingredient units

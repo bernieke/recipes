@@ -7,8 +7,60 @@ from django.urls import reverse
 from django.utils.translation import activate
 
 from .models import (
-    Category, Unit, Tag, Ingredient, IngredientUnit, IngredientInRecipe, Recipe
+    get_factor,
+    Category,
+    Ingredient,
+    IngredientInRecipe,
+    IngredientUnit,
+    Recipe,
+    Tag,
+    Unit,
+    UnitConversion,
 )
+
+
+class FactorTestCase(TestCase):
+
+    def setUp(self):
+        self.tbsp, _ = Unit.objects.get_or_create(name='tbsp')
+        self.tsp, _ = Unit.objects.get_or_create(name='tsp')
+        self.ml, _ = Unit.objects.get_or_create(name='ml')
+        self.l, _ = Unit.objects.get_or_create(name='l')
+        self.g, _ = Unit.objects.get_or_create(name='g')
+        self.ingredient = Ingredient.objects.create(
+            name='ingredient', primary_unit=self.ml)
+        self.ingredient_ml = IngredientUnit.objects.get(
+            ingredient=self.ingredient, unit=self.ml)
+        self.ingredient_tbsp = IngredientUnit.objects.create(
+            ingredient=self.ingredient, unit=self.tbsp, factor=15)
+        self.ingredient_g = IngredientUnit.objects.create(
+            ingredient=self.ingredient, unit=self.g, factor=10)
+        UnitConversion.objects.create(
+            from_unit=self.tsp, to_unit=self.tbsp, factor=3)
+        UnitConversion.objects.create(
+            from_unit=self.ml, to_unit=self.l, factor=1000)
+
+    def test_no_factor(self):
+        self.assertEqual(get_factor(self.ingredient_ml, self.ml), Decimal('1'))
+
+    def test_from_primary(self):
+        self.assertEqual(get_factor(self.ingredient_ml, self.g), Decimal('10'))
+
+    def test_to_primary(self):
+        self.assertEqual(
+            get_factor(self.ingredient_g, self.ml), Decimal('0.1'))
+
+    def test_between(self):
+        self.assertEqual(
+            get_factor(self.ingredient_g, self.tbsp), Decimal('1.5'))
+
+    def test_unit_conversion(self):
+        self.assertEqual(
+            get_factor(self.ingredient_tbsp, self.tsp), Decimal('3'))
+
+    def test_reverse_unit_conversion(self):
+        self.assertEqual(
+            get_factor(self.ingredient_ml, self.l), Decimal('1000'))
 
 
 class RecipesTestCase(TestCase):
@@ -19,10 +71,9 @@ class RecipesTestCase(TestCase):
         unit = ingredient_unit.unit
         return [{
             'pk': ingredient_unit.pk,
-            'ingredient__name': ingredient.name,
-            'ingredient__category__name': category.name,
-            'unit__pk': unit.pk,
-            'unit__name': unit.name,
+            'name': ingredient.display_name,
+            'category': category.name,
+            'unit': unit.name,
         }, Decimal(total)]
 
     def setUp(self):
@@ -198,4 +249,4 @@ class RecipesTestCase(TestCase):
         # On cart page
         ct = self.client.get(reverse('cart')).content.decode()
         self.assertTrue('0,5 localization_test' in ct)
-        self.assertTrue(re.search(r'ingredient1\s*\(0\,75\s*pc\)', ct))
+        self.assertTrue(re.search(r'ingredient1\s*\(0\,75\s*st\)', ct))

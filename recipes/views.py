@@ -107,24 +107,23 @@ def cart(request):
             if pk in totals:
                 totals[pk] += ingredient_in_recipe.amount * qty * factor
 
-    ingredient_units = [
-        [ingredient_unit, 0] for ingredient_unit in (
-            IngredientUnit.objects
+    ingredient_units = []
+    for ingredient_unit in (
+        IngredientUnit.objects
             .filter(pk__in=totals)
             .select_related('ingredient', 'unit')
-            .values('pk',
-                    'ingredient__name',
-                    'ingredient__category__name',
-                    'unit__pk',
-                    'unit__name')
             .order_by('ingredient__category')
             .distinct()
-        )
-    ]
+    ):
+        ingredient_units.append([{
+            'pk': ingredient_unit.pk,
+            'name': ingredient_unit.ingredient.display_name,
+            'category': ingredient_unit.ingredient.category.name,
+            'unit': ingredient_unit.unit.name,
+        }, 0])
 
     for i, (ingredient_unit, total) in enumerate(ingredient_units):
-        ingredient_units[i][1] = normalize(
-            totals[ingredient_unit['pk']])
+        ingredient_units[i][1] = normalize(totals[ingredient_unit['pk']])
     if not ingredient_units:
         message = _('No recipes were added to the cart yet')
 
@@ -265,7 +264,7 @@ class IngredientAutoComplete(autocomplete.Select2QuerySetView):
 
         def __init__(self, ingredient_unit, alias=None):
             if alias:
-                self.name = alias.ingredient.name
+                self.name = alias.name
             else:
                 self.name = ingredient_unit.ingredient.name
             self.pk = ingredient_unit.pk
