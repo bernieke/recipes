@@ -1,46 +1,34 @@
-1.0
+2.6
 ===
-Inital release.
+* Fix add to ourgroceries
 
-1.1
+2.5
 ===
-When adding an ingredient to a recipe the unit now defaults to empty. Leaving it empty will make it use the ingredient unit.
+* Add search on name and alias to admin ingredient list
+* Add alias to admin ingredient list
+* Fix ingredient name for aliases in admin dropdown
+* Generate ingredient display name for use on recipe and cart pages
+* Allow for reverse unit conversion
+* Allow for unit conversion through ingredient units
 
-1.2
+2.4
 ===
-* Change tag break to same height as tag so it will match up with the recipe list entries.
-* Only show tags which have recipes.
-* Add tags to recipe page.
-* Add break_after to tag admin list display.
-* Add category to ingredient admin list display.
+* Fix adding non-primary unit ingredient to shopping cart.
 
-1.3
+2.3
 ===
-* Add read-only list of recipes to ingredient admin page.
+* Fix adding new ingredient.
+* Fix grab_production.sh
+* Pin django-autocomplete-light until the jquery loading order issue is fixed.
 
-1.4
+2.2
 ===
-* Add delete button to shopping cart.
-* Add tag list to recipes admin list view.
-* Allow cart quantities differing from the 0.5 step.
+* Update translations.
+* Show primary unit bold on ingredient admin list display.
 
-1.5
+2.1
 ===
-* Fix layout discrepancy between recipe and index/cart.
-* Increase tag/ingredient column size.
-* Change tag font size on recipe page to match ingredients.
-
-1.6
-===
-* Fix cart button on recipe page.
-
-2.0
-===
-* Add ingredient units.
-* Make ingredient names unique.
-* Group shopping cart ingredients by primary unit.
-* Add links to recipes on ingredient and tag admin pages.
-* Remove admin pages for categories and units.
+* Add the admin pages for categories and units back.
 
 NOTE:
 All duplicate ingredient names will be merged. Their different units will now be ingredient units.
@@ -56,30 +44,46 @@ print('\n'.join(Ingredient.objects
                 .filter(units__gt=1).values_list('name', flat=True)))"
 ```
 
-2.1
+2.0
 ===
-* Add the admin pages for categories and units back.
+* Add ingredient units.
+* Make ingredient names unique.
+* Group shopping cart ingredients by primary unit.
+* Add links to recipes on ingredient and tag admin pages.
+* Remove admin pages for categories and units.
 
-2.2
+1.6
 ===
-* Update translations.
-* Show primary unit bold on ingredient admin list display.
+* Fix cart button on recipe page.
 
-2.3
+1.5
 ===
-* Fix adding new ingredient.
-* Fix grab_production.sh
-* Pin django-autocomplete-light until the jquery loading order issue is fixed.
+* Fix layout discrepancy between recipe and index/cart.
+* Increase tag/ingredient column size.
+* Change tag font size on recipe page to match ingredients.
 
-2.4
+1.4
 ===
-* Fix adding non-primary unit ingredient to shopping cart.
+* Add delete button to shopping cart.
+* Add tag list to recipes admin list view.
+* Allow cart quantities differing from the 0.5 step.
 
-2.5
+1.3
 ===
-* Add search on name and alias to admin ingredient list
-* Add alias to admin ingredient list
-* Fix ingredient name for aliases in admin dropdown
-* Generate ingredient display name for use on recipe and cart pages
-* Allow for reverse unit conversion
-* Allow for unit conversion through ingredient units
+* Add read-only list of recipes to ingredient admin page.
+
+1.2
+===
+* Change tag break to same height as tag so it will match up with the recipe list entries.
+* Only show tags which have recipes.
+* Add tags to recipe page.
+* Add break_after to tag admin list display.
+* Add category to ingredient admin list display.
+
+1.1
+===
+When adding an ingredient to a recipe the unit now defaults to empty. Leaving it empty will make it use the ingredient unit.
+
+1.0
+===
+Inital release.

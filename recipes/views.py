@@ -120,6 +120,7 @@ def cart(request):
             'name': ingredient_unit.ingredient.display_name,
             'category': ingredient_unit.ingredient.category.name,
             'unit': ingredient_unit.unit.name,
+            'unit_pk': ingredient_unit.unit.pk,
         }, 0])
 
     for i, (ingredient_unit, total) in enumerate(ingredient_units):
@@ -177,19 +178,19 @@ def add_to_ourgroceries(ingredient_units, selected):
     rows = [
         (
             '{}{}'.format(
-                ingredient_unit['ingredient__name'],
+                ingredient_unit['name'],
                 ' ({})'.format(
                     localize(total)
-                    if ingredient_unit['unit__pk'] == 1
+                    if ingredient_unit['unit_pk'] == 1
                     else '{}{}'.format(
                         localize(total),
-                        ingredient_unit['unit__name']))
+                        ingredient_unit['unit']))
                 if (total and
-                    (not ingredient_unit['unit__pk'] == 1 or
+                    (not ingredient_unit['unit_pk'] == 1 or
                      total > 1))
                 else ''
             ),
-            ingredient_unit['ingredient__category__name']
+            ingredient_unit['category']
         )
         for ingredient_unit, total in ingredient_units
         if ingredient_unit['pk'] in selected
