@@ -74,6 +74,7 @@ class RecipesTestCase(TestCase):
             'name': ingredient.display_name,
             'category': category.name,
             'unit': unit.name,
+            'unit_pk': unit.pk,
         }, Decimal(total)]
 
     def setUp(self):
