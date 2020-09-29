@@ -136,7 +136,7 @@ def cart(request):
         if not (config.OURGROCERIES_USERNAME and
                 config.OURGROCERIES_PASSWORD and
                 config.OURGROCERIES_LIST):
-            error = _('OurGroceries is not completely configured yet')
+            error = _('OurGroceries is not completely configured')
 
         selected = [int(pk) for pk in request.POST.getlist('ingredient_unit')]
         if selected:
@@ -174,6 +174,9 @@ def add_to_cart(request, pk):
 
 
 def add_to_ourgroceries(ingredient_units, selected):
+    if settings.DEBUG:
+        return
+
     # Build csv
     rows = [
         (

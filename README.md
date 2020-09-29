@@ -70,6 +70,7 @@ docker logs recipes -f
 run directly
 ============
 
+Note that with DEBUG activate no ingredients will actually be sent to OurGroceries.
 ```
 pip install -r requirements.txt
 GUNICORN=0 DEBUG=1 ./manage.py runserver
