@@ -1,3 +1,10 @@
+3.0
+===
+* Swap ingredients and recipes columns on shopping list page
+* Increase size of title and tags fields on recipe admin
+* Don't send to OurGroceries when DEBUG is active
+* Add week menu page
+
 2.6
 ===
 * Fix add to ourgroceries

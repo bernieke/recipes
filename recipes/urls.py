@@ -21,5 +21,6 @@ urlpatterns += i18n_patterns(
     path('recipe/<int:pk>/', views.recipe, name='recipe'),
     path('cart/', views.cart, name='cart'),
     path('cart/add/<str:pk>/', views.add_to_cart, name='add_to_cart'),
+    path('menu/', views.menu, name='menu'),
 )
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

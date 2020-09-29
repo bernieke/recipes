@@ -8,6 +8,7 @@ import traceback
 from decimal import Decimal
 
 from django.conf import settings
+from django.forms import modelform_factory
 from django.http import HttpResponse
 from django.urls import reverse
 from django.db.models import F, Q
@@ -17,7 +18,15 @@ from django.utils.translation import gettext as _
 from dal import autocomplete
 from constance import config
 
-from .models import Tag, Alias, IngredientUnit, IngredientInRecipe, Recipe
+from .models import (
+    Alias,
+    Dishes,
+    IngredientInRecipe,
+    IngredientUnit,
+    Menu,
+    Recipe,
+    Tag,
+)
 from .models import normalize
 
 
@@ -129,6 +138,11 @@ def cart(request):
         message = _('No recipes were added to the cart yet')
 
     if action == 'OurGroceries':
+        dishes = Dishes.objects.get()
+        for recipe, qty in recipes:
+            dishes.dishes += '{} ({})\r\n'.format(recipe, qty)
+        dishes.save()
+
         if not request.user.is_authenticated:
             return redirect(
                 '{}?next={}'.format(reverse(settings.LOGIN_URL), request.path)
@@ -139,19 +153,16 @@ def cart(request):
             error = _('OurGroceries is not completely configured')
 
         selected = [int(pk) for pk in request.POST.getlist('ingredient_unit')]
-        if selected:
-            try:
-                add_to_ourgroceries(ingredient_units, selected)
-                message = _('Items succesfully added to OurGroceries')
-                recipes, ingredient_units = [], []
-            except Exception:
-                error = _('Encountered an error adding items to OurGroceries')
-                tb = traceback.format_exc()
-            else:
-                request.session['cart'] = {}
-                request.session.save()
+        try:
+            add_to_ourgroceries(ingredient_units, selected)
+            message = _('Items succesfully added to OurGroceries')
+            recipes, ingredient_units = [], []
+        except Exception:
+            error = _('Encountered an error adding items to OurGroceries')
+            tb = traceback.format_exc()
         else:
-            error = _('Nothing has been selected')
+            request.session['cart'] = {}
+            request.session.save()
 
     return render(request, 'cart.html', context={
         'page': 'cart',
@@ -174,7 +185,7 @@ def add_to_cart(request, pk):
 
 
 def add_to_ourgroceries(ingredient_units, selected):
-    if settings.DEBUG:
+    if not selected or settings.DEBUG:
         return
 
     # Build csv
@@ -251,6 +262,32 @@ def add_to_ourgroceries(ingredient_units, selected):
         'Origin': 'https://www.ourgroceries.com',
         'Host': 'www.ourgroceries.com',
     }).raise_for_status()
+
+
+def menu(request):
+    MenuForm = modelform_factory(Menu, fields='__all__')
+    dishes, _ = Dishes.objects.get_or_create()
+    menu, _ = Menu.objects.get_or_create()
+
+    if request.method == 'POST':
+        dishes.dishes = request.POST['dishes']
+        dishes.save()
+
+        menu = Menu.objects.get(pk=request.POST['pk'])
+        form = MenuForm(request.POST, instance=menu)
+        if form.is_valid():
+            form.save()
+    else:
+        form = MenuForm(instance=menu)
+
+    return render(request, 'menu.html', {
+        'days': ['Monday', 'Tuesday', 'Wednesday', 'Thursday',
+                 'Friday', 'Saturday', 'Sunday'],
+        'meals': ['lunch', 'dinner'],
+        'dishes': dishes.dishes,
+        'menu': menu,
+        'form': form,
+    })
 
 
 class TagAutoComplete(autocomplete.Select2QuerySetView):

@@ -11,7 +11,7 @@
           <form action="{% url 'cart' %}"
                 method="POST"
                 onsubmit="$('#spinner').removeClass('invisible');
-                          $('#submit').prop('disabled', true);">
+                          $('#submitBtn').prop('disabled', true);">
             {% csrf_token %}
             <input type="hidden" name="action" value="OurGroceries">
             {% for iu, total in ingredient_units %}
@@ -31,7 +31,7 @@
               </div>
             {% endfor %}
             {% if ingredient_units %}
-            <button type="submit" class="btn btn-outline-dark" id="submit">
+            <button type="submit" class="btn btn-outline-dark" id="submitBtn">
               <i id="spinner" class="fas fa-spinner invisible"></i>
               {% trans 'add to OurGroceries' %}
               &nbsp;&nbsp;&nbsp;

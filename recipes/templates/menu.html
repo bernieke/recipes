@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load menu %}
+
+{% block content %}
+      <div class="row pt-4">
+        <div class="col col-4 text-right">
+        </div>
+        <div class="col col-8">
+          <form action="{% url 'menu' %}" method="POST">
+            {% csrf_token %}
+            <h3>{% filter capfirst %}{% trans 'dishes' %}{% endfilter %}</h3>
+            <textarea id="dishes"
+                      name="dishes"
+                      rows="10"
+                      cols="100"
+                      onchange="submit_form()"
+                      class="form-control">{{ dishes }}</textarea>
+
+            <br><br>
+            <h3>{% filter capfirst %}{% trans 'menu' %}{% endfilter %}</h3>
+            <input type="hidden" name="pk" value="{{ menu.pk }}">
+
+            {% for day in days %}
+            <h5>{% trans day %}</h5>
+            {% for meal in meals %}
+            <h6>{% trans meal %}</h6>
+            <input type="text"
+                   class="form-control mb-1"
+                   name="{{ day|lower }}_{{ meal }}_dishes"
+                   value="{% get_menu_field menu day|lower meal 'dishes' %}"
+                   id="id_{{ day|lower }}_{{ meal }}_dishes"
+                   size="97"
+                   onchange="submit_form()"
+                   placeholder="dishes">
+            <input type="text"
+                   class="form-control"
+                   name="{{ day|lower }}_{{ meal }}_note"
+                   value="{% get_menu_field menu day|lower meal 'note' %}"
+                   id="id_{{ day|lower }}_{{ meal }}_note"
+                   size="97"
+                   onchange="submit_form()"
+                   placeholder="note">
+            <br>
+            {% endfor %}
+            {% endfor %}
+
+            <button type="submit" class="btn btn-outline-dark">
+              {% trans 'save' %}
+            </button>
+            <br><br>
+          </form>
+        </div>
+      </div>
+{% endblock %}

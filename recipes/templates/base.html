@@ -15,7 +15,7 @@
     {% bootstrap_javascript %}
   </head>
   <body>
-    <div class="container">
+    <div class="container vh-100">
       <div class="row text-center">
         <div class="col">
           <h1 class="display-1 px-5 pt-4 pb-2 mx-5 mb-2 mt-4"
@@ -52,6 +52,18 @@
         </div>
         <div class="col">
           <h4>
+            <a href="{% url 'menu' %}"
+               class="text-body" style="font-family:serif">
+            {% if page == 'menu' %}
+              <b>{% trans 'week menu' %}</b>
+            {% else %}
+              {% trans 'week menu' %}
+            {% endif %}
+            </a>
+          </h4>
+        </div>
+        <div class="col">
+          <h4>
             <a href="{% url 'admin:index' %}"
                class="text-body" style="font-family:serif">
               {# Translators: link to administration part of the website #}
@@ -62,5 +74,11 @@
       </div>
       {% block content %}{% endblock %}
     </div>
+    <script>
+    function submit_form() {
+      let form = $('form');
+      $.post(form.attr('action'), form.serialize());
+    }
+    </script>
   </body>
 </html>

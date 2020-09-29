@@ -293,6 +293,42 @@ class IngredientInRecipe(models.Model):
             self.ingredient_unit.ingredient.display_name)
 
 
+class Dishes(models.Model):
+    dishes = models.TextField(blank=True)
+
+
+class Menu(models.Model):
+    monday_lunch_dishes = models.TextField(blank=True)
+    monday_dinner_dishes = models.TextField(blank=True)
+    tuesday_lunch_dishes = models.TextField(blank=True)
+    tuesday_dinner_dishes = models.TextField(blank=True)
+    wednesday_lunch_dishes = models.TextField(blank=True)
+    wednesday_dinner_dishes = models.TextField(blank=True)
+    thursday_lunch_dishes = models.TextField(blank=True)
+    thursday_dinner_dishes = models.TextField(blank=True)
+    friday_lunch_dishes = models.TextField(blank=True)
+    friday_dinner_dishes = models.TextField(blank=True)
+    saturday_lunch_dishes = models.TextField(blank=True)
+    saturday_dinner_dishes = models.TextField(blank=True)
+    sunday_lunch_dishes = models.TextField(blank=True)
+    sunday_dinner_dishes = models.TextField(blank=True)
+
+    monday_lunch_note = models.TextField(blank=True)
+    monday_dinner_note = models.TextField(blank=True)
+    tuesday_lunch_note = models.TextField(blank=True)
+    tuesday_dinner_note = models.TextField(blank=True)
+    wednesday_lunch_note = models.TextField(blank=True)
+    wednesday_dinner_note = models.TextField(blank=True)
+    thursday_lunch_note = models.TextField(blank=True)
+    thursday_dinner_note = models.TextField(blank=True)
+    friday_lunch_note = models.TextField(blank=True)
+    friday_dinner_note = models.TextField(blank=True)
+    saturday_lunch_note = models.TextField(blank=True)
+    saturday_dinner_note = models.TextField(blank=True)
+    sunday_lunch_note = models.TextField(blank=True)
+    sunday_dinner_note = models.TextField(blank=True)
+
+
 def create_ingredient_unit_for_primary_unit(sender, instance, **kwargs):
     if instance.primary_unit:
         IngredientUnit.objects.update_or_create(
