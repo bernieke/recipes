@@ -75,6 +75,12 @@ class RecipeAdmin(admin.ModelAdmin):
             'all': ('hide_admin_original.css',),
         }
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['title'].widget.attrs['style'] = 'width: 40em;'
+        form.base_fields['tags'].widget.attrs['style'] = 'width: 41em;'
+        return form
+
 
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(UnitConversion, UnitConversionAdmin)
