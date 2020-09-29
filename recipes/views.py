@@ -283,6 +283,7 @@ def menu(request):
         form = MenuForm(instance=menu)
 
     return render(request, 'menu.html', {
+        'page': 'menu',
         'days': ['Monday', 'Tuesday', 'Wednesday', 'Thursday',
                  'Friday', 'Saturday', 'Sunday'],
         'meals': ['lunch', 'dinner'],
