@@ -32,7 +32,7 @@
                    id="id_{{ day|lower }}_{{ meal }}_dishes"
                    size="97"
                    onchange="submit_form()"
-                   placeholder="dishes">
+                   placeholder="{% trans 'dishes' %}">
             <input type="text"
                    class="form-control"
                    name="{{ day|lower }}_{{ meal }}_note"
@@ -40,7 +40,7 @@
                    id="id_{{ day|lower }}_{{ meal }}_note"
                    size="97"
                    onchange="submit_form()"
-                   placeholder="note">
+                   placeholder="{% trans 'note' %}">
             <br>
             {% endfor %}
             {% endfor %}
