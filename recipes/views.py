@@ -140,6 +140,8 @@ def cart(request):
     if action == 'OurGroceries':
         dishes = Dishes.objects.get()
         for recipe, qty in recipes:
+            if dishes.dishes and not dishes.dishes.endswith('\r\n'):
+                dishes.dishes += '\r\n'
             dishes.dishes += '{} ({})\r\n'.format(recipe, qty)
         dishes.save()
 
