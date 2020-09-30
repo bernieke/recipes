@@ -22,27 +22,31 @@
             <input type="hidden" name="pk" value="{{ menu.pk }}">
 
             {% for day in days %}
-            <h5>{% trans day %}</h5>
-            <div class="row">
-              {% for meal in meals %}
-              <div class="col">
-                <h6>{% trans meal %}</h6>
-                <input type="text"
-                       class="form-control mb-1"
-                       name="{{ day|lower }}_{{ meal }}_dishes"
-                       value="{% get_menu_field menu day|lower meal 'dishes' %}"
-                       id="id_{{ day|lower }}_{{ meal }}_dishes"
-                       onchange="submit_form()"
-                       placeholder="{% trans 'dishes' %}">
-                <input type="text"
-                       class="form-control"
-                       name="{{ day|lower }}_{{ meal }}_note"
-                       value="{% get_menu_field menu day|lower meal 'note' %}"
-                       id="id_{{ day|lower }}_{{ meal }}_note"
-                       onchange="submit_form()"
-                       placeholder="{% trans 'note' %}">
+            <div class="{% if day == day_of_week %} border border-dark{% endif %}">
+              <div class="row m-2">
+                <h5>{% trans day %}</h5>
               </div>
-              {% endfor %}
+              <div class="row">
+                {% for meal in meals %}
+                <div class="col mt-2 mb-2{% if forloop.first %} ml-2{% endif %}{% if forloop.last %} mr-2{% endif %}">
+                  <h6>{% trans meal %}</h6>
+                  <input type="text"
+                         class="form-control mb-1"
+                         name="{{ day|lower }}_{{ meal }}_dishes"
+                         value="{% get_menu_field menu day|lower meal 'dishes' %}"
+                         id="id_{{ day|lower }}_{{ meal }}_dishes"
+                         onchange="submit_form()"
+                         placeholder="{% trans 'dishes' %}">
+                  <input type="text"
+                         class="form-control"
+                         name="{{ day|lower }}_{{ meal }}_note"
+                         value="{% get_menu_field menu day|lower meal 'note' %}"
+                         id="id_{{ day|lower }}_{{ meal }}_note"
+                         onchange="submit_form()"
+                         placeholder="{% trans 'note' %}">
+                </div>
+                {% endfor %}
+              </div>
             </div>
             <br>
             {% endfor %}

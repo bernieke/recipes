@@ -1,3 +1,8 @@
+3.2
+===
+* Fix change quantity
+* Mark current day on the week menu
+
 3.1
 ===
 * Put lunch and dinner in columns

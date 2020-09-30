@@ -1,6 +1,7 @@
 import io
 import re
 import csv
+import datetime
 import requests
 import itertools
 import traceback
@@ -9,7 +10,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.forms import modelform_factory
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import F, Q
 from django.shortcuts import render, redirect
@@ -32,6 +33,9 @@ from .models import normalize
 
 OURGROCERIES_SIGNIN_URL = 'https://www.ourgroceries.com/sign-in'
 OURGROCERIES_LIST_URL = 'https://www.ourgroceries.com/your-lists/'
+
+DAYS_OF_THE_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+                    'Saturday', 'Sunday']
 
 
 def index(request):
@@ -186,6 +190,12 @@ def add_to_cart(request, pk):
     return HttpResponse('')
 
 
+def del_from_cart(request, pk):
+    del request.session['cart'][pk]
+    request.session.save()
+    return HttpResponseRedirect(reverse('cart'))
+
+
 def add_to_ourgroceries(ingredient_units, selected):
     if not selected or settings.DEBUG:
         return
@@ -284,8 +294,8 @@ def menu(request):
 
     return render(request, 'menu.html', {
         'page': 'menu',
-        'days': ['Monday', 'Tuesday', 'Wednesday', 'Thursday',
-                 'Friday', 'Saturday', 'Sunday'],
+        'days': DAYS_OF_THE_WEEK,
+        'day_of_week': DAYS_OF_THE_WEEK[datetime.date.today().weekday()],
         'meals': ['lunch', 'dinner'],
         'dishes': dishes.dishes,
         'menu': menu,
