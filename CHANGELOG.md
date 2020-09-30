@@ -1,3 +1,7 @@
+3.1
+===
+* Put lunch and dinner in columns
+
 3.0
 ===
 * Swap ingredients and recipes columns on shopping list page
