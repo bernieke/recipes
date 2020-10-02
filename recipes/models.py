@@ -29,7 +29,7 @@ def get_factor(ingredient_unit, unit):
         # First see if we can convert through the ingredient units
         try:
             if ingredient_unit.factor:
-                factor1 = Decimal(1) / ingredient_unit.factor
+                factor1 = ingredient_unit.factor
             else:
                 factor1 = Decimal(1)
             factor2 = (ingredient_unit
@@ -37,7 +37,7 @@ def get_factor(ingredient_unit, unit):
                        .ingredientunit_set
                        .get(unit=unit)).factor
             if factor2:
-                factor = factor1 * factor2
+                factor = factor1 * (1 / factor2)
             else:
                 factor = factor1
         except IngredientUnit.DoesNotExist:
@@ -47,22 +47,63 @@ def get_factor(ingredient_unit, unit):
         if factor is None:
             try:
                 factor = UnitConversion.objects.get(
-                    from_unit=unit, to_unit=ingredient_unit.unit).factor
-            except UnitConversion.DoesNotExist:
-                pass
-
-        # And finally the reverse unit conversion
-        if factor is None:
-            try:
-                factor = 1 / UnitConversion.objects.get(
                     from_unit=ingredient_unit.unit, to_unit=unit).factor
             except UnitConversion.DoesNotExist:
                 pass
 
-        if factor:
-            return factor
-        else:
-            return None
+        # And the reverse unit conversion
+        if factor is None:
+            try:
+                factor = 1 / UnitConversion.objects.get(
+                    from_unit=unit, to_unit=ingredient_unit.unit).factor
+            except UnitConversion.DoesNotExist:
+                pass
+
+        # Now look for a common to_unit
+        if factor is None:
+            sub = UnitConversion.objects.filter(from_unit=unit)
+            qs = UnitConversion.objects.filter(
+                from_unit=ingredient_unit.unit,
+                to_unit__in=models.Subquery(sub.values('to_unit')))
+            first = qs.first()
+            if first:
+                second = sub.filter(to_unit=first.to_unit).first()
+                factor = first.factor * (1 / second.factor)
+
+        # Or a common from_unit
+        if factor is None:
+            sub = UnitConversion.objects.filter(to_unit=ingredient_unit.unit)
+            qs = UnitConversion.objects.filter(
+                from_unit__in=models.Subquery(sub.values('from_unit')),
+                to_unit=unit)
+            first = qs.first()
+            if first:
+                second = sub.filter(from_unit=first.from_unit).first()
+                factor = first.factor * (1 / second.factor)
+
+        # Finally try a diagonal match through the from_unit
+        if factor is None:
+            sub = UnitConversion.objects.filter(to_unit=unit)
+            qs = UnitConversion.objects.filter(
+                from_unit=ingredient_unit.unit,
+                to_unit__in=models.Subquery(sub.values('from_unit')))
+            first = qs.first()
+            if first:
+                second = sub.filter(from_unit=first.to_unit).first()
+                factor = first.factor * second.factor
+
+        # And through the to_unit
+        if factor is None:
+            sub = UnitConversion.objects.filter(from_unit=unit)
+            qs = UnitConversion.objects.filter(
+                from_unit__in=models.Subquery(sub.values('to_unit')),
+                to_unit=ingredient_unit.unit)
+            first = qs.first()
+            if first:
+                second = sub.filter(to_unit=first.from_unit).first()
+                factor = 1 / (first.factor * second.factor)
+
+        return factor
 
 
 class Unit(models.Model):

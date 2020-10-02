@@ -76,7 +76,7 @@ class IngredientInRecipeForm(forms.ModelForm):
                 format_lazy(_('No unit conversion from {} to {}'),
                             unit, ingredient_unit.unit))
         elif not factor == 1:
-            amount = self.cleaned_data['amount'] * factor
+            amount = self.cleaned_data['amount'] / factor
             self.cleaned_data['amount'] = round(amount, 3)
         return super().clean()
 

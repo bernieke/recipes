@@ -27,40 +27,87 @@ class FactorTestCase(TestCase):
         self.ml, _ = Unit.objects.get_or_create(name='ml')
         self.l, _ = Unit.objects.get_or_create(name='l')
         self.g, _ = Unit.objects.get_or_create(name='g')
+        self.kg, _ = Unit.objects.get_or_create(name='kg')
+        self.inch, _ = Unit.objects.get_or_create(name='in')
+        self.cm, _ = Unit.objects.get_or_create(name='cm')
+        self.x, _ = Unit.objects.get_or_create(name='x')
+        self.y, _ = Unit.objects.get_or_create(name='y')
         self.ingredient = Ingredient.objects.create(
             name='ingredient', primary_unit=self.ml)
         self.ingredient_ml = IngredientUnit.objects.get(
             ingredient=self.ingredient, unit=self.ml)
         self.ingredient_tbsp = IngredientUnit.objects.create(
-            ingredient=self.ingredient, unit=self.tbsp, factor=15)
+            ingredient=self.ingredient, unit=self.tbsp, factor=Decimal('15'))
         self.ingredient_g = IngredientUnit.objects.create(
-            ingredient=self.ingredient, unit=self.g, factor=10)
-        UnitConversion.objects.create(
-            from_unit=self.tsp, to_unit=self.tbsp, factor=3)
-        UnitConversion.objects.create(
-            from_unit=self.ml, to_unit=self.l, factor=1000)
+            ingredient=self.ingredient, unit=self.g, factor=Decimal('10'))
 
     def test_no_factor(self):
         self.assertEqual(get_factor(self.ingredient_ml, self.ml), Decimal('1'))
 
     def test_from_primary(self):
-        self.assertEqual(get_factor(self.ingredient_ml, self.g), Decimal('10'))
+        self.assertEqual(
+            get_factor(self.ingredient_ml, self.g), Decimal('0.1'))
 
     def test_to_primary(self):
         self.assertEqual(
-            get_factor(self.ingredient_g, self.ml), Decimal('0.1'))
+            get_factor(self.ingredient_g, self.ml), Decimal('10'))
 
     def test_between(self):
         self.assertEqual(
-            get_factor(self.ingredient_g, self.tbsp), Decimal('1.5'))
+            get_factor(self.ingredient_tbsp, self.g), Decimal('1.5'))
 
     def test_unit_conversion(self):
-        self.assertEqual(
-            get_factor(self.ingredient_tbsp, self.tsp), Decimal('3'))
+        ingredient_in = IngredientUnit.objects.create(
+            ingredient=self.ingredient, unit=self.inch, factor=Decimal('10'))
+        try:
+            self.assertEqual(
+                get_factor(ingredient_in, self.cm), Decimal('2.54'))
+        finally:
+            ingredient_in.delete()
 
     def test_reverse_unit_conversion(self):
         self.assertEqual(
-            get_factor(self.ingredient_ml, self.l), Decimal('1000'))
+            get_factor(self.ingredient_ml, self.l), Decimal('0.001'))
+
+    def test_common_to_unit_conversion(self):
+        self.assertEqual(
+            get_factor(self.ingredient_tbsp, self.tsp), Decimal('3'))
+
+    def test_common_from_unit_conversion(self):
+        uc = UnitConversion.objects.create(
+            from_unit=self.l, to_unit=self.kg, factor=Decimal('2'))
+        try:
+            self.assertEqual(
+                get_factor(self.ingredient_ml, self.kg), Decimal('0.002'))
+        finally:
+            uc.delete()
+
+    def test_diagonal_from_conversion(self):
+        ingredient_in = IngredientUnit.objects.create(
+            ingredient=self.ingredient, unit=self.inch, factor=Decimal('10'))
+        uc = UnitConversion.objects.create(
+            from_unit=self.cm, to_unit=self.x, factor=Decimal('2'))
+        try:
+            self.assertEqual(
+                get_factor(ingredient_in, self.x), Decimal('5.08'))
+        finally:
+            ingredient_in.delete()
+            uc.delete()
+
+    def test_diagonal_to_conversion(self):
+        ingredient_y = IngredientUnit.objects.create(
+            ingredient=self.ingredient, unit=self.y, factor=Decimal('10'))
+        uc1 = UnitConversion.objects.create(
+            from_unit=self.x, to_unit=self.inch, factor=0.5)
+        uc2 = UnitConversion.objects.create(
+            from_unit=self.inch, to_unit=self.y, factor=0.25)
+        try:
+            self.assertEqual(
+                get_factor(ingredient_y, self.x), Decimal('8'))
+        finally:
+            ingredient_y.delete()
+            uc1.delete()
+            uc2.delete()
 
 
 class RecipesTestCase(TestCase):

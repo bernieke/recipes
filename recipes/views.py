@@ -20,6 +20,8 @@ from dal import autocomplete
 from constance import config
 
 from .models import (
+    get_factor,
+    normalize,
     Alias,
     Dishes,
     IngredientInRecipe,
@@ -28,7 +30,6 @@ from .models import (
     Recipe,
     Tag,
 )
-from .models import normalize
 
 
 OURGROCERIES_SIGNIN_URL = 'https://www.ourgroceries.com/sign-in'
@@ -105,17 +106,18 @@ def cart(request):
     new_primary = set()
     for recipe, qty in recipes:
         for ingredient_in_recipe in recipe.ingredientinrecipe_set.all():
+            ingredient_unit = ingredient_in_recipe.ingredient_unit
             if not_primary_qs.filter(pk=ingredient_in_recipe.pk).exists():
-                ingredient = ingredient_in_recipe.ingredient_unit.ingredient
+                ingredient = ingredient_unit.ingredient
                 pk = (IngredientUnit.objects
                       .get(ingredient=ingredient, unit=ingredient.primary_unit)
                       .pk)
-                factor = ingredient_in_recipe.ingredient_unit.factor
+                factor = get_factor(ingredient_unit, ingredient.primary_unit)
                 if pk not in totals:
                     totals[pk] = 0
                     new_primary.add(pk)
             else:
-                pk = ingredient_in_recipe.ingredient_unit.pk
+                pk = ingredient_unit.pk
                 factor = 1
             if pk in totals:
                 totals[pk] += ingredient_in_recipe.amount * qty * factor

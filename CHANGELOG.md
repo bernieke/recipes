@@ -1,3 +1,8 @@
+3.3
+===
+* Fix unit conversions
+* Expand unit conversion lookups
+
 3.2
 ===
 * Fix change quantity
