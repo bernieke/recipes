@@ -5,7 +5,7 @@
 {% block content %}
       <div class="row pt-4 justify-content-end">
         <div class="col col-8">
-          <h1>
+          <h3>
             {{ recipe.title }}
             <a href="#"
                onclick="$.get(
@@ -17,14 +17,14 @@
                         return false;">
               <i class="fas fa-cart-plus text-body"></i>
             </a>
-          </h1>
+          </h3>
         </div>
       </div>
       <div class="row">
         <div class="col col-4 text-right">
-          <h3 class="pt-3">
+          <h4 class="pt-3">
             {% filter capfirst %}{% trans 'ingredients' %}{% endfilter %}
-          </h3>
+          </h4>
           <ul class="list-unstyled">
           {% for ingredient_in_recipe in ingredient_units %}
             <li>
@@ -36,9 +36,9 @@
             </li>
           {% endfor %}
           </ul>
-          <h3 class="pt-3">
+          <h4 class="pt-3">
             {% filter capfirst %}{% trans 'tags' %}{% endfilter %}
-          </h3>
+          </h4>
           <ul class="list-unstyled">
           {% for tag in recipe.tags.all %}
             <li>
@@ -50,9 +50,9 @@
           </ul>
         </div>
         <div class="col col-8">
-          <h3 class="pt-3">
+          <h4 class="pt-3">
             {% filter capfirst %}{% trans 'recipe' %}{% endfilter %}
-          </h3>
+          </h4>
           {{ recipe.recipe | markdownify }}
         </div>
       </div>
