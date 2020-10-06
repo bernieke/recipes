@@ -9,6 +9,7 @@ import traceback
 from decimal import Decimal
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.forms import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -282,24 +283,35 @@ def menu(request):
     MenuForm = modelform_factory(Menu, fields='__all__')
     dishes, _ = Dishes.objects.get_or_create()
     menu, _ = Menu.objects.get_or_create()
+    error = ''
 
     if request.method == 'POST':
+        dishes.last_change_id = request.POST['last_change_id_dishes']
         dishes.dishes = request.POST['dishes']
-        dishes.save()
+        try:
+            dishes.save()
+        except ValidationError as e:
+            error = e.args[0]
+            dishes, _ = Dishes.objects.get_or_create()
 
         menu = Menu.objects.get(pk=request.POST['pk'])
         form = MenuForm(request.POST, instance=menu)
         if form.is_valid():
-            form.save()
+            try:
+                form.save()
+            except ValidationError as e:
+                error = e.args[0]
+                menu, _ = Menu.objects.get_or_create()
     else:
         form = MenuForm(instance=menu)
 
     return render(request, 'menu.html', {
+        'error': error,
         'page': 'menu',
         'days': DAYS_OF_THE_WEEK,
         'day_of_week': DAYS_OF_THE_WEEK[datetime.date.today().weekday()],
         'meals': ['lunch', 'dinner'],
-        'dishes': dishes.dishes,
+        'dishes': dishes,
         'menu': menu,
         'form': form,
     })

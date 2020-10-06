@@ -1,3 +1,8 @@
+3.4
+===
+* Prevent overwriting changes to the week menu
+* Reduce size of titles on recipe page
+
 3.3
 ===
 * Fix unit conversions

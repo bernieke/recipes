@@ -9,17 +9,51 @@
         <div class="col col-8">
           <form action="{% url 'menu' %}" method="POST">
             {% csrf_token %}
-            <h3>{% filter capfirst %}{% trans 'dishes' %}{% endfilter %}</h3>
+            {% if error %}
+            <span class="text-danger font-weight-bold">
+              {{ error }}<br><br>
+            </span>
+            {% endif %}
+            <div class="row">
+              <div class="col">
+                <h3>
+                  {% filter capfirst %}{% trans 'dishes' %}{% endfilter %}
+                  {{ dishes.last_change_id }}
+                </h3>
+              </div>
+              <div class="col text-right">
+                <button type="submit" class="btn btn-outline-dark">
+                  {% trans 'save' %}
+                </button>
+              </div>
+            </div>
+            <input type="hidden"
+                   name="last_change_id_dishes"
+                   value="{{ dishes.last_change_id }}">
             <textarea id="dishes"
                       name="dishes"
                       rows="10"
                       cols="100"
-                      onchange="submit_form()"
-                      class="form-control">{{ dishes }}</textarea>
+                      class="form-control">{{ dishes.dishes }}</textarea>
 
             <br><br>
-            <h3>{% filter capfirst %}{% trans 'menu' %}{% endfilter %}</h3>
+            <div class="row">
+              <div class="col">
+                <h3>
+                  {% filter capfirst %}{% trans 'menu' %}{% endfilter %}
+                  {{ menu.last_change_id }}
+                </h3>
+              </div>
+              <div class="col text-right">
+                <button type="submit" class="btn btn-outline-dark">
+                  {% trans 'save' %}
+                </button>
+              </div>
+            </div>
             <input type="hidden" name="pk" value="{{ menu.pk }}">
+            <input type="hidden"
+                   name="last_change_id"
+                   value="{{ menu.last_change_id }}">
 
             {% for day in days %}
             <div class="{% if day == day_of_week %} border border-dark{% endif %}">
@@ -35,14 +69,12 @@
                          name="{{ day|lower }}_{{ meal }}_dishes"
                          value="{% get_menu_field menu day|lower meal 'dishes' %}"
                          id="id_{{ day|lower }}_{{ meal }}_dishes"
-                         onchange="submit_form()"
                          placeholder="{% trans 'dishes' %}">
                   <input type="text"
                          class="form-control"
                          name="{{ day|lower }}_{{ meal }}_note"
                          value="{% get_menu_field menu day|lower meal 'note' %}"
                          id="id_{{ day|lower }}_{{ meal }}_note"
-                         onchange="submit_form()"
                          placeholder="{% trans 'note' %}">
                 </div>
                 {% endfor %}
@@ -51,9 +83,13 @@
             <br>
             {% endfor %}
 
-            <button type="submit" class="btn btn-outline-dark">
-              {% trans 'save' %}
-            </button>
+            <div class="row">
+              <div class="col text-right">
+                <button type="submit" class="btn btn-outline-dark">
+                  {% trans 'save' %}
+                </button>
+              </div>
+            </div>
             <br><br>
           </form>
         </div>

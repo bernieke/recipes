@@ -1,6 +1,9 @@
+import uuid
+
 from decimal import Context, Decimal
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils.formats import localize
@@ -334,11 +337,30 @@ class IngredientInRecipe(models.Model):
             self.ingredient_unit.ingredient.display_name)
 
 
-class Dishes(models.Model):
+class PreventOverwriteMixin(models.Model):
+    last_change_id = models.UUIDField(default=uuid.uuid4)
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        try:
+            last = self.__class__.objects.get(pk=self.pk)
+            if not str(last.last_change_id) == str(self.last_change_id):
+                raise ValidationError(
+                    _('The menu has already been changed '
+                      'in a different location, please try again'))
+        except self.DoesNotExist:
+            pass
+        self.last_change_id = uuid.uuid4()
+        return super().save(*args, **kwargs)
+
+
+class Dishes(PreventOverwriteMixin):
     dishes = models.TextField(blank=True)
 
 
-class Menu(models.Model):
+class Menu(PreventOverwriteMixin):
     monday_lunch_dishes = models.TextField(blank=True)
     monday_dinner_dishes = models.TextField(blank=True)
     tuesday_lunch_dishes = models.TextField(blank=True)

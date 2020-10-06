@@ -74,11 +74,5 @@
       </div>
       {% block content %}{% endblock %}
     </div>
-    <script>
-    function submit_form() {
-      let form = $('form');
-      $.post(form.attr('action'), form.serialize());
-    }
-    </script>
   </body>
 </html>
