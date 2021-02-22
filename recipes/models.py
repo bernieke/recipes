@@ -289,9 +289,10 @@ class Recipe(models.Model):
         'IngredientUnit', through='IngredientInRecipe', blank=True,
         verbose_name=_('ingredients'))
     recipe = MarkdownField(blank=True, verbose_name=_('recipe'))
+    popularity = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ('title',)
+        ordering = ('-popularity', 'title')
         verbose_name = _('recipe')
         verbose_name_plural = _('recipes')
 

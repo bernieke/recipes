@@ -2,6 +2,7 @@ import io
 import re
 import csv
 import datetime
+import functools
 import requests
 import itertools
 import traceback
@@ -9,6 +10,7 @@ import traceback
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.auth import views
 from django.core.exceptions import ValidationError
 from django.forms import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect
@@ -38,6 +40,40 @@ OURGROCERIES_LIST_URL = 'https://www.ourgroceries.com/your-lists/'
 
 DAYS_OF_THE_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
                     'Saturday', 'Sunday']
+
+
+class persist_session_vars(object):
+
+    def __init__(self, vars):
+        self.vars = vars
+
+    def __call__(self, view_func):
+
+        @functools.wraps(view_func)
+        def inner(request, *args, **kwargs):
+            # Backup first
+            session_backup = {}
+            for var in self.vars:
+                try:
+                    session_backup[var] = request.session[var]
+                except KeyError:
+                    pass
+
+            # Call the original view
+            response = view_func(request, *args, **kwargs)
+
+            # Restore variables in the new session
+            for var, value in session_backup.items():
+                request.session[var] = value
+
+            return response
+
+        return inner
+
+
+@persist_session_vars(['cart', 'ingredient_sel'])
+def login(request, *args, **kwargs):
+    return views.login(request, *args, **kwargs)
 
 
 def index(request):
@@ -70,6 +106,12 @@ def recipe(request, pk):
 
 def cart(request):
     message, error, tb = None, None, None
+    ingredient_sel = [int(x) for x in request.POST.getlist('ingredient_unit')]
+    if ingredient_sel:
+        request.session['ingredient_sel'] = ingredient_sel
+        request.session.save()
+    else:
+        ingredient_sel = request.session.get('ingredient_sel', [])
     action = request.POST.get('action')
 
     if action == 'edit':
@@ -145,13 +187,6 @@ def cart(request):
         message = _('No recipes were added to the cart yet')
 
     if action == 'OurGroceries':
-        dishes = Dishes.objects.get()
-        for recipe, qty in recipes:
-            if dishes.dishes and not dishes.dishes.endswith('\r\n'):
-                dishes.dishes += '\r\n'
-            dishes.dishes += '{} ({})\r\n'.format(recipe, qty)
-        dishes.save()
-
         if not request.user.is_authenticated:
             return redirect(
                 '{}?next={}'.format(reverse(settings.LOGIN_URL), request.path)
@@ -161,21 +196,32 @@ def cart(request):
                 config.OURGROCERIES_LIST):
             error = _('OurGroceries is not completely configured')
 
-        selected = [int(pk) for pk in request.POST.getlist('ingredient_unit')]
-        try:
-            add_to_ourgroceries(ingredient_units, selected)
-            message = _('Items succesfully added to OurGroceries')
-            recipes, ingredient_units = [], []
-        except Exception:
-            error = _('Encountered an error adding items to OurGroceries')
-            tb = traceback.format_exc()
-        else:
-            request.session['cart'] = {}
-            request.session.save()
+        if not error:
+            dishes = Dishes.objects.get()
+            for recipe, qty in recipes:
+                if dishes.dishes and not dishes.dishes.endswith('\r\n'):
+                    dishes.dishes += '\r\n'
+                dishes.dishes += '{} ({})\r\n'.format(recipe, qty)
+                recipe.popularity += 1
+                recipe.save()
+            dishes.save()
+
+            try:
+                add_to_ourgroceries(ingredient_units, ingredient_sel)
+                message = _('Items succesfully added to OurGroceries')
+                recipes, ingredient_sel, ingredient_units = [], [], []
+            except Exception:
+                error = _('Encountered an error adding items to OurGroceries')
+                tb = traceback.format_exc()
+            else:
+                request.session['cart'] = {}
+                request.session['ingredient_sel'] = []
+                request.session.save()
 
     return render(request, 'cart.html', context={
         'page': 'cart',
         'recipes': recipes,
+        'ingredient_sel': ingredient_sel,
         'ingredient_units': ingredient_units,
         'message': message,
         'error': error,

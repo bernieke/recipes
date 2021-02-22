@@ -1,3 +1,9 @@
+3.5
+===
+* Add popularity as number of times a recipe was added to ourgroceries
+* Use popularity as first sort before recipe title
+* Remember ingredient selection in shopping list when login is required
+
 3.4
 ===
 * Prevent overwriting changes to the week menu
