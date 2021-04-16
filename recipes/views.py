@@ -278,9 +278,8 @@ def add_to_ourgroceries(ingredient_units, selected):
     s = requests.Session()
     s.post('https://www.ourgroceries.com/sign-in', data={
         'emailAddress': config.OURGROCERIES_USERNAME,
-        'action': 'sign-me-in',
+        'action': 'sign-in',
         'password': config.OURGROCERIES_PASSWORD,
-        'staySignedIn': 'off',
     }, headers={
         'Referer': OURGROCERIES_SIGNIN_URL,
         'Origin': 'https://www.ourgroceries.com',

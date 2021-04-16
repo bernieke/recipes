@@ -1,3 +1,7 @@
+3.5.1
+=====
+* Fix for OurGroceries API change
+
 3.5
 ===
 * Add popularity as number of times a recipe was added to ourgroceries
