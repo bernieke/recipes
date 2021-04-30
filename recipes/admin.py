@@ -71,6 +71,10 @@ class RecipeAdmin(admin.ModelAdmin):
     formfield_overrides = {'recipe': {'widget': AdminMarkdownWidget}}
 
     class Media:
+        js = [
+            'admin/js/jquery.init.js',
+            'django_markdown/jquery.init.js',
+        ]
         css = {
             'all': ('hide_admin_original.css',),
         }
