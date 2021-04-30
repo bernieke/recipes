@@ -1,3 +1,10 @@
+3.6
+===
+* Fix bug with django-markdown on Django 2.2
+* Add a little whitespace at the bottom of the page
+* Add "all" tag
+* Add option to sort by either popularity or title
+
 3.5.1
 =====
 * Fix for OurGroceries API change
