@@ -4,6 +4,14 @@
 {% block content %}
       <div class="row pt-4">
         <div class="col col-4 text-right">
+          <h4>
+            {% if not selected_tag %}
+            <b>{% trans 'all' %}</b>
+            {% else %}
+            <a href="{% url 'index' %}" class="text-body">{% trans 'all' %}</a>
+            {% endif %}
+          </h4>
+          <h4>&nbsp;</h4>
           {% for tag in tags%}
           {% if tag.recipe_set.all %}
           <h4>

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-29 11:54+0200\n"
-"PO-Revision-Date: 2020-09-29 11:55+0200\n"
+"POT-Creation-Date: 2021-04-30 09:34+0200\n"
+"PO-Revision-Date: 2021-04-30 09:34+0200\n"
 "Last-Translator: Bernard Kerckenaere <bernieke@bernieke.com>\n"
 "Language-Team: Nederlands <bernieke@bernieke.com>\n"
 "Language: Nederlands\n"
@@ -23,7 +23,7 @@ msgstr "middagmaal"
 msgid "dinner"
 msgstr "avondmaal"
 
-#: forms.py:48 models.py:76 models.py:107 models.py:114
+#: forms.py:48 models.py:120 models.py:151 models.py:158
 msgid "unit"
 msgstr "eenheid"
 
@@ -31,91 +31,97 @@ msgstr "eenheid"
 msgid "No unit conversion from {} to {}"
 msgstr "Geen eenheid omzetting van {} naar {}"
 
-#: models.py:69 models.py:122 models.py:137 models.py:166 models.py:224
+#: models.py:113 models.py:166 models.py:181 models.py:210 models.py:268
 msgid "name"
 msgstr "naam"
 
-#: models.py:72 models.py:125 models.py:140 models.py:229 models.py:278
+#: models.py:116 models.py:169 models.py:184 models.py:273 models.py:323
 msgid "order"
 msgstr "volgorde"
 
-#: models.py:77 models.py:115 models.py:218
+#: models.py:121 models.py:159 models.py:262
 msgid "units"
 msgstr "eenheden"
 
-#: models.py:86
+#: models.py:130
 msgid "from unit"
 msgstr "van eenheid"
 
-#: models.py:89
+#: models.py:133
 msgid "to unit"
 msgstr "naar eenheid"
 
-#: models.py:91 models.py:110
+#: models.py:135 models.py:154
 msgid "factor"
 msgstr "factor"
 
-#: models.py:96
+#: models.py:140
 msgid "unit conversion"
 msgstr "eenheid omzetting"
 
-#: models.py:97
+#: models.py:141
 msgid "unit conversions"
 msgstr "eenheid omzettingen"
 
-#: models.py:129 models.py:173
+#: models.py:173 models.py:217
 msgid "category"
 msgstr "categorie"
 
-#: models.py:130
+#: models.py:174
 msgid "categories"
 msgstr "categoriën"
 
-#: models.py:145
+#: models.py:189
 msgid "tag"
 msgstr "tag"
 
-#: models.py:146 models.py:243 models.py:266 templates/recipe.html:40
+#: models.py:190 models.py:287 models.py:311 templates/recipe.html:40
 msgid "tags"
 msgstr "tags"
 
-#: models.py:161 models.py:219 models.py:252 templates/base.html:10
-#: templates/base.html:23 templates/cart.html:90
+#: models.py:205 models.py:263 models.py:297 templates/base.html:10
+#: templates/base.html:23 templates/cart.html:91
 msgid "recipes"
 msgstr "recepten"
 
-#: models.py:170
+#: models.py:214
 msgid "primary unit"
 msgstr "primaire eenheid"
 
-#: models.py:177 models.py:226 models.py:273 models.py:282
+#: models.py:221 models.py:270 models.py:318 models.py:327
 msgid "ingredient"
 msgstr "ingrediënt"
 
-#: models.py:178 models.py:246 models.py:283 templates/cart.html:9
+#: models.py:222 models.py:290 models.py:328 templates/cart.html:9
 #: templates/recipe.html:26
 msgid "ingredients"
 msgstr "ingrediënten"
 
-#: models.py:233
+#: models.py:277
 msgid "alias"
 msgstr "alias"
 
-#: models.py:234
+#: models.py:278
 msgid "aliases"
 msgstr "aliases"
 
-#: models.py:242
+#: models.py:286
 msgid "title"
 msgstr "titel"
 
-#: models.py:247 models.py:251 models.py:271 templates/recipe.html:54
+#: models.py:291 models.py:296 models.py:316 templates/recipe.html:54
 msgid "recipe"
 msgstr "recept"
 
-#: models.py:275
+#: models.py:320
 msgid "amount"
 msgstr "hoeveelheid"
+
+#: models.py:352
+msgid ""
+"The menu has already been changed in a different location, please try again"
+msgstr ""
+"Het menu is reeds gewijzigd op een andere locatie, probeer aub. opnieuw"
 
 #. Translators: index of recipes
 #: templates/base.html:34 templates/base.html:36
@@ -135,51 +141,55 @@ msgstr "weekmenu"
 msgid "admin"
 msgstr "admin"
 
-#: templates/cart.html:36
+#: templates/cart.html:37
 msgid "add to OurGroceries"
 msgstr "toevoegen aan OurGroceries"
 
-#: templates/cart.html:58
+#: templates/cart.html:59
 msgid "Edit quantity"
 msgstr "Hoeveelheid aanpassen"
 
-#: templates/cart.html:78
+#: templates/cart.html:79
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: templates/cart.html:82
+#: templates/cart.html:83
 msgid "Save"
 msgstr "Opslaan"
 
-#: templates/menu.html:12 templates/menu.html:35
+#: templates/index.html:9 templates/index.html:11
+msgid "all"
+msgstr "alles"
+
+#: templates/menu.html:20 templates/menu.html:70
 msgid "dishes"
 msgstr "gerechten"
 
-#: templates/menu.html:21
-msgid "menu"
-msgstr "menu"
-
-#: templates/menu.html:43
-msgid "note"
-msgstr "notitie"
-
-#: templates/menu.html:49
+#: templates/menu.html:25 templates/menu.html:47 templates/menu.html:87
 msgid "save"
 msgstr "opslaan"
 
-#: views.py:138
+#: templates/menu.html:42
+msgid "menu"
+msgstr "menu"
+
+#: templates/menu.html:76
+msgid "note"
+msgstr "notitie"
+
+#: views.py:187
 msgid "No recipes were added to the cart yet"
 msgstr "Er zijn nog geen recepten aan de boodschappenlijst toegevoegd"
 
-#: views.py:155
+#: views.py:197
 msgid "OurGroceries is not completely configured"
 msgstr "OurGroceries is niet volledig geconfigureerd"
 
-#: views.py:160
+#: views.py:211
 msgid "Items succesfully added to OurGroceries"
 msgstr "Artikelen succesvol toegevoegd aan OurGroceries"
 
-#: views.py:163
+#: views.py:214
 msgid "Encountered an error adding items to OurGroceries"
 msgstr "Fout bij het toevoegen van artikelen aan OurGroceries"
 
