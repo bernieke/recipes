@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-30 09:34+0200\n"
-"PO-Revision-Date: 2021-04-30 09:34+0200\n"
+"POT-Creation-Date: 2021-04-30 10:47+0200\n"
+"PO-Revision-Date: 2021-04-30 10:47+0200\n"
 "Last-Translator: Bernard Kerckenaere <bernieke@bernieke.com>\n"
 "Language-Team: Nederlands <bernieke@bernieke.com>\n"
 "Language: Nederlands\n"
@@ -105,7 +105,7 @@ msgstr "alias"
 msgid "aliases"
 msgstr "aliases"
 
-#: models.py:286
+#: models.py:286 templates/index.html:42 templates/index.html:45
 msgid "title"
 msgstr "titel"
 
@@ -161,6 +161,10 @@ msgstr "Opslaan"
 msgid "all"
 msgstr "alles"
 
+#: templates/index.html:34 templates/index.html:37
+msgid "popularity"
+msgstr "populariteit"
+
 #: templates/menu.html:20 templates/menu.html:70
 msgid "dishes"
 msgstr "gerechten"
@@ -177,19 +181,19 @@ msgstr "menu"
 msgid "note"
 msgstr "notitie"
 
-#: views.py:187
+#: views.py:204
 msgid "No recipes were added to the cart yet"
 msgstr "Er zijn nog geen recepten aan de boodschappenlijst toegevoegd"
 
-#: views.py:197
+#: views.py:214
 msgid "OurGroceries is not completely configured"
 msgstr "OurGroceries is niet volledig geconfigureerd"
 
-#: views.py:211
+#: views.py:228
 msgid "Items succesfully added to OurGroceries"
 msgstr "Artikelen succesvol toegevoegd aan OurGroceries"
 
-#: views.py:214
+#: views.py:231
 msgid "Encountered an error adding items to OurGroceries"
 msgstr "Fout bij het toevoegen van artikelen aan OurGroceries"
 

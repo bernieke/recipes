@@ -71,27 +71,44 @@ class persist_session_vars(object):
         return inner
 
 
-@persist_session_vars(['cart', 'ingredient_sel'])
+@persist_session_vars(['cart', 'ingredient_sel', 'order'])
 def login(request, *args, **kwargs):
     return views.login(request, *args, **kwargs)
 
 
+def save_order(func):
+    def wrapper(request, *args, **kwargs):
+        order = request.GET.get('order')
+        if order is None and 'order' not in request.session:
+            order = '-popularity'
+        if order is not None:
+            request.session['order'] = order
+        return func(request, *args, **kwargs)
+    return wrapper
+
+
+@save_order
 def index(request):
+    order = request.session['order']
     return render(request, 'index.html', context={
         'page': 'index',
         'tags': Tag.objects.all(),
         'selected_tag': None,
-        'recipes': Recipe.objects.all(),
+        'recipes': Recipe.objects.all().order_by(order),
+        'order': order,
     })
 
 
+@save_order
 def tag(request, pk):
+    order = request.session['order']
     tag = Tag.objects.get(pk=pk)
     return render(request, 'index.html', context={
         'page': 'index',
         'tags': Tag.objects.all(),
         'selected_tag': tag,
-        'recipes': tag.recipe_set.all(),
+        'recipes': tag.recipe_set.all().order_by(order),
+        'order': order,
     })
 
 

@@ -28,6 +28,25 @@
           {% endfor %}
         </div>
         <div class="col col-8">
+          <h4>
+            sort by
+            {% if order == '-popularity' %}
+            <b>{% trans 'popularity' %}</b>
+            {% else %}
+            <a href="?order=-popularity" class="text-body">
+              {% trans 'popularity' %}
+            </a>
+            {% endif %}
+            -
+            {% if order == 'title' %}
+            <b>{% trans 'title' %}</b>
+            {% else %}
+            <a href="?order=title" class="text-body">
+              {% trans 'title' %}
+            </a>
+            {% endif %}
+          </h4>
+          <h4>&nbsp;</h4>
           {% for recipe in recipes %}
           <h4>
             <a href="{{ recipe.get_absolute_url }}" class="text-body">
