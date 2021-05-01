@@ -191,7 +191,8 @@ class RecipesTestCase(TestCase):
         self.cat1.order = 3
         self.cat1.save()
 
-        ctx = self.client.get(reverse('index'), follow=True).context
+        ctx = self.client.get(
+            reverse('index') + '?order=title', follow=True).context
         # tag order
         self.assertEqual(list(ctx['tags']), [self.tag2, self.tag1])
         # recipe order by title on index
