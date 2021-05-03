@@ -16,6 +16,7 @@ from django.forms import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import F, Q
+from django.db.models.functions import Lower
 from django.shortcuts import render, redirect
 from django.utils.formats import localize
 from django.utils.translation import gettext as _
@@ -90,11 +91,16 @@ def save_order(func):
 @save_order
 def index(request):
     order = request.session['order']
+    if order == 'title':
+        order_list = []
+    else:
+        order_list = [order]
+    order_list.append(Lower('title'))
     return render(request, 'index.html', context={
         'page': 'index',
         'tags': Tag.objects.all(),
         'selected_tag': None,
-        'recipes': Recipe.objects.all().order_by(order),
+        'recipes': Recipe.objects.all().order_by(*order_list),
         'order': order,
     })
 

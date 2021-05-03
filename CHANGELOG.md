@@ -1,3 +1,7 @@
+3.6.1
+=====
+* Add subsort on lowercased title
+
 3.6
 ===
 * Fix bug with django-markdown on Django 2.2
