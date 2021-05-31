@@ -1,3 +1,7 @@
+3.6.2
+=====
+* Fix OurGroceries import
+
 3.6.1
 =====
 * Add subsort on lowercased title

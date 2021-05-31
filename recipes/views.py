@@ -1,27 +1,28 @@
-import io
-import re
 import csv
 import datetime
 import functools
-import requests
+import io
 import itertools
+import json
+import re
+import requests
 import traceback
 
 from decimal import Decimal
 
+from constance import config
+from dal import autocomplete
 from django.conf import settings
 from django.contrib.auth import views
 from django.core.exceptions import ValidationError
-from django.forms import modelform_factory
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
 from django.db.models import F, Q
 from django.db.models.functions import Lower
+from django.forms import modelform_factory
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.utils.formats import localize
 from django.utils.translation import gettext as _
-from dal import autocomplete
-from constance import config
 
 from .models import (
     get_factor,
@@ -299,7 +300,7 @@ def add_to_ourgroceries(ingredient_units, selected):
 
     # Login
     s = requests.Session()
-    s.post('https://www.ourgroceries.com/sign-in', data={
+    s.post(OURGROCERIES_SIGNIN_URL, data={
         'emailAddress': config.OURGROCERIES_USERNAME,
         'action': 'sign-in',
         'password': config.OURGROCERIES_PASSWORD,
@@ -335,15 +336,19 @@ def add_to_ourgroceries(ingredient_units, selected):
         raise RuntimeError(
             'No shopping list named {} on OurGroceries for {}'.format(
                 config.OURGROCERIES_LIST, config.OURGROCERIES_USERNAME))
-    s.post(OURGROCERIES_LIST_URL, files={
+    s.post(OURGROCERIES_LIST_URL, data=json.dumps({
         'command': 'importItems',
+        'files': [f.read()],
         'listId': list_id,
-        'items': '',
-        'importFile': ('shopping.csv', f)
-    }, headers={
+        'preview': False,
+        'teamId': team_id,
+    }), headers={
         'Referer': '{}list/{}'.format(OURGROCERIES_LIST_URL, list_id),
         'Origin': 'https://www.ourgroceries.com',
+        'Accept': 'application/json, text/javascript, */*',
+        'X-Requested-With': 'XMLHttpRequest',
         'Host': 'www.ourgroceries.com',
+        'Content-Type': 'application/json; charset=UTF-8',
     }).raise_for_status()
 
 
