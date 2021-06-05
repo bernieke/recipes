@@ -4,10 +4,12 @@ from decimal import Context, Decimal
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.formats import localize
 from django.utils.safestring import mark_safe
+from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from django_markdown.models import MarkdownField
 
@@ -116,7 +118,7 @@ class Unit(models.Model):
         verbose_name=_('order'))
 
     class Meta:
-        ordering = ('order', 'name')
+        ordering = ['order', 'name']
         verbose_name = _('unit')
         verbose_name_plural = _('units')
 
@@ -135,7 +137,7 @@ class UnitConversion(models.Model):
         max_digits=7, decimal_places=3, verbose_name=_('factor'))
 
     class Meta:
-        ordering = ('from_unit', 'to_unit')
+        ordering = ['from_unit', 'to_unit']
         unique_together = [['from_unit', 'to_unit']]
         verbose_name = _('unit conversion')
         verbose_name_plural = _('unit conversions')
@@ -185,7 +187,7 @@ class Tag(models.Model):
     break_after = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ('order', 'name')
+        ordering = ['order', 'name']
         verbose_name = _('tag')
         verbose_name_plural = _('tags')
 
@@ -217,7 +219,7 @@ class Ingredient(models.Model):
         verbose_name=_('category'))
 
     class Meta:
-        ordering = ('name',)
+        ordering = ['name']
         verbose_name = _('ingredient')
         verbose_name_plural = _('ingredients')
 
@@ -273,7 +275,7 @@ class Alias(models.Model):
         verbose_name=_('order'))
 
     class Meta:
-        ordering = ('order',)
+        ordering = ['order']
         verbose_name = _('alias')
         verbose_name_plural = _('aliases')
 
@@ -292,7 +294,7 @@ class Recipe(models.Model):
     popularity = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ('-popularity', 'title')
+        ordering = ['-popularity', 'title']
         verbose_name = _('recipe')
         verbose_name_plural = _('recipes')
 
@@ -323,7 +325,7 @@ class IngredientInRecipe(models.Model):
         verbose_name=_('order'))
 
     class Meta:
-        ordering = ('order',)
+        ordering = ['order']
         verbose_name = _('ingredient')
         verbose_name_plural = _('ingredients')
 
@@ -357,11 +359,89 @@ class PreventOverwriteMixin(models.Model):
         return super().save(*args, **kwargs)
 
 
+class MenuTemplate(models.Model):
+    name = models.TextField(verbose_name=_('name'))
+    active = models.BooleanField(default=False, verbose_name=_('active'))
+
+    monday_lunch_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Monday'), _('lunch')))
+    monday_dinner_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Monday'), _('dinner')))
+    tuesday_lunch_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Tuesday'), _('lunch')))
+    tuesday_dinner_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Tuesday'), _('dinner')))
+    wednesday_lunch_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Wednesday'), _('lunch')))
+    wednesday_dinner_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Wednesday'), _('dinner')))
+    thursday_lunch_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Thursday'), _('lunch')))
+    thursday_dinner_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Thursday'), _('dinner')))
+    friday_lunch_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Friday'), _('lunch')))
+    friday_dinner_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Friday'), _('dinner')))
+    saturday_lunch_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Saturday'), _('lunch')))
+    saturday_dinner_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Saturday'), _('dinner')))
+    sunday_lunch_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Sunday'), _('lunch')))
+    sunday_dinner_note = models.TextField(
+        blank=True,
+        verbose_name=format_lazy('{} {}', _('Sunday'), _('dinner')))
+
+    def save(self, *args, **kwargs):
+        if self.active:
+            (MenuTemplate.objects
+             .filter(active=True)
+             .exclude(pk=self.pk)
+             .update(active=False))
+        return super().save(*args, **kwargs)
+
+    @property
+    def template(self):
+        return {
+            'monday_lunch_note': self.monday_lunch_note,
+            'monday_dinner_note': self.monday_dinner_note,
+            'tuesday_lunch_note': self.tuesday_lunch_note,
+            'tuesday_dinner_note': self.tuesday_dinner_note,
+            'wednesday_lunch_note': self.wednesday_lunch_note,
+            'wednesday_dinner_note': self.wednesday_dinner_note,
+            'thursday_lunch_note': self.thursday_lunch_note,
+            'thursday_dinner_note': self.thursday_dinner_note,
+            'friday_lunch_note': self.friday_lunch_note,
+            'friday_dinner_note': self.friday_dinner_note,
+            'saturday_lunch_note': self.saturday_lunch_note,
+            'saturday_dinner_note': self.saturday_dinner_note,
+            'sunday_lunch_note': self.sunday_lunch_note,
+            'sunday_dinner_note': self.sunday_dinner_note,
+        }
+
+
 class Dishes(PreventOverwriteMixin):
     dishes = models.TextField(blank=True)
 
 
 class Menu(PreventOverwriteMixin):
+    year = models.PositiveIntegerField()
+    week = models.PositiveSmallIntegerField(validators=[MaxValueValidator(53)])
+
     monday_lunch_dishes = models.TextField(blank=True)
     monday_dinner_dishes = models.TextField(blank=True)
     tuesday_lunch_dishes = models.TextField(blank=True)
@@ -391,6 +471,13 @@ class Menu(PreventOverwriteMixin):
     saturday_dinner_note = models.TextField(blank=True)
     sunday_lunch_note = models.TextField(blank=True)
     sunday_dinner_note = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['year', 'week']
+        unique_together = [['year', 'week']]
+
+    def __str__(self):
+        return '{} {}'.format(self.year, self.week)
 
 
 def create_ingredient_unit_for_primary_unit(sender, instance, **kwargs):

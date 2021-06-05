@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'category',
                 'verbose_name_plural': 'categories',
-                'ordering': ('order', 'name'),
+                'ordering': ['order', 'name'],
             },
         ),
         migrations.CreateModel(
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'ingredient',
                 'verbose_name_plural': 'ingredients',
-                'ordering': ('name', 'unit'),
+                'ordering': ['name', 'unit'],
             },
         ),
         migrations.CreateModel(
@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'ingredient',
                 'verbose_name_plural': 'ingredients',
-                'ordering': ('order',),
+                'ordering': ['order'],
             },
         ),
         migrations.CreateModel(
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'tag',
                 'verbose_name_plural': 'tags',
-                'ordering': ('order', 'name'),
+                'ordering': ['order', 'name'],
             },
         ),
         migrations.CreateModel(
@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'unit',
                 'verbose_name_plural': 'units',
-                'ordering': ('name', 'measured'),
+                'ordering': ['name', 'measured'],
                 'unique_together': {('name', 'measured')},
             },
         ),
@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'recipe',
                 'verbose_name_plural': 'recipes',
-                'ordering': ('title',),
+                'ordering': ['title'],
             },
         ),
         migrations.AddField(
@@ -112,7 +112,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'alias',
                 'verbose_name_plural': 'aliases',
-                'ordering': ('name',),
+                'ordering': ['name'],
             },
         ),
         migrations.CreateModel(
@@ -126,7 +126,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'unit conversion',
                 'verbose_name_plural': 'unit conversions',
-                'ordering': ('from_unit', 'to_unit'),
+                'ordering': ['from_unit', 'to_unit'],
                 'unique_together': {('from_unit', 'to_unit')},
             },
         ),

@@ -17,6 +17,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='recipe',
-            options={'ordering': ('-popularity', 'title'), 'verbose_name': 'recipe', 'verbose_name_plural': 'recipes'},
+            options={'ordering': ['-popularity', 'title'], 'verbose_name': 'recipe', 'verbose_name_plural': 'recipes'},
         ),
     ]

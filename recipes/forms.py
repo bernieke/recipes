@@ -29,7 +29,7 @@ class IngredientUnitInlineForm(forms.ModelForm):
     class Meta:
         model = IngredientUnit
         fields = '__all__'
-        localized_fields = ('factor',)
+        localized_fields = ['factor']
 
 
 class UnitConversionForm(forms.ModelForm):
@@ -37,7 +37,7 @@ class UnitConversionForm(forms.ModelForm):
     class Meta:
         model = UnitConversion
         fields = '__all__'
-        localized_fields = ('factor',)
+        localized_fields = ['factor']
 
 
 class IngredientInRecipeForm(forms.ModelForm):
@@ -50,7 +50,7 @@ class IngredientInRecipeForm(forms.ModelForm):
     class Meta:
         model = IngredientInRecipe
         fields = '__all__'
-        localized_fields = ('amount',)
+        localized_fields = ['amount']
         widgets = {
             'ingredient_unit': autocomplete.ModelSelect2(
                 url='autocomplete-ingredient'),

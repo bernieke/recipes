@@ -5,7 +5,7 @@ from django_markdown.admin import AdminMarkdownWidget
 
 from .models import (
     Unit, UnitConversion, IngredientUnit, Category, Tag, Ingredient, Alias,
-    Recipe, IngredientInRecipe)
+    Recipe, IngredientInRecipe, Menu, MenuTemplate)
 from .forms import (
     IngredientForm, IngredientUnitInlineForm, UnitConversionForm,
     RecipeForm, IngredientInRecipeForm)
@@ -27,9 +27,9 @@ class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 
 class TagAdmin(SortableAdminMixin, admin.ModelAdmin):
-    list_display = ('name', 'break_after')
-    fields = ('name', 'break_after', 'recipes')
-    readonly_fields = ('recipes',)
+    list_display = ['name', 'break_after']
+    fields = ['name', 'break_after', 'recipes']
+    readonly_fields = ['recipes']
 
 
 class IngredientUnitInline(admin.TabularInline):
@@ -44,12 +44,12 @@ class AliasInline(SortableInlineAdminMixin, admin.TabularInline):
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'units', 'aliases')
+    list_display = ['name', 'category', 'units', 'aliases']
     form = IngredientForm
-    inlines = (IngredientUnitInline, AliasInline)
-    fields = ('name', 'primary_unit', 'category', 'recipes')
-    readonly_fields = ('recipes',)
-    search_fields = ('name', 'alias__name')
+    inlines = [IngredientUnitInline, AliasInline]
+    fields = ['name', 'primary_unit', 'category', 'recipes']
+    readonly_fields = ['recipes']
+    search_fields = ['name', 'alias__name']
 
     def aliases(self, obj):
         return ', '.join(alias.name for alias in obj.alias_set.all())
@@ -66,10 +66,10 @@ class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
 
 class RecipeAdmin(admin.ModelAdmin):
     form = RecipeForm
-    list_display = ('title', 'tag_list')
-    inlines = (IngredientInRecipeInline,)
+    list_display = ['title', 'tag_list']
+    inlines = [IngredientInRecipeInline]
     formfield_overrides = {'recipe': {'widget': AdminMarkdownWidget}}
-    search_fields = ('title', 'tags__name')
+    search_fields = ['title', 'tags__name']
 
     class Media:
         js = [
@@ -77,7 +77,7 @@ class RecipeAdmin(admin.ModelAdmin):
             'django_markdown/jquery.init.js',
         ]
         css = {
-            'all': ('hide_admin_original.css',),
+            'all': ['hide_admin_original.css'],
         }
 
     def get_form(self, request, obj=None, **kwargs):
@@ -87,9 +87,68 @@ class RecipeAdmin(admin.ModelAdmin):
         return form
 
 
+class BaseMenuAdmin(admin.ModelAdmin):
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        for key in form.base_fields:
+            if (key == 'name' or
+                    key.endswith('_note') or
+                    key.endswith('_dishes')):
+                form.base_fields[key].widget.attrs['style'] = 'width: 20em;'
+                form.base_fields[key].widget.attrs['rows'] = '1'
+        return form
+
+
+class MenuAdmin(BaseMenuAdmin):
+    fieldsets = [
+        ('Notes', {
+            'fields': [
+                ('monday_lunch_note', 'monday_dinner_note'),
+                ('monday_lunch_dishes', 'monday_dinner_dishes'),
+                ('tuesday_lunch_note', 'tuesday_dinner_note'),
+                ('tuesday_lunch_dishes', 'tuesday_dinner_dishes'),
+                ('wednesday_lunch_note', 'wednesday_dinner_note'),
+                ('wednesday_lunch_dishes', 'wednesday_dinner_dishes'),
+                ('thursday_lunch_note', 'thursday_dinner_note'),
+                ('thursday_lunch_dishes', 'thursday_dinner_dishes'),
+                ('friday_lunch_note', 'friday_dinner_note'),
+                ('friday_lunch_dishes', 'friday_dinner_dishes'),
+                ('saturday_lunch_note', 'saturday_dinner_note'),
+                ('saturday_lunch_dishes', 'saturday_dinner_dishes'),
+                ('sunday_lunch_note', 'sunday_dinner_note'),
+                ('sunday_lunch_dishes', 'sunday_dinner_dishes'),
+            ],
+        }),
+    ]
+    list_display = ['year', 'week']
+
+
+class MenuTemplateAdmin(BaseMenuAdmin):
+    fieldsets = [
+        (None, {
+            'fields': ['name', 'active'],
+        }),
+        ('Notes', {
+            'fields': [
+                ('monday_lunch_note', 'monday_dinner_note'),
+                ('tuesday_lunch_note', 'tuesday_dinner_note'),
+                ('wednesday_lunch_note', 'wednesday_dinner_note'),
+                ('thursday_lunch_note', 'thursday_dinner_note'),
+                ('friday_lunch_note', 'friday_dinner_note'),
+                ('saturday_lunch_note', 'saturday_dinner_note'),
+                ('sunday_lunch_note', 'sunday_dinner_note'),
+            ],
+        }),
+    ]
+    list_display = ['name', 'active']
+
+
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(UnitConversion, UnitConversionAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
+admin.site.register(Menu, MenuAdmin)
+admin.site.register(MenuTemplate, MenuTemplateAdmin)

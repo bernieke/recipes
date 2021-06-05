@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterModelOptions(
             name='unit',
             options={
-                'ordering': ('name',),
+                'ordering': ['name'],
                 'verbose_name': 'unit',
                 'verbose_name_plural': 'units',
             },

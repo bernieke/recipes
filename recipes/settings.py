@@ -4,6 +4,14 @@ from collections import OrderedDict
 
 from django.core.management.utils import get_random_secret_key
 
+# Activate django extensions if present
+DJANGO_EXTENSIONS_AVAILABLE = False
+try:
+    import django_extensions  # NOQA
+    DJANGO_EXTENSIONS_AVAILABLE = True
+except ModuleNotFoundError:
+    pass
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY_FILE = os.path.join(BASE_DIR, 'secret.key')
@@ -39,6 +47,8 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'vinaigrette',
 ]
+if DJANGO_EXTENSIONS_AVAILABLE:
+    INSTALLED_APPS.append('django_extensions')
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -138,11 +148,11 @@ CONSTANCE_CONFIG = OrderedDict([
     ('OURGROCERIES_LIST', ('', 'OurGroceries list to send shopping list to')),
 ])
 CONSTANCE_CONFIG_FIELDSETS = {
-    'OurGroceries connectivity settings': (
+    'OurGroceries connectivity settings': [
         'OURGROCERIES_USERNAME',
         'OURGROCERIES_PASSWORD',
         'OURGROCERIES_LIST'
-    ),
+    ],
 }
 
 MARKDOWN_EDITOR_SKIN = 'simple'

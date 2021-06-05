@@ -53,6 +53,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='alias',
-            options={'ordering': ('order',), 'verbose_name': 'alias', 'verbose_name_plural': 'aliases'},
+            options={'ordering': ['order'], 'verbose_name': 'alias', 'verbose_name_plural': 'aliases'},
         ),
     ]

@@ -1,6 +1,7 @@
 3.6.4
 =====
 * Add search field to recipes admin page
+* Add menu templates and menu per week
 
 3.6.3
 =====

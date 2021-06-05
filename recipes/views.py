@@ -1,5 +1,4 @@
 import csv
-import datetime
 import functools
 import io
 import itertools
@@ -8,6 +7,7 @@ import re
 import requests
 import traceback
 
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from constance import config
@@ -34,6 +34,7 @@ from .models import (
     Menu,
     Recipe,
     Tag,
+    MenuTemplate,
 )
 
 
@@ -352,10 +353,27 @@ def add_to_ourgroceries(ingredient_units, selected):
     }).raise_for_status()
 
 
-def menu(request):
+def menu_today(request):
+    today = date.today()
+    return redirect(
+        reverse('menu', args=[today.year, int(today.strftime('%V'))]))
+
+
+def menu(request, year, week):
+    start = datetime.strptime(f'{year} {week} 1', '%G %V %u').date()
+    end = datetime.strptime(f'{year} {week} 7', '%G %V %u').date()
+    prev_week = start - timedelta(days=7)
+    next_week = start + timedelta(days=7)
+    prev = reverse(
+        'menu', args=[prev_week.year, int(prev_week.strftime('%V'))])
+    next = reverse(
+        'menu', args=[next_week.year, int(next_week.strftime('%V'))])
     MenuForm = modelform_factory(Menu, fields='__all__')
+    try:
+        menu = Menu.objects.get(year=year, week=week)
+    except Menu.DoesNotExist:
+        menu = None
     dishes, _ = Dishes.objects.get_or_create()
-    menu, _ = Menu.objects.get_or_create()
     error = ''
 
     if request.method == 'POST':
@@ -367,26 +385,38 @@ def menu(request):
             error = e.args[0]
             dishes, _ = Dishes.objects.get_or_create()
 
-        menu = Menu.objects.get(pk=request.POST['pk'])
         form = MenuForm(request.POST, instance=menu)
         if form.is_valid():
             try:
                 form.save()
             except ValidationError as e:
                 error = e.args[0]
-                menu, _ = Menu.objects.get_or_create()
     else:
-        form = MenuForm(instance=menu)
+        if menu is None:
+            try:
+                template = MenuTemplate.objects.get(active=True).template
+            except MenuTemplate.DoesNotExist:
+                template = {}
+            template['year'] = year
+            template['week'] = week
+            form = MenuForm(initial=template)
+        else:
+            form = MenuForm(instance=menu)
 
     return render(request, 'menu.html', {
         'error': error,
         'page': 'menu',
         'days': DAYS_OF_THE_WEEK,
-        'day_of_week': DAYS_OF_THE_WEEK[datetime.date.today().weekday()],
+        'day_of_week': DAYS_OF_THE_WEEK[date.today().weekday()],
         'meals': ['lunch', 'dinner'],
         'dishes': dishes,
-        'menu': menu,
         'form': form,
+        'year': year,
+        'week': week,
+        'start': start,
+        'end': end,
+        'prev': prev,
+        'next': next,
     })
 
 

@@ -1,13 +1,25 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load l10n %}
 {% load menu %}
 
 {% block content %}
       <div class="row pt-4">
         <div class="col col-4 text-right">
+          <h3>{{ year|unlocalize }} week {{ week }}</h3>
+          <h5>{{ start }} - {{ end }}</h5>
+          <br>
+          <div class="row">
+            <div class="col">
+              <h6><a href="{{ prev }}" class="text-body">Previous</a></h6>
+            </div>
+            <div class="col">
+              <h6><a href="{{ next }}" class="text-body">Next</a></h6>
+            </div>
+          </div>
         </div>
         <div class="col col-8">
-          <form action="{% url 'menu' %}" method="POST">
+          <form method="POST">
             {% csrf_token %}
             {% if error %}
             <span class="text-danger font-weight-bold">
@@ -48,10 +60,13 @@
                 </button>
               </div>
             </div>
-            <input type="hidden" name="pk" value="{{ menu.pk }}">
+            <input type="hidden"
+                   name="year"
+                   value="{{ form.year.value|unlocalize }}">
+            <input type="hidden" name="week" value="{{ form.week.value }}">
             <input type="hidden"
                    name="last_change_id"
-                   value="{{ menu.last_change_id }}">
+                   value="{{ form.last_change_id.value }}">
 
             {% for day in days %}
             <div class="{% if day == day_of_week %} border border-dark{% endif %}">
@@ -65,13 +80,13 @@
                   <input type="text"
                          class="form-control mb-1"
                          name="{{ day|lower }}_{{ meal }}_dishes"
-                         value="{% get_menu_field menu day|lower meal 'dishes' %}"
+                         value="{% get_menu_field form day|lower meal 'dishes' %}"
                          id="id_{{ day|lower }}_{{ meal }}_dishes"
                          placeholder="{% trans 'dishes' %}">
                   <input type="text"
                          class="form-control"
                          name="{{ day|lower }}_{{ meal }}_note"
-                         value="{% get_menu_field menu day|lower meal 'note' %}"
+                         value="{% get_menu_field form day|lower meal 'note' %}"
                          id="id_{{ day|lower }}_{{ meal }}_note"
                          placeholder="{% trans 'note' %}">
                 </div>
