@@ -1,3 +1,7 @@
+3.6.4
+=====
+* Add search field to recipes admin page
+
 3.6.3
 =====
 * Fix markdownify settings change

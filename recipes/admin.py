@@ -69,6 +69,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = ('title', 'tag_list')
     inlines = (IngredientInRecipeInline,)
     formfield_overrides = {'recipe': {'widget': AdminMarkdownWidget}}
+    search_fields = ('title', 'tags__name')
 
     class Media:
         js = [
