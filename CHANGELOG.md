@@ -1,3 +1,7 @@
+3.6.3
+=====
+* Fix markdownify settings change
+
 3.6.2
 =====
 * Fix OurGroceries import

@@ -147,4 +147,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
 
 MARKDOWN_EDITOR_SKIN = 'simple'
 MARKDOWN_PROTECT_PREVIEW = True
-MARKDOWNIFY_BLEACH = False
+MARKDOWNIFY = {
+    'default': {
+        'BLEACH': False,
+    },
+}
