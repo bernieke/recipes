@@ -12,7 +12,11 @@ COPY . /opt/recipes/
 WORKDIR /opt/recipes
 
 # Install requirements
-RUN apt-get update && apt-get upgrade -y && apt-get install -y postgresql-client && apt-get autoremove && apt-get autoclean
+RUN apt-get update \
+ && apt-get upgrade -y \
+ && apt-get install -y postgresql-client \
+ && apt-get autoremove \
+ && apt-get autoclean
 RUN pip3 install --no-cache-dir psycopg2-binary gunicorn
 RUN pip3 install --no-cache-dir -r requirements.txt
 
