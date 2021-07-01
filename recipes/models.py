@@ -434,8 +434,33 @@ class MenuTemplate(models.Model):
         }
 
 
-class Dishes(PreventOverwriteMixin):
+class Dishes(models.Model):
     dishes = models.TextField(blank=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._load_list()
+
+    def _load_list(self):
+        self.list = [dish.strip()
+                     for dish in self.dishes.split('\n')
+                     if dish.strip()]
+
+    def _save_list(self):
+        self.dishes = '\n'.join(self.list)
+        self.save()
+
+    def add(self, dish):
+        self.list.append(dish.strip())
+        self._save_list()
+
+    def remove(self, dish):
+        try:
+            self.list.remove(dish.strip())
+        except ValueError:
+            pass
+        else:
+            self._save_list()
 
 
 class Menu(PreventOverwriteMixin):

@@ -26,5 +26,7 @@ urlpatterns += i18n_patterns(
     path('cart/del/<str:pk>/', views.del_from_cart, name='del_from_cart'),
     path('menu/', views.menu_today, name='menu_today'),
     path('menu/<int:year>/<int:week>/', views.menu, name='menu'),
+    path('menu/add/', views.add_to_menu, name='add_to_menu'),
+    path('menu/del/', views.del_from_menu, name='del_from_menu'),
 )
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

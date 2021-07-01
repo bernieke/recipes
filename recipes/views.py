@@ -359,6 +359,20 @@ def menu_today(request):
         reverse('menu', args=[today.year, int(today.strftime('%V'))]))
 
 
+def add_to_menu(request):
+    dishes, _ = Dishes.objects.get_or_create()
+    dish = request.POST['dish'].strip()
+    dishes.add(dish)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def del_from_menu(request):
+    dishes, _ = Dishes.objects.get_or_create()
+    dish = request.POST['dish'].strip()
+    dishes.remove(dish)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
 def menu(request, year, week):
     start = datetime.strptime(f'{year} {week} 1', '%G %V %u').date()
     end = datetime.strptime(f'{year} {week} 7', '%G %V %u').date()
@@ -377,14 +391,6 @@ def menu(request, year, week):
     error = ''
 
     if request.method == 'POST':
-        dishes.last_change_id = request.POST['last_change_id_dishes']
-        dishes.dishes = request.POST['dishes']
-        try:
-            dishes.save()
-        except ValidationError as e:
-            error = e.args[0]
-            dishes, _ = Dishes.objects.get_or_create()
-
         form = MenuForm(request.POST, instance=menu)
         if form.is_valid():
             try:
@@ -409,7 +415,7 @@ def menu(request, year, week):
         'days': DAYS_OF_THE_WEEK,
         'day_of_week': DAYS_OF_THE_WEEK[date.today().weekday()],
         'meals': ['lunch', 'dinner'],
-        'dishes': dishes,
+        'dishes': dishes.list,
         'form': form,
         'year': year,
         'week': week,

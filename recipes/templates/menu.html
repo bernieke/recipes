@@ -19,35 +19,46 @@
           </div>
         </div>
         <div class="col col-8">
+          {% if error %}
+          <span class="text-danger font-weight-bold">
+            {{ error }}<br><br>
+          </span>
+          {% endif %}
+          <div class="row">
+            <div class="col">
+              <h3>
+                {% filter capfirst %}{% trans 'dishes' %}{% endfilter %}
+              </h3>
+            </div>
+          </div>
+          {% for dish in dishes %}
+          <form action="{% url 'del_from_menu' %}"
+                method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="dish" value="{{ dish }}">
+            {{ dish }}
+            <button type="submit" class="btn" style="padding: 0;">
+              <i class="far fa-trash-alt text-body"></i>
+            </button>
+          </form>
+          {% endfor %}
+          <form action="{% url 'add_to_menu' %}"
+                method="POST"
+                class="form-inline">
+            {% csrf_token %}
+            <input type="text"
+                   name="dish"
+                   value=""
+                   class="form-control">
+            <button type="submit" class="btn">
+              <i class="far fa-plus-square text-body"></i>
+            </button>
+          </form>
+          </form>
+
+          <br><br>
           <form method="POST">
             {% csrf_token %}
-            {% if error %}
-            <span class="text-danger font-weight-bold">
-              {{ error }}<br><br>
-            </span>
-            {% endif %}
-            <div class="row">
-              <div class="col">
-                <h3>
-                  {% filter capfirst %}{% trans 'dishes' %}{% endfilter %}
-                </h3>
-              </div>
-              <div class="col text-right">
-                <button type="submit" class="btn btn-outline-dark">
-                  {% trans 'save' %}
-                </button>
-              </div>
-            </div>
-            <input type="hidden"
-                   name="last_change_id_dishes"
-                   value="{{ dishes.last_change_id }}">
-            <textarea id="dishes"
-                      name="dishes"
-                      rows="10"
-                      cols="100"
-                      class="form-control">{{ dishes.dishes }}</textarea>
-
-            <br><br>
             <div class="row">
               <div class="col">
                 <h3>
