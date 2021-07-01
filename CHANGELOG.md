@@ -1,3 +1,7 @@
+3.6.5
+=====
+* Make recipes on the shopping list link back to the recipe page
+
 3.6.4
 =====
 * Add search field to recipes admin page

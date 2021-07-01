@@ -92,7 +92,9 @@
           <ul class="list-unstyled">
             {% for recipe, qty in recipes %}
               <li>
-                {{ qty }} {{ recipe.title }}
+                {{ qty }}
+                <a href="{% url 'recipe' recipe.pk %}"
+                   class="text-body">{{ recipe.title }}</a>
                 <a href="#"
                    onclick="$('#pk').val('{{ recipe.pk }}');
                             $('#qty').val({{ qty | unlocalize }});
