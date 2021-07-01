@@ -65,19 +65,11 @@
                   {% filter capfirst %}{% trans 'menu' %}{% endfilter %}
                 </h3>
               </div>
-              <div class="col text-right">
-                <button type="submit" class="btn btn-outline-dark">
-                  {% trans 'save' %}
-                </button>
-              </div>
             </div>
             <input type="hidden"
                    name="year"
                    value="{{ form.year.value|unlocalize }}">
             <input type="hidden" name="week" value="{{ form.week.value }}">
-            <input type="hidden"
-                   name="last_change_id"
-                   value="{{ form.last_change_id.value }}">
 
             {% for day in days %}
             <div class="{% if day == day_of_week %} border border-dark{% endif %}">
@@ -93,27 +85,21 @@
                          name="{{ day|lower }}_{{ meal }}_dishes"
                          value="{% get_menu_field form day|lower meal 'dishes' %}"
                          id="id_{{ day|lower }}_{{ meal }}_dishes"
-                         placeholder="{% trans 'dishes' %}">
+                         placeholder="{% trans 'dishes' %}"
+                         onchange="this.form.submit()">
                   <input type="text"
                          class="form-control"
                          name="{{ day|lower }}_{{ meal }}_note"
                          value="{% get_menu_field form day|lower meal 'note' %}"
                          id="id_{{ day|lower }}_{{ meal }}_note"
-                         placeholder="{% trans 'note' %}">
+                         placeholder="{% trans 'note' %}"
+                         onchange="this.form.submit()">
                 </div>
                 {% endfor %}
               </div>
             </div>
             <br>
             {% endfor %}
-
-            <div class="row">
-              <div class="col text-right">
-                <button type="submit" class="btn btn-outline-dark">
-                  {% trans 'save' %}
-                </button>
-              </div>
-            </div>
             <br><br>
           </form>
         </div>

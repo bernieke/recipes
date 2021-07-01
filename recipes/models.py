@@ -340,25 +340,6 @@ class IngredientInRecipe(models.Model):
             self.ingredient_unit.ingredient.display_name)
 
 
-class PreventOverwriteMixin(models.Model):
-    last_change_id = models.UUIDField(default=uuid.uuid4)
-
-    class Meta:
-        abstract = True
-
-    def save(self, *args, **kwargs):
-        try:
-            last = self.__class__.objects.get(pk=self.pk)
-            if not str(last.last_change_id) == str(self.last_change_id):
-                raise ValidationError(
-                    _('The menu has already been changed '
-                      'in a different location, please try again'))
-        except self.DoesNotExist:
-            pass
-        self.last_change_id = uuid.uuid4()
-        return super().save(*args, **kwargs)
-
-
 class MenuTemplate(models.Model):
     name = models.TextField(verbose_name=_('name'))
     active = models.BooleanField(default=False, verbose_name=_('active'))
@@ -463,7 +444,7 @@ class Dishes(models.Model):
             self._save_list()
 
 
-class Menu(PreventOverwriteMixin):
+class Menu(models.Model):
     year = models.PositiveIntegerField()
     week = models.PositiveSmallIntegerField(validators=[MaxValueValidator(53)])
 

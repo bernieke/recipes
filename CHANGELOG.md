@@ -1,6 +1,7 @@
 3.6.6
 =====
 * Make dishes a list instead of textarea
+* Autosave menu
 
 3.6.5
 =====
