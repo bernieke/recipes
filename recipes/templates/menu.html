@@ -35,8 +35,15 @@
           <form action="{% url 'del_from_menu' %}"
                 method="POST">
             {% csrf_token %}
-            <input type="hidden" name="dish" value="{{ dish }}">
-            {{ dish }}
+            <input type="hidden" name="pk" value="{{ dish.0 }}">
+            <input type="hidden" name="dish" value="{{ dish.1 }}">
+            {% if dish.0 == '' %}
+            {{ dish.1 }}
+            {% else %}
+            <a href="{% url 'recipe' dish.0 %}" class="text-body">
+              {{ dish.1 }}
+            </a>
+            {% endif %}
             <button type="submit" class="btn" style="padding: 0;">
               <i class="far fa-trash-alt text-body"></i>
             </button>
@@ -46,6 +53,7 @@
                 method="POST"
                 class="form-inline">
             {% csrf_token %}
+            <input type="hidden" name="pk" value="">
             <input type="text"
                    name="dish"
                    value=""

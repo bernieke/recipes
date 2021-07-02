@@ -222,11 +222,9 @@ def cart(request):
             error = _('OurGroceries is not completely configured')
 
         if not error:
-            dishes = Dishes.objects.get()
+            dishes = Dishes.objects.get_or_create()[0]
             for recipe, qty in recipes:
-                if dishes.dishes and not dishes.dishes.endswith('\r\n'):
-                    dishes.dishes += '\r\n'
-                dishes.dishes += '{} ({})\r\n'.format(recipe, qty)
+                dishes.add(recipe.pk, f'{recipe} ({qty})')
                 recipe.popularity += 1
                 recipe.save()
             dishes.save()
@@ -360,16 +358,18 @@ def menu_today(request):
 
 
 def add_to_menu(request):
-    dishes, _ = Dishes.objects.get_or_create()
+    dishes = Dishes.objects.get_or_create()[0]
+    pk = request.POST['pk'].strip()
     dish = request.POST['dish'].strip()
-    dishes.add(dish)
+    dishes.add(pk, dish)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def del_from_menu(request):
-    dishes, _ = Dishes.objects.get_or_create()
+    dishes = Dishes.objects.get_or_create()[0]
+    pk = request.POST['pk'].strip()
     dish = request.POST['dish'].strip()
-    dishes.remove(dish)
+    dishes.remove(pk, dish)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
@@ -387,7 +387,7 @@ def menu(request, year, week):
         menu = Menu.objects.get(year=year, week=week)
     except Menu.DoesNotExist:
         menu = None
-    dishes, _ = Dishes.objects.get_or_create()
+    dishes = Dishes.objects.get_or_create()[0]
     error = ''
 
     if request.method == 'POST':

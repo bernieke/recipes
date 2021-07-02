@@ -1,9 +1,6 @@
-import uuid
-
 from decimal import Context, Decimal
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.urls import reverse
@@ -423,21 +420,21 @@ class Dishes(models.Model):
         self._load_list()
 
     def _load_list(self):
-        self.list = [dish.strip()
-                     for dish in self.dishes.split('\n')
-                     if dish.strip()]
+        self.list = [tuple(line.split(',', 1))
+                     for line in self.dishes.split('\n')
+                     if line]
 
     def _save_list(self):
-        self.dishes = '\n'.join(self.list)
+        self.dishes = '\n'.join([f'{pk},{dish}' for (pk, dish) in self.list])
         self.save()
 
-    def add(self, dish):
-        self.list.append(dish.strip())
+    def add(self, pk, dish):
+        self.list.append((pk, dish))
         self._save_list()
 
-    def remove(self, dish):
+    def remove(self, pk, dish):
         try:
-            self.list.remove(dish.strip())
+            self.list.remove((pk, dish))
         except ValueError:
             pass
         else:

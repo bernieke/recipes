@@ -1,3 +1,7 @@
+4.0.0
+=====
+* Make dishes when added to shopping list link back to the recipe page
+
 3.6.6
 =====
 * Make dishes a list instead of textarea

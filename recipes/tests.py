@@ -287,7 +287,9 @@ class RecipesTestCase(TestCase):
         self.assertEqual(list(ctx['ingredient_units']), [iir])
         # On cart page
         ct = self.client.get(reverse('cart')).content.decode()
-        self.assertTrue('0.5 localization_test' in ct)
+        self.assertIsNotNone(re.search(
+            r'0.5\s+<a href="/en/recipe/\d+/"\s+class="text-body">'
+            r'localization_test</a>', ct))
         self.assertTrue(re.search(r'ingredient1\s*\(0\.75\s*pc\)', ct))
 
         # NL
@@ -297,5 +299,7 @@ class RecipesTestCase(TestCase):
         self.assertEqual(list(ctx['ingredient_units']), [iir])
         # On cart page
         ct = self.client.get(reverse('cart')).content.decode()
-        self.assertTrue('0,5 localization_test' in ct)
+        self.assertIsNotNone(re.search(
+            r'0,5\s+<a href="/nl/recipe/\d+/"\s+class="text-body">'
+            r'localization_test</a>', ct))
         self.assertTrue(re.search(r'ingredient1\s*\(0\,75\s*st\)', ct))
