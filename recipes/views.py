@@ -214,7 +214,7 @@ def cart(request):
     if action == 'OurGroceries':
         if not request.user.is_authenticated:
             return redirect(
-                '{}?next={}'.format(reverse(settings.LOGIN_URL), request.path)
+                f'{reverse(settings.LOGIN_URL)}?next={request.path}'
             )
         if not (config.OURGROCERIES_USERNAME and
                 config.OURGROCERIES_PASSWORD and
@@ -280,9 +280,7 @@ def add_to_ourgroceries(ingredient_units, selected):
                 ' ({})'.format(
                     localize(total)
                     if ingredient_unit['unit_pk'] == 1
-                    else '{}{}'.format(
-                        localize(total),
-                        ingredient_unit['unit']))
+                    else f'{localize(total)}{ingredient_unit["unit"]}')
                 if (total and
                     (not ingredient_unit['unit_pk'] == 1 or
                      total > 1))
@@ -333,8 +331,8 @@ def add_to_ourgroceries(ingredient_units, selected):
             break
     else:
         raise RuntimeError(
-            'No shopping list named {} on OurGroceries for {}'.format(
-                config.OURGROCERIES_LIST, config.OURGROCERIES_USERNAME))
+            f'No shopping list named {config.OURGROCERIES_LIST} '
+            f'on OurGroceries for {config.OURGROCERIES_USERNAME}')
     s.post(OURGROCERIES_LIST_URL, data=json.dumps({
         'command': 'importItems',
         'files': [f.read()],
@@ -342,7 +340,7 @@ def add_to_ourgroceries(ingredient_units, selected):
         'preview': False,
         'teamId': team_id,
     }), headers={
-        'Referer': '{}list/{}'.format(OURGROCERIES_LIST_URL, list_id),
+        'Referer': f'{OURGROCERIES_LIST_URL}list/{list_id}',
         'Origin': 'https://www.ourgroceries.com',
         'Accept': 'application/json, text/javascript, */*',
         'X-Requested-With': 'XMLHttpRequest',
@@ -448,7 +446,7 @@ class IngredientAutoComplete(autocomplete.Select2QuerySetView):
             self.unit = ingredient_unit.unit
 
         def __str__(self):
-            return '{} ({})'.format(self.name, self.unit)
+            return f'{self.name} ({self.unit})'
 
     def get_queryset(self):
         if self.q:

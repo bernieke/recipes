@@ -140,8 +140,7 @@ class UnitConversion(models.Model):
         verbose_name_plural = _('unit conversions')
 
     def __str__(self):
-        return '1 {} = {} {}'.format(
-            self.from_unit, localize(self.factor), self.to_unit)
+        return f'1 {self.from_unit} = {localize(self.factor)} {self.to_unit}'
 
 
 class IngredientUnit(models.Model):
@@ -158,7 +157,7 @@ class IngredientUnit(models.Model):
         verbose_name_plural = _('units')
 
     def __str__(self):
-        return '{} ({})'.format(self.ingredient.display_name, self.unit.name)
+        return f'{self.ingredient.display_name} ({self.unit.name})'
 
 
 class Category(models.Model):
@@ -234,13 +233,13 @@ class Ingredient(models.Model):
 
     def __str__(self):
         if self.primary_unit:
-            return '{} ({})'.format(self.display_name, self.primary_unit.name)
+            return f'{self.display_name} ({self.primary_unit.name})'
         else:
             return self.display_name
 
     def units(self):
         return mark_safe(', '.join(
-            (['<b>{}</b>'.format(self.primary_unit)]
+            ([f'<b>{self.primary_unit}</b>']
              if self.primary_unit else []) +
             list(self.ingredientunit_set.all()
                  .exclude(unit=self.primary_unit)
@@ -480,7 +479,7 @@ class Menu(models.Model):
         unique_together = [['year', 'week']]
 
     def __str__(self):
-        return '{} {}'.format(self.year, self.week)
+        return f'{self.year} {self.week}'
 
 
 def create_ingredient_unit_for_primary_unit(sender, instance, **kwargs):
