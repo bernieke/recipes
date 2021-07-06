@@ -79,6 +79,7 @@ TEMPLATES = [
     },
 ]
 WSGI_APPLICATION = 'recipes.wsgi.application'
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 SQL_DATABASE = os.environ.get('SQL_DATABASE')
 if not SQL_DATABASE:

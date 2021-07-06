@@ -1,3 +1,7 @@
+4.0.1
+=====
+* Enable X_FRAME_OPTIONS = 'SAMEORIGIN' for admin add modals
+
 4.0.0
 =====
 * Make dishes when added through the shopping list link back to the recipe page
