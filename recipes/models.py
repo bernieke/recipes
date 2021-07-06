@@ -481,6 +481,35 @@ class Menu(models.Model):
     def __str__(self):
         return f'{self.year} {self.week}'
 
+    def list(self, day, meal):
+        dishes = getattr(self, f'{day}_{meal}_dishes')
+        return [tuple(line.split(',', 1))
+                for line in dishes.split('\n')
+                if line]
+
+    def _save_list(self, day, meal, dish_list):
+        dishes = '\n'.join([f'{pk},{dish}' for (pk, dish) in dish_list])
+        setattr(self, f'{day}_{meal}_dishes', dishes)
+        self.save()
+
+    def add(self, day, meal, pk, dish):
+        dish_list = self.list(day, meal)
+        dish_list.append((pk, dish))
+        self._save_list(day, meal, dish_list)
+
+    def remove(self, day, meal, pk, dish):
+        dish_list = self.list(day, meal)
+        try:
+            dish_list.remove((pk, dish))
+        except ValueError:
+            pass
+        else:
+            self._save_list(day, meal, dish_list)
+
+    def note(self, day, meal, note):
+        setattr(self, f'{day}_{meal}_note', note)
+        self.save()
+
 
 def create_ingredient_unit_for_primary_unit(sender, instance, **kwargs):
     if instance.primary_unit:

@@ -16,7 +16,9 @@ screenshots
 
 ![shopping list](screenshots/4-shopping_list.png)
 
-![admin](screenshots/5-admin.png)
+![menu](screenshots/5-menu.png)
+
+![admin](screenshots/6-admin.png)
 
 
 deploy using docker-compose

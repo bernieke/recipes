@@ -5,6 +5,13 @@ register = template.Library()
 
 
 @register.simple_tag
-def get_menu_field(form, day, meal, item):
-    field_name = '_'.join([day, meal, item])
-    return form.data.get(field_name, form.initial.get(field_name, ''))
+def get_menu_note(menu, day, meal):
+    return getattr(menu, '_'.join([day, meal, 'note']), '')
+
+
+@register.simple_tag
+def get_menu_dishes(menu, day, meal):
+    try:
+        return menu.list(day, meal)
+    except AttributeError:
+        return []

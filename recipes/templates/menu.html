@@ -31,85 +31,209 @@
               </h3>
             </div>
           </div>
-          {% for dish in dishes %}
-          <form action="{% url 'del_from_menu' %}"
-                method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="pk" value="{{ dish.0 }}">
-            <input type="hidden" name="dish" value="{{ dish.1 }}">
-            {% if dish.0 == '' %}
-            {{ dish.1 }}
-            {% else %}
-            <a href="{% url 'recipe' dish.0 %}" class="text-body">
+          <div class="row mb-2">
+            <div class="col
+                        bg-light
+                        ml-3
+                        mr-3
+                        p-2"
+                 ondragover="event.preventDefault();"
+                 ondrop="dragDropDishes(event)">
+              {% if not dishes %}
+              <br>
+              {% endif %}
+              {% for dish in dishes %}
+              <i class="fas fa-bars text-body"
+                 style="cursor: grab;"
+                 ondragstart="dragStart(event)"
+                 draggable="true"
+                 pk="{{ dish.0 }}"
+                 dish="{{ dish.1 }}"
+                 source="dishes"></i>
+              {% if dish.0 == '' %}
               {{ dish.1 }}
-            </a>
-            {% endif %}
-            <button type="submit" class="btn" style="padding: 0;">
-              <i class="far fa-trash-alt text-body"></i>
-            </button>
-          </form>
-          {% endfor %}
-          <form action="{% url 'add_to_menu' %}"
-                method="POST"
-                class="form-inline">
-            {% csrf_token %}
-            <input type="hidden" name="pk" value="">
-            <input type="text"
-                   name="dish"
-                   value=""
-                   class="form-control">
-            <button type="submit" class="btn">
-              <i class="far fa-plus-square text-body"></i>
-            </button>
-          </form>
-          </form>
+              {% else %}
+              <a href="{% url 'recipe' dish.0 %}" class="text-body">
+                {{ dish.1 }}
+              </a>
+              {% endif %}
+              <button type="submit" class="btn" style="padding: 0;">
+                <i class="far fa-trash-alt text-body hyperlink"
+                   onclick="delFromDishes('{{ dish.0 }}', '{{ dish.1 }}');"></i>
+              </button>
+              <br>
+              {% endfor %}
+            </div>
+          </div>
 
-          <br><br>
-          <form method="POST">
-            {% csrf_token %}
+          <div class="row">
+            <div class="col">
+              <form action="{% url 'add_to_dishes' %}"
+                    method="POST"
+                    class="form-inline">
+                {% csrf_token %}
+                <input type="hidden" name="pk" value="">
+                <input type="text" name="dish" class="form-control" size="40">
+                <button type="submit" class="btn">
+                  <i class="far fa-plus-square text-body"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="row mt-5">
+            <div class="col">
+              <h3>
+                {% filter capfirst %}{% trans 'menu' %}{% endfilter %}
+              </h3>
+            </div>
+          </div>
+          {% for day in days %}
+          <div class="p-2 {% if day == day_of_week %}border border-dark{% endif %}">
             <div class="row">
               <div class="col">
-                <h3>
-                  {% filter capfirst %}{% trans 'menu' %}{% endfilter %}
-                </h3>
-              </div>
-            </div>
-            <input type="hidden"
-                   name="year"
-                   value="{{ form.year.value|unlocalize }}">
-            <input type="hidden" name="week" value="{{ form.week.value }}">
-
-            {% for day in days %}
-            <div class="{% if day == day_of_week %} border border-dark{% endif %}">
-              <div class="row m-2">
                 <h5>{% trans day %}</h5>
               </div>
-              <div class="row">
-                {% for meal in meals %}
-                <div class="col mt-2 mb-2{% if forloop.first %} ml-2{% endif %}{% if forloop.last %} mr-2{% endif %}">
-                  <h6>{% trans meal %}</h6>
-                  <input type="text"
-                         class="form-control mb-1"
-                         name="{{ day|lower }}_{{ meal }}_dishes"
-                         value="{% get_menu_field form day|lower meal 'dishes' %}"
-                         id="id_{{ day|lower }}_{{ meal }}_dishes"
-                         placeholder="{% trans 'dishes' %}"
-                         onchange="this.form.submit()">
-                  <input type="text"
-                         class="form-control"
-                         name="{{ day|lower }}_{{ meal }}_note"
-                         value="{% get_menu_field form day|lower meal 'note' %}"
-                         id="id_{{ day|lower }}_{{ meal }}_note"
-                         placeholder="{% trans 'note' %}"
-                         onchange="this.form.submit()">
-                </div>
+            </div>
+            <div class="row">
+              {% for meal in meals %}
+              <div class="col">
+                <h6>{% trans meal %}</h6>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="row row-eq-height" style="margin: 0;">
+              {% for meal in meals %}
+              <div class="col
+                          bg-light
+                          pt-2
+                          pb-2
+                          {% if forloop.first %}
+                          mr-3
+                          {% else %}
+                          ml-3
+                          pl-3
+                          {% endif %}"
+                   ondragover="event.preventDefault();"
+                   ondrop="dragDropMenu(event)"
+                   day="{{ day|lower }}"
+                   meal="{{ meal }}">
+                {% get_menu_dishes menu day|lower meal as dishes %}
+                {% if not dishes %}
+                <br>
+                {% endif %}
+                {% for dish in dishes %}
+                <i class="fas fa-bars text-body"
+                   style="cursor: grab;"
+                   ondragstart="dragStart(event)"
+                   draggable="true"
+                   pk="{{ dish.0 }}"
+                   dish="{{ dish.1 }}"
+                   source="{{ day|lower }}_{{ meal }}"></i>
+                {% if dish.0 == '' %}
+                {{ dish.1 }}
+                {% else %}
+                <a href="{% url 'recipe' dish.0 %}" class="text-body">
+                  {{ dish.1 }}
+                </a>
+                {% endif %}
+                <button type="submit" class="btn" style="padding: 0;">
+                  <i class="far fa-trash-alt text-body hyperlink"
+                     onclick="delFromMenu(
+                                  '{{ day|lower }}',
+                                  '{{ meal }}',
+                                  '{{ dish.0 }}',
+                                  '{{ dish.1 }}');">
+                  </i>
+                </button>
+                <br>
                 {% endfor %}
               </div>
+              {% endfor %}
             </div>
-            <br>
-            {% endfor %}
-            <br><br>
-          </form>
+            <div class="row mt-2">
+              {% for meal in meals %}
+              <div class="col">
+                <input type="text"
+                       class="form-control"
+                       value="{% get_menu_note menu day|lower meal %}"
+                       placeholder="{% trans 'note' %}"
+                       onchange="changeNote('{{ day|lower }}',
+                                            '{{ meal }}',
+                                            $(this).val());">
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <br>
+          {% endfor %}
+          <br><br>
         </div>
       </div>
+      <script>
+        const csrftoken = $('[name=csrfmiddlewaretoken]').val();
+
+        function dragStart(ev) {
+            let pk = $(ev.target).attr('pk');
+            let dish = $(ev.target).attr('dish');
+            let source = $(ev.target).attr('source');
+            ev.dataTransfer.setData('pk', pk);
+            ev.dataTransfer.setData('dish', dish);
+            ev.dataTransfer.setData('source', source);
+        }
+
+        function dragDropDishes(ev) {
+            let pk = ev.dataTransfer.getData('pk');
+            let dish = ev.dataTransfer.getData('dish');
+            let source = ev.dataTransfer.getData('source');
+            $.post('{% url 'add_to_dishes' %}',
+                   {
+                       csrfmiddlewaretoken: csrftoken,
+                       pk: pk,
+                       dish: dish,
+                       source: '{{ year|unlocalize }}_{{ week }}_' + source
+                   },
+                   function(data, textStatus, jqXHR) { location.reload(); });
+        }
+
+        function dragDropMenu(ev) {
+            let pk = ev.dataTransfer.getData('pk');
+            let dish = ev.dataTransfer.getData('dish');
+            let source = ev.dataTransfer.getData('source');
+            let day = $(ev.target).attr('day');
+            let meal = $(ev.target).attr('meal');
+            $.post('{% url 'menu' year week %}' + day + '/' + meal + '/add/',
+                   {
+                       csrfmiddlewaretoken: csrftoken,
+                       pk: pk,
+                       dish: dish,
+                       source: source
+                   },
+                   function(data, textStatus, jqXHR) { location.reload(); });
+        }
+
+        function delFromDishes(pk, dish) {
+            $.post('{% url 'del_from_dishes' %}',
+                   {csrfmiddlewaretoken: csrftoken, pk: pk, dish: dish},
+                   function(data, textStatus, jqXHR) { location.reload(); });
+        }
+
+        function delFromMenu(day, meal, pk, dish) {
+            $.post('{% url 'menu' year week %}' + day + '/' + meal + '/del/',
+                   {
+                       csrfmiddlewaretoken: csrftoken,
+                       day: day,
+                       meal: meal,
+                       pk: pk,
+                       dish: dish
+                   },
+                   function(data, textStatus, jqXHR) { location.reload(); });
+        }
+
+        function changeNote(day, meal, note) {
+            $.post('{% url 'menu' year week %}' + day + '/' + meal + '/note/',
+                   {csrfmiddlewaretoken: csrftoken, note: note},
+                   function(data, textStatus, jqXHR) { location.reload(); });
+        }
+      </script>
 {% endblock %}

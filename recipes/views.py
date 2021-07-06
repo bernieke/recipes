@@ -14,10 +14,8 @@ from constance import config
 from dal import autocomplete
 from django.conf import settings
 from django.contrib.auth import views
-from django.core.exceptions import ValidationError
 from django.db.models import F, Q
 from django.db.models.functions import Lower
-from django.forms import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -355,19 +353,54 @@ def menu_today(request):
         reverse('menu', args=[today.year, int(today.strftime('%V'))]))
 
 
-def add_to_menu(request):
+def add_to_dishes(request):
+    pk = request.POST['pk']
+    dish = request.POST['dish']
+    source = request.POST.get('source')
+    if source is not None:
+        year, week, day, meal = source.split('_')
+        menu = Menu.objects.get(year=year, week=week)
+        menu.remove(day, meal, pk, dish)
     dishes = Dishes.objects.get_or_create()[0]
-    pk = request.POST['pk'].strip()
-    dish = request.POST['dish'].strip()
     dishes.add(pk, dish)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-def del_from_menu(request):
+def del_from_dishes(request):
+    pk = request.POST['pk']
+    dish = request.POST['dish']
     dishes = Dishes.objects.get_or_create()[0]
-    pk = request.POST['pk'].strip()
-    dish = request.POST['dish'].strip()
     dishes.remove(pk, dish)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def add_to_menu(request, year, week, day, meal):
+    pk = request.POST['pk']
+    dish = request.POST['dish']
+    source = request.POST['source']
+    menu = Menu.objects.get_or_create(year=year, week=week)[0]
+    menu.add(day, meal, pk, dish)
+    if source == 'dishes':
+        dishes = Dishes.objects.get_or_create()[0]
+        dishes.remove(pk, dish)
+    else:
+        day, meal = source.split('_')
+        menu.remove(day, meal, pk, dish)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def del_from_menu(request, year, week, day, meal):
+    pk = request.POST['pk']
+    dish = request.POST['dish']
+    menu = Menu.objects.get_or_create(year=year, week=week)[0]
+    menu.remove(day, meal, pk, dish)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def change_note(request, year, week, day, meal):
+    note = request.POST['note']
+    menu = Menu.objects.get_or_create(year=year, week=week)[0]
+    menu.note(day, meal, note)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
@@ -380,41 +413,25 @@ def menu(request, year, week):
         'menu', args=[prev_week.year, int(prev_week.strftime('%V'))])
     next = reverse(
         'menu', args=[next_week.year, int(next_week.strftime('%V'))])
-    MenuForm = modelform_factory(Menu, fields='__all__')
     try:
         menu = Menu.objects.get(year=year, week=week)
     except Menu.DoesNotExist:
-        menu = None
-    dishes = Dishes.objects.get_or_create()[0]
-    error = ''
-
-    if request.method == 'POST':
-        form = MenuForm(request.POST, instance=menu)
-        if form.is_valid():
-            try:
-                form.save()
-            except ValidationError as e:
-                error = e.args[0]
-    else:
-        if menu is None:
-            try:
-                template = MenuTemplate.objects.get(active=True).template
-            except MenuTemplate.DoesNotExist:
-                template = {}
+        try:
+            template = MenuTemplate.objects.get(active=True).template
+        except MenuTemplate.DoesNotExist:
+            menu = None
+        else:
             template['year'] = year
             template['week'] = week
-            form = MenuForm(initial=template)
-        else:
-            form = MenuForm(instance=menu)
-
+            menu = Menu.objects.create(**template)
+    dishes = Dishes.objects.get_or_create()[0]
     return render(request, 'menu.html', {
-        'error': error,
         'page': 'menu',
-        'days': DAYS_OF_THE_WEEK,
         'day_of_week': DAYS_OF_THE_WEEK[date.today().weekday()],
+        'days': DAYS_OF_THE_WEEK,
         'meals': ['lunch', 'dinner'],
         'dishes': dishes.list,
-        'form': form,
+        'menu': menu,
         'year': year,
         'week': week,
         'start': start,

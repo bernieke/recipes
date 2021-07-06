@@ -1,6 +1,7 @@
 4.0.0
 =====
-* Make dishes when added to shopping list link back to the recipe page
+* Make dishes when added through the shopping list link back to the recipe page
+* Make dishes draggable
 
 3.6.6
 =====

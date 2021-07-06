@@ -25,8 +25,14 @@ urlpatterns += i18n_patterns(
     path('cart/add/<str:pk>/', views.add_to_cart, name='add_to_cart'),
     path('cart/del/<str:pk>/', views.del_from_cart, name='del_from_cart'),
     path('menu/', views.menu_today, name='menu_today'),
+    path('menu/add/', views.add_to_dishes, name='add_to_dishes'),
+    path('menu/del/', views.del_from_dishes, name='del_from_dishes'),
     path('menu/<int:year>/<int:week>/', views.menu, name='menu'),
-    path('menu/add/', views.add_to_menu, name='add_to_menu'),
-    path('menu/del/', views.del_from_menu, name='del_from_menu'),
+    path('menu/<int:year>/<int:week>/<str:day>/<str:meal>/add/',
+         views.add_to_menu, name='add_to_menu'),
+    path('menu/<int:year>/<int:week>/<str:day>/<str:meal>/del/',
+         views.del_from_menu, name='del_from_menu'),
+    path('menu/<int:year>/<int:week>/<str:day>/<str:meal>/note/',
+         views.change_note, name='change_note'),
 )
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
