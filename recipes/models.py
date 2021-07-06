@@ -8,7 +8,7 @@ from django.utils.formats import localize
 from django.utils.safestring import mark_safe
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
-from django_markdown.models import MarkdownField
+from martor.models import MartorField
 
 
 def fahrenheit_to_celcius(fahrenheit):
@@ -286,7 +286,7 @@ class Recipe(models.Model):
     ingredient_units = models.ManyToManyField(
         'IngredientUnit', through='IngredientInRecipe', blank=True,
         verbose_name=_('ingredients'))
-    recipe = MarkdownField(blank=True, verbose_name=_('recipe'))
+    recipe = MartorField(blank=True, verbose_name=_('recipe'))
     popularity = models.PositiveIntegerField(default=0)
 
     class Meta:

@@ -3,7 +3,7 @@ from dal import autocomplete
 from django import forms
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
-from django_markdown.fields import MarkdownFormField
+from martor.fields import MartorFormField
 
 from .models import (
     Ingredient, IngredientUnit, Unit, UnitConversion, IngredientInRecipe,
@@ -82,7 +82,7 @@ class IngredientInRecipeForm(forms.ModelForm):
 
 
 class RecipeForm(forms.ModelForm):
-    recipe = MarkdownFormField()
+    recipe = MartorFormField()
 
     class Meta:
         model = Recipe

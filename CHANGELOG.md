@@ -2,6 +2,7 @@
 =====
 * Make dishes when added through the shopping list link back to the recipe page
 * Make dishes draggable
+* Upgrade to Django 3.2
 
 3.6.6
 =====

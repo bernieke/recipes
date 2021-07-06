@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load markdownify %}
+{% load martortags %}
 
 {% block content %}
       <div class="row pt-4 justify-content-end">
@@ -53,7 +53,7 @@
           <h4 class="pt-3">
             {% filter capfirst %}{% trans 'recipe' %}{% endfilter %}
           </h4>
-          {{ recipe.recipe | markdownify }}
+          {{ recipe.recipe | safe_markdown }}
         </div>
       </div>
 {% endblock %}

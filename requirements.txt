@@ -1,4 +1,4 @@
-django>=2.2,<3.0
+django>=3.2,<3.3
 django-bootstrap4
 django-fontawesome-5
 django-admin-sortable2
@@ -6,7 +6,6 @@ django-autocomplete-light
 django-admin-interface
 django-constance[database]
 django-vinaigrette
-django-markdown-app
-django-markdownify
+martor
 pillow
 requests

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import reverse_lazy
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
-from django_markdown.admin import AdminMarkdownWidget
+from martor.widgets import AdminMartorWidget
 
 from .models import (
     Unit, UnitConversion, IngredientUnit, Category, Tag, Ingredient, Alias,
@@ -68,14 +68,10 @@ class RecipeAdmin(admin.ModelAdmin):
     form = RecipeForm
     list_display = ['title', 'tag_list']
     inlines = [IngredientInRecipeInline]
-    formfield_overrides = {'recipe': {'widget': AdminMarkdownWidget}}
+    formfield_overrides = {'recipe': {'widget': AdminMartorWidget}}
     search_fields = ['title', 'tags__name']
 
     class Media:
-        js = [
-            'admin/js/jquery.init.js',
-            'django_markdown/jquery.init.js',
-        ]
         css = {
             'all': ['hide_admin_original.css'],
         }

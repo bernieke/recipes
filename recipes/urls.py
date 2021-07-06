@@ -13,7 +13,7 @@ urlpatterns = [
          name='autocomplete-tag'),
     path('autocomplete/ingredient/', views.IngredientAutoComplete.as_view(),
          name='autocomplete-ingredient'),
-    path('markdown/', include('django_markdown.urls')),
+    path('martor/', include('martor.urls')),
 ]
 urlpatterns += i18n_patterns(
     url(r'^login/$', views.login, name='account_login'),

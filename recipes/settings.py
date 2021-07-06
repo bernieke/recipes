@@ -17,8 +17,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY_FILE = os.path.join(BASE_DIR, 'secret.key')
 
 if not os.path.exists(SECRET_KEY_FILE):
-    open(SECRET_KEY_FILE, 'w').write(get_random_secret_key())
-SECRET_KEY = open(SECRET_KEY_FILE).read().strip()
+    with open(SECRET_KEY_FILE, 'w') as f:
+        f.write(get_random_secret_key())
+with open(SECRET_KEY_FILE) as f:
+    SECRET_KEY = f.read().strip()
 
 DEBUG = int(os.environ.get('DEBUG', '0'))
 if os.environ.get('GUNICORN'):
@@ -30,13 +32,12 @@ INSTALLED_APPS = [
     'bootstrap4',
     'fontawesome_5',
     'recipes',
+    'martor',
     'adminsortable2',
+    'admin_interface',
+    'colorfield',
     'dal',
     'dal_select2',
-    'admin_interface',
-    'django_markdown',
-    'markdownify',
-    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -95,6 +96,7 @@ DATABASES = {
         'PORT': os.environ.get('SQL_PORT', '5432'),
     }
 }
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -155,10 +157,18 @@ CONSTANCE_CONFIG_FIELDSETS = {
     ],
 }
 
-MARKDOWN_EDITOR_SKIN = 'simple'
-MARKDOWN_PROTECT_PREVIEW = True
-MARKDOWNIFY = {
-    'default': {
-        'BLEACH': False,
-    },
+MARTOR_THEME = 'semantic'
+MARTOR_ENABLE_CONFIGS = {
+    'emoji': 'false',
+    'imgur': 'false',
+    'mention': 'false',
+    'jquery': 'false',
+    'living': 'false',
+    'spellcheck': 'true',
+    'hljs': 'true',
 }
+MARTOR_TOOLBAR_BUTTONS = [
+    'bold', 'italic', 'horizontal', 'heading', 'pre-code',
+    'blockquote', 'unordered-list', 'ordered-list',
+    'link', 'image-link', 'toggle-maximize', 'help',
+]

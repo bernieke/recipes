@@ -5,3 +5,8 @@ td.original p {
 .inline-group .tabular tr.has_original td {
     padding-top: 10px;
 }
+
+.field-unit select {
+    height: 16px !important;
+    line-height: 16px;
+}
