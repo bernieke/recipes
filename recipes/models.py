@@ -429,21 +429,22 @@ class Dishes(models.Model):
         self._load_list()
 
     def _load_list(self):
-        self.list = [tuple(line.split(',', 1))
+        self.list = [tuple(line.split(',', 2))
                      for line in self.dishes.split('\n')
                      if line]
 
     def _save_list(self):
-        self.dishes = '\n'.join([f'{pk},{dish}' for (pk, dish) in self.list])
+        self.dishes = '\n'.join([f'{pk},{dish},{qty}'
+                                 for (pk, dish, qty) in self.list])
         self.save()
 
-    def add(self, pk, dish):
-        self.list.append((pk, dish))
+    def add(self, pk, dish, qty):
+        self.list.append((pk, dish, qty))
         self._save_list()
 
-    def remove(self, pk, dish):
+    def remove(self, pk, dish, qty):
         try:
-            self.list.remove((pk, dish))
+            self.list.remove((pk, dish, qty))
         except ValueError:
             pass
         else:
@@ -493,24 +494,25 @@ class Menu(models.Model):
 
     def list(self, day, meal):
         dishes = getattr(self, f'{day}_{meal}_dishes')
-        return [tuple(line.split(',', 1))
+        return [tuple(line.split(',', 2))
                 for line in dishes.split('\n')
                 if line]
 
     def _save_list(self, day, meal, dish_list):
-        dishes = '\n'.join([f'{pk},{dish}' for (pk, dish) in dish_list])
+        dishes = '\n'.join([f'{pk},{dish},{qty}'
+                            for (pk, dish, qty) in dish_list])
         setattr(self, f'{day}_{meal}_dishes', dishes)
         self.save()
 
-    def add(self, day, meal, pk, dish):
+    def add(self, day, meal, pk, dish, qty):
         dish_list = self.list(day, meal)
-        dish_list.append((pk, dish))
+        dish_list.append((pk, dish, qty))
         self._save_list(day, meal, dish_list)
 
-    def remove(self, day, meal, pk, dish):
+    def remove(self, day, meal, pk, dish, qty):
         dish_list = self.list(day, meal)
         try:
-            dish_list.remove((pk, dish))
+            dish_list.remove((pk, dish, qty))
         except ValueError:
             pass
         else:

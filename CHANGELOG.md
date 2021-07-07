@@ -6,6 +6,8 @@
 * Change primary_unit to shopping_unit
 * Add use_in_recipe to ingredient unit
 * Prefill factor for known ingredient units
+* Add qty multiplication to recipe page
+* Add anchor to menu days
 
 4.0.1
 =====

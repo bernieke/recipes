@@ -58,17 +58,20 @@
                  draggable="true"
                  pk="{{ dish.0 }}"
                  dish="{{ dish.1 }}"
+                 qty="{{ dish.2 }}"
                  source="dishes"></i>
               {% if dish.0 == '' %}
-              {{ dish.1 }}
+              {{ dish.1 }} {% if dish.2 != '1' %}({{ dish.2 }}){% endif %}
               {% else %}
-              <a href="{% url 'recipe' dish.0 %}" class="text-body">
-                {{ dish.1 }}
+              <a href="{% url 'recipe-qty' dish.0 dish.2 %}" class="text-body">
+                {{ dish.1 }} {% if dish.2 != '1' %}({{ dish.2 }}){% endif %}
               </a>
               {% endif %}
               <button type="submit" class="btn" style="padding: 0;">
                 <i class="far fa-trash-alt text-body hyperlink"
-                   onclick="delFromDishes('{{ dish.0 }}', '{{ dish.1 }}');"></i>
+                   onclick="delFromDishes('{{ dish.0 }}',
+                                          '{{ dish.1 }}',
+                                          '{{ dish.2 }}');"></i>
               </button>
               <br>
               {% endfor %}
@@ -83,6 +86,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="pk" value="">
                 <input type="text" name="dish" class="form-control" size="40">
+                <input type="hidden" name="qty" value="1">
                 <button type="submit" class="btn">
                   <i class="far fa-plus-square text-body"></i>
                 </button>
@@ -98,6 +102,7 @@
             </div>
           </div>
           {% for day in days %}
+          <a name="{{ day }}"></a>
           <div class="p-2
                       {% if day == day_of_week and week == current_week %}
                       border border-dark
@@ -141,12 +146,14 @@
                    draggable="true"
                    pk="{{ dish.0 }}"
                    dish="{{ dish.1 }}"
+                   qty="{{ dish.2 }}"
                    source="{{ day|lower }}_{{ meal }}"></i>
                 {% if dish.0 == '' %}
-                {{ dish.1 }}
+                {{ dish.1 }} {% if dish.2 != '1' %}({{ dish.2 }}){% endif %}
                 {% else %}
-                <a href="{% url 'recipe' dish.0 %}" class="text-body">
-                  {{ dish.1 }}
+                <a href="{% url 'recipe-qty' dish.0 dish.2 %}"
+                   class="text-body">
+                  {{ dish.1 }} {% if dish.2 != '1' %}({{ dish.2 }}){% endif %}
                 </a>
                 {% endif %}
                 <button type="submit" class="btn" style="padding: 0;">
@@ -155,7 +162,8 @@
                                   '{{ day|lower }}',
                                   '{{ meal }}',
                                   '{{ dish.0 }}',
-                                  '{{ dish.1 }}');">
+                                  '{{ dish.1 }}',
+                                  '{{ dish.2 }}');">
                   </i>
                 </button>
                 <br>
@@ -188,21 +196,25 @@
         function dragStart(ev) {
             let pk = $(ev.target).attr('pk');
             let dish = $(ev.target).attr('dish');
+            let qty = $(ev.target).attr('qty');
             let source = $(ev.target).attr('source');
             ev.dataTransfer.setData('pk', pk);
             ev.dataTransfer.setData('dish', dish);
+            ev.dataTransfer.setData('qty', qty);
             ev.dataTransfer.setData('source', source);
         }
 
         function dragDropDishes(ev) {
             let pk = ev.dataTransfer.getData('pk');
             let dish = ev.dataTransfer.getData('dish');
+            let qty = ev.dataTransfer.getData('qty');
             let source = ev.dataTransfer.getData('source');
             $.post('{% url 'add_to_dishes' %}',
                    {
                        csrfmiddlewaretoken: csrftoken,
                        pk: pk,
                        dish: dish,
+                       qty: qty,
                        source: '{{ year|unlocalize }}_{{ week }}_' + source
                    },
                    function(data, textStatus, jqXHR) { location.reload(); });
@@ -211,6 +223,7 @@
         function dragDropMenu(ev) {
             let pk = ev.dataTransfer.getData('pk');
             let dish = ev.dataTransfer.getData('dish');
+            let qty = ev.dataTransfer.getData('qty');
             let source = ev.dataTransfer.getData('source');
             let day = $(ev.target).attr('day');
             let meal = $(ev.target).attr('meal');
@@ -219,25 +232,32 @@
                        csrfmiddlewaretoken: csrftoken,
                        pk: pk,
                        dish: dish,
+                       qty: qty,
                        source: source
                    },
                    function(data, textStatus, jqXHR) { location.reload(); });
         }
 
-        function delFromDishes(pk, dish) {
+        function delFromDishes(pk, dish, qty) {
             $.post('{% url 'del_from_dishes' %}',
-                   {csrfmiddlewaretoken: csrftoken, pk: pk, dish: dish},
+                   {
+                       csrfmiddlewaretoken: csrftoken,
+                       pk: pk,
+                       dish: dish,
+                       qty: qty
+                   },
                    function(data, textStatus, jqXHR) { location.reload(); });
         }
 
-        function delFromMenu(day, meal, pk, dish) {
+        function delFromMenu(day, meal, pk, dish, qty) {
             $.post('{% url 'menu' year week %}' + day + '/' + meal + '/del/',
                    {
                        csrfmiddlewaretoken: csrftoken,
                        day: day,
                        meal: meal,
                        pk: pk,
-                       dish: dish
+                       dish: dish,
+                       qty: qty
                    },
                    function(data, textStatus, jqXHR) { location.reload(); });
         }

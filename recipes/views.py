@@ -119,11 +119,19 @@ def tag(request, pk):
 
 
 def recipe(request, pk):
+    return redirect(reverse('recipe-qty', args=[pk, 1]))
+
+
+def recipe_qty(request, pk, qty):
     recipe = Recipe.objects.get(pk=pk)
+    ingredient_units = recipe.ingredientinrecipe_set.all()
+    for ingredient_unit in ingredient_units:
+        ingredient_unit.amount *= Decimal(qty)
     return render(request, 'recipe.html', context={
         'page': 'recipe',
         'recipe': recipe,
-        'ingredient_units': recipe.ingredientinrecipe_set.all(),
+        'qty': qty,
+        'ingredient_units': ingredient_units,
     })
 
 
@@ -224,7 +232,7 @@ def cart(request):
         if not error:
             dishes = Dishes.objects.get_or_create()[0]
             for recipe, qty in recipes:
-                dishes.add(recipe.pk, f'{recipe} ({qty})')
+                dishes.add(recipe.pk, f'{recipe}', qty)
                 recipe.popularity += 1
                 recipe.save()
             dishes.save()
@@ -352,50 +360,55 @@ def add_to_ourgroceries(ingredient_units, selected):
 def menu_today(request):
     today = date.today()
     return redirect(
-        reverse('menu', args=[today.year, int(today.strftime('%V'))]))
+        reverse('menu', args=[today.year, int(today.strftime('%V'))]) +
+        f'#{DAYS_OF_THE_WEEK[today.weekday()]}')
 
 
 def add_to_dishes(request):
     pk = request.POST['pk']
     dish = request.POST['dish']
+    qty = request.POST['qty']
     source = request.POST.get('source')
     if source is not None:
         year, week, day, meal = source.split('_')
         menu = Menu.objects.get(year=year, week=week)
-        menu.remove(day, meal, pk, dish)
+        menu.remove(day, meal, pk, dish, qty)
     dishes = Dishes.objects.get_or_create()[0]
-    dishes.add(pk, dish)
+    dishes.add(pk, dish, qty)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def del_from_dishes(request):
     pk = request.POST['pk']
     dish = request.POST['dish']
+    qty = request.POST['qty']
     dishes = Dishes.objects.get_or_create()[0]
-    dishes.remove(pk, dish)
+    dishes.remove(pk, dish, qty)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def add_to_menu(request, year, week, day, meal):
     pk = request.POST['pk']
     dish = request.POST['dish']
+    qty = request.POST['qty']
     source = request.POST['source']
     menu = Menu.objects.get_or_create(year=year, week=week)[0]
-    menu.add(day, meal, pk, dish)
+    menu.add(day, meal, pk, dish, qty)
     if source == 'dishes':
         dishes = Dishes.objects.get_or_create()[0]
-        dishes.remove(pk, dish)
+        dishes.remove(pk, dish, qty)
     else:
         day, meal = source.split('_')
-        menu.remove(day, meal, pk, dish)
+        menu.remove(day, meal, pk, dish, qty)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def del_from_menu(request, year, week, day, meal):
     pk = request.POST['pk']
     dish = request.POST['dish']
+    qty = request.POST['qty']
     menu = Menu.objects.get_or_create(year=year, week=week)[0]
-    menu.remove(day, meal, pk, dish)
+    menu.remove(day, meal, pk, dish, qty)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 

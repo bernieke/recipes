@@ -21,6 +21,7 @@ urlpatterns += i18n_patterns(
     path('', views.index, name='index'),
     path('tag/<int:pk>/', views.tag, name='tag'),
     path('recipe/<int:pk>/', views.recipe, name='recipe'),
+    path('recipe/<int:pk>/<str:qty>', views.recipe_qty, name='recipe-qty'),
     path('cart/', views.cart, name='cart'),
     path('cart/add/<str:pk>/', views.add_to_cart, name='add_to_cart'),
     path('cart/del/<str:pk>/', views.del_from_cart, name='del_from_cart'),
