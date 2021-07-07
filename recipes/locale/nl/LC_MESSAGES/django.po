@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-07 10:06+0200\n"
-"PO-Revision-Date: 2021-07-07 10:06+0200\n"
+"POT-Creation-Date: 2021-07-07 10:57+0200\n"
+"PO-Revision-Date: 2021-07-07 10:57+0200\n"
 "Last-Translator: Bernard Kerckenaere <bernieke@bernieke.com>\n"
 "Language-Team: Nederlands <bernieke@bernieke.com>\n"
 "Language: Nederlands\n"
@@ -15,24 +15,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: forms.py:48 models.py:119 models.py:149 models.py:156
+#: forms.py:48 models.py:119 models.py:149 models.py:158
 msgid "unit"
 msgstr "eenheid"
 
-#: forms.py:76
+#: forms.py:78
 msgid "No unit conversion from {} to {}"
 msgstr "Geen eenheid omzetting van {} naar {}"
 
-#: models.py:112 models.py:164 models.py:179 models.py:208 models.py:266
-#: models.py:340
+#: models.py:112 models.py:166 models.py:181 models.py:210 models.py:268
+#: models.py:342
 msgid "name"
 msgstr "naam"
 
-#: models.py:115 models.py:167 models.py:182 models.py:271 models.py:321
+#: models.py:115 models.py:169 models.py:184 models.py:273 models.py:323
 msgid "order"
 msgstr "volgorde"
 
-#: models.py:120 models.py:157 models.py:260
+#: models.py:120 models.py:159 models.py:262
 msgid "units"
 msgstr "eenheden"
 
@@ -56,99 +56,103 @@ msgstr "eenheid omzetting"
 msgid "unit conversions"
 msgstr "eenheid omzettingen"
 
-#: models.py:171 models.py:215
+#: models.py:154
+msgid "use in recipe"
+msgstr "gebruik in recept"
+
+#: models.py:173 models.py:217
 msgid "category"
 msgstr "categorie"
 
-#: models.py:172
+#: models.py:174
 msgid "categories"
 msgstr "categoriën"
 
-#: models.py:187
+#: models.py:189
 msgid "tag"
 msgstr "tag"
 
-#: models.py:188 models.py:285 models.py:309 templates/recipe.html:40
+#: models.py:190 models.py:287 models.py:311 templates/recipe.html:40
 msgid "tags"
 msgstr "tags"
 
-#: models.py:203 models.py:261 models.py:295 templates/base.html:10
+#: models.py:205 models.py:263 models.py:297 templates/base.html:10
 #: templates/base.html:23 templates/cart.html:91
 msgid "recipes"
 msgstr "recepten"
 
-#: models.py:212
-msgid "primary unit"
-msgstr "primaire eenheid"
+#: models.py:214
+msgid "shopping unit"
+msgstr "boodschappen eenheid"
 
-#: models.py:219 models.py:268 models.py:316 models.py:325
+#: models.py:221 models.py:270 models.py:318 models.py:327
 msgid "ingredient"
 msgstr "ingrediënt"
 
-#: models.py:220 models.py:288 models.py:326 templates/cart.html:9
+#: models.py:222 models.py:290 models.py:328 templates/cart.html:9
 #: templates/recipe.html:26
 msgid "ingredients"
 msgstr "ingrediënten"
 
-#: models.py:275
+#: models.py:277
 msgid "alias"
 msgstr "alias"
 
-#: models.py:276
+#: models.py:278
 msgid "aliases"
 msgstr "aliases"
 
-#: models.py:284 templates/index.html:42 templates/index.html:45
+#: models.py:286 templates/index.html:42 templates/index.html:45
 msgid "title"
 msgstr "titel"
 
-#: models.py:289 models.py:294 models.py:314 templates/recipe.html:54
+#: models.py:291 models.py:296 models.py:316 templates/recipe.html:54
 msgid "recipe"
 msgstr "recept"
 
-#: models.py:318
+#: models.py:320
 msgid "amount"
 msgstr "hoeveelheid"
 
-#: models.py:341
+#: models.py:343
 msgid "active"
 msgstr "actief"
 
-#: models.py:345 models.py:348
+#: models.py:347 models.py:350
 msgid "Monday"
 msgstr "maandag"
 
-#: models.py:345 models.py:351 models.py:357 models.py:363 models.py:369
-#: models.py:375 models.py:381
+#: models.py:347 models.py:353 models.py:359 models.py:365 models.py:371
+#: models.py:377 models.py:383
 msgid "lunch"
 msgstr "middagmaal"
 
-#: models.py:348 models.py:354 models.py:360 models.py:366 models.py:372
-#: models.py:378 models.py:384
+#: models.py:350 models.py:356 models.py:362 models.py:368 models.py:374
+#: models.py:380 models.py:386
 msgid "dinner"
 msgstr "avondmaal"
 
-#: models.py:351 models.py:354
+#: models.py:353 models.py:356
 msgid "Tuesday"
 msgstr "dinsdag"
 
-#: models.py:357 models.py:360
+#: models.py:359 models.py:362
 msgid "Wednesday"
 msgstr "woensdag"
 
-#: models.py:363 models.py:366
+#: models.py:365 models.py:368
 msgid "Thursday"
 msgstr "donderdag"
 
-#: models.py:369 models.py:372
+#: models.py:371 models.py:374
 msgid "Friday"
 msgstr "vrijdag"
 
-#: models.py:375 models.py:378
+#: models.py:377 models.py:380
 msgid "Saturday"
 msgstr "zaterdag"
 
-#: models.py:381 models.py:384
+#: models.py:383 models.py:386
 msgid "Sunday"
 msgstr "zondag"
 

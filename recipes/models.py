@@ -150,6 +150,8 @@ class IngredientUnit(models.Model):
     factor = models.DecimalField(
         max_digits=7, decimal_places=3, blank=True, null=True, default=None,
         verbose_name=_('factor'))
+    use_in_recipe = models.BooleanField(
+        default=False, verbose_name=_('use in recipe'))
 
     class Meta:
         unique_together = [['ingredient', 'unit']]
@@ -206,10 +208,10 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(
         max_length=254, blank=True, unique=True, verbose_name=_('name'))
-    primary_unit = models.ForeignKey(
+    shopping_unit = models.ForeignKey(
         'Unit', on_delete=models.PROTECT, null=True, blank=True,
-        default=None, related_name='primary_unit',
-        verbose_name=_('primary unit'))
+        default=None, related_name='shopping_unit',
+        verbose_name=_('shopping unit'))
     category = models.ForeignKey(
         'Category', on_delete=models.PROTECT, null=True, blank=True,
         verbose_name=_('category'))
@@ -232,17 +234,17 @@ class Ingredient(models.Model):
             return self.name
 
     def __str__(self):
-        if self.primary_unit:
-            return f'{self.display_name} ({self.primary_unit.name})'
+        if self.shopping_unit:
+            return f'{self.display_name} ({self.shopping_unit.name})'
         else:
             return self.display_name
 
     def units(self):
         return mark_safe(', '.join(
-            ([f'<b>{self.primary_unit}</b>']
-             if self.primary_unit else []) +
+            ([f'<b>{self.shopping_unit}</b>']
+             if self.shopping_unit else []) +
             list(self.ingredientunit_set.all()
-                 .exclude(unit=self.primary_unit)
+                 .exclude(unit=self.shopping_unit)
                  .values_list('unit__name', flat=True))))
 
     def recipes(self):
@@ -511,11 +513,11 @@ class Menu(models.Model):
         self.save()
 
 
-def create_ingredient_unit_for_primary_unit(sender, instance, **kwargs):
-    if instance.primary_unit:
+def create_ingredient_unit_for_shopping_unit(sender, instance, **kwargs):
+    if instance.shopping_unit:
         IngredientUnit.objects.update_or_create(
-            ingredient=instance, unit=instance.primary_unit, factor=None)
+            ingredient=instance, unit=instance.shopping_unit, factor=None)
 
 
 models.signals.post_save.connect(
-    create_ingredient_unit_for_primary_unit, sender=Ingredient)
+    create_ingredient_unit_for_shopping_unit, sender=Ingredient)

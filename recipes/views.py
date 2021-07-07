@@ -158,9 +158,10 @@ def cart(request):
                .exclude(ingredient_unit__unit__isnull=True)
                .exclude(ingredient_unit__ingredient__category__isnull=True))
     primary_filter = (
-        Q(ingredient_unit__ingredient__primary_unit__isnull=True) |
+        Q(ingredient_unit__ingredient__shopping_unit__isnull=True) |
         Q(ingredient_unit__factor__isnull=True) |
-        Q(ingredient_unit__unit=F('ingredient_unit__ingredient__primary_unit'))
+        Q(ingredient_unit__unit=F(
+            'ingredient_unit__ingredient__shopping_unit'))
     )
     primary_qs = base_qs.filter(primary_filter)
     not_primary_qs = base_qs.exclude(primary_filter)
@@ -176,9 +177,10 @@ def cart(request):
             if not_primary_qs.filter(pk=ingredient_in_recipe.pk).exists():
                 ingredient = ingredient_unit.ingredient
                 pk = (IngredientUnit.objects
-                      .get(ingredient=ingredient, unit=ingredient.primary_unit)
+                      .get(ingredient=ingredient,
+                           unit=ingredient.shopping_unit)
                       .pk)
-                factor = get_factor(ingredient_unit, ingredient.primary_unit)
+                factor = get_factor(ingredient_unit, ingredient.shopping_unit)
                 if pk not in totals:
                     totals[pk] = 0
                     new_primary.add(pk)
@@ -471,10 +473,11 @@ class IngredientAutoComplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if self.q:
             ingredient_units = IngredientUnit.objects.filter(
-                ingredient__name__icontains=self.q)
+                ingredient__name__icontains=self.q, use_in_recipe=True)
             aliases = Alias.objects.filter(name__icontains=self.q)
         else:
-            ingredient_units = IngredientUnit.objects.all()
+            ingredient_units = IngredientUnit.objects.filter(
+                use_in_recipe=True)
             aliases = Alias.objects.all()
         l1 = [self.IngredientUnitOrAlias(ingredient_unit)
               for ingredient_unit in ingredient_units]

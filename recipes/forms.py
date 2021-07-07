@@ -19,9 +19,9 @@ class IngredientForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if 'instance' in kwargs:
-            self.fields['primary_unit'].widget.can_add_related = False
-            self.fields['primary_unit'].widget.can_change_related = False
-            self.fields['primary_unit'].widget.can_delete_related = False
+            self.fields['shopping_unit'].widget.can_add_related = False
+            self.fields['shopping_unit'].widget.can_change_related = False
+            self.fields['shopping_unit'].widget.can_delete_related = False
 
 
 class IngredientUnitInlineForm(forms.ModelForm):

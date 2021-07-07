@@ -33,7 +33,7 @@ class FactorTestCase(TestCase):
         self.x, _ = Unit.objects.get_or_create(name='x')
         self.y, _ = Unit.objects.get_or_create(name='y')
         self.ingredient = Ingredient.objects.create(
-            name='ingredient', primary_unit=self.ml)
+            name='ingredient', shopping_unit=self.ml)
         self.ingredient_ml = IngredientUnit.objects.get(
             ingredient=self.ingredient, unit=self.ml)
         self.ingredient_tbsp = IngredientUnit.objects.create(
@@ -262,7 +262,7 @@ class RecipesTestCase(TestCase):
                             self.model_to_cart(self.ingredient2g, 1)]
         self.assertEqual(ctx['ingredient_units'], ingredient_units)
 
-        self.ingredient2.primary_unit = self.g
+        self.ingredient2.shopping_unit = self.g
         self.ingredient2.save()
         ctx = self.client.get(reverse('cart')).context
         ingredient_units = [self.model_to_cart(self.ingredient1pc, 5),

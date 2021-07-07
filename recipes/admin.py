@@ -47,7 +47,7 @@ class IngredientAdmin(admin.ModelAdmin):
     list_display = ['name', 'category', 'units', 'aliases']
     form = IngredientForm
     inlines = [IngredientUnitInline, AliasInline]
-    fields = ['name', 'primary_unit', 'category', 'recipes']
+    fields = ['name', 'shopping_unit', 'category', 'recipes']
     readonly_fields = ['recipes']
     search_fields = ['name', 'alias__name']
 

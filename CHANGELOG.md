@@ -3,6 +3,8 @@
 * Only mark today in the current week
 * Add this week link between next and previous
 * Fix translations
+* Change primary_unit to shopping_unit
+* Add use_in_recipe to ingredient unit
 
 4.0.1
 =====
