@@ -21,29 +21,30 @@ def normalize(d):
     return int(normalized) if d >= threshold else normalized
 
 
-def get_factor(ingredient_unit, unit):
+def get_factor(ingredient_unit, unit, try_ingredient_units=True):
     if unit == ingredient_unit.unit:
         return 1
 
     else:
         factor = None
 
-        # First see if we can convert through the ingredient units
-        try:
-            if ingredient_unit.factor:
-                factor1 = ingredient_unit.factor
-            else:
-                factor1 = Decimal(1)
-            factor2 = (ingredient_unit
-                       .ingredient
-                       .ingredientunit_set
-                       .get(unit=unit)).factor
-            if factor2:
-                factor = factor1 * (1 / factor2)
-            else:
-                factor = factor1
-        except IngredientUnit.DoesNotExist:
-            pass
+        if try_ingredient_units:
+            # First see if we can convert through the ingredient units
+            try:
+                if ingredient_unit.factor:
+                    factor1 = ingredient_unit.factor
+                else:
+                    factor1 = Decimal(1)
+                factor2 = (ingredient_unit
+                           .ingredient
+                           .ingredientunit_set
+                           .get(unit=unit)).factor
+                if factor2:
+                    factor = factor1 * (1 / factor2)
+                else:
+                    factor = factor1
+            except IngredientUnit.DoesNotExist:
+                pass
 
         # Then try the unit conversion
         if factor is None:
@@ -157,6 +158,13 @@ class IngredientUnit(models.Model):
         unique_together = [['ingredient', 'unit']]
         verbose_name = _('unit')
         verbose_name_plural = _('units')
+
+    def save(self, *args, **kwargs):
+        if (self.factor is None and
+                not self.unit == self.ingredient.shopping_unit):
+            self.factor = get_factor(self, self.ingredient.shopping_unit,
+                                     try_ingredient_units=False)
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.ingredient.display_name} ({self.unit.name})'

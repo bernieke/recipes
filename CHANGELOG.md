@@ -5,6 +5,7 @@
 * Fix translations
 * Change primary_unit to shopping_unit
 * Add use_in_recipe to ingredient unit
+* Prefill factor for known ingredient units
 
 4.0.1
 =====
