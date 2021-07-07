@@ -12,19 +12,16 @@
           <div class="row">
             <div class="col">
               <h6>
-                <a href="{{ prev }}"
-                   class="text-body">
-                  {% filter capfirst %}{% trans 'previous' %}{% endfilter %}
+                <a href="{{ prev }}" class="text-body">
+                  {% trans 'Previous' %}
                 </a>
                 <span class="ml-3 mr-3">&lt;</span>
-                <a href="{% url 'menu_today' %}"
-                   class="text-body">
-                  {% filter capfirst %}{% trans 'this week' %}{% endfilter %}
+                <a href="{% url 'menu_today' %}" class="text-body">
+                  {% trans 'This week' %}
                 </a>
                 <span class="ml-3 mr-3">&gt;</span>
-                <a href="{{ next }}"
-                   class="text-body">
-                  {% filter capfirst %}{% trans 'next' %}{% endfilter %}
+                <a href="{{ next }}" class="text-body">
+                  {% trans 'Next' %}
                 </a>
               </h6>
             </div>

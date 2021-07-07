@@ -2,6 +2,7 @@
 =====
 * Only mark today in the current week
 * Add this week link between next and previous
+* Fix translations
 
 4.0.1
 =====
