@@ -11,10 +11,22 @@
           <br>
           <div class="row">
             <div class="col">
-              <h6><a href="{{ prev }}" class="text-body">Previous</a></h6>
-            </div>
-            <div class="col">
-              <h6><a href="{{ next }}" class="text-body">Next</a></h6>
+              <h6>
+                <a href="{{ prev }}"
+                   class="text-body">
+                  {% filter capfirst %}{% trans 'previous' %}{% endfilter %}
+                </a>
+                <span class="ml-3 mr-3">&lt;</span>
+                <a href="{% url 'menu_today' %}"
+                   class="text-body">
+                  {% filter capfirst %}{% trans 'this week' %}{% endfilter %}
+                </a>
+                <span class="ml-3 mr-3">&gt;</span>
+                <a href="{{ next }}"
+                   class="text-body">
+                  {% filter capfirst %}{% trans 'next' %}{% endfilter %}
+                </a>
+              </h6>
             </div>
           </div>
         </div>
@@ -89,7 +101,10 @@
             </div>
           </div>
           {% for day in days %}
-          <div class="p-2 {% if day == day_of_week %}border border-dark{% endif %}">
+          <div class="p-2
+                      {% if day == day_of_week and week == current_week %}
+                      border border-dark
+                      {% endif %}">
             <div class="row">
               <div class="col">
                 <h5>{% trans day %}</h5>

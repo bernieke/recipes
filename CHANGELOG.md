@@ -1,3 +1,8 @@
+4.1.0
+=====
+* Only mark today in the current week
+* Add this week link between next and previous
+
 4.0.1
 =====
 * Enable X_FRAME_OPTIONS = 'SAMEORIGIN' for admin add modals

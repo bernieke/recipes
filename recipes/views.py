@@ -405,6 +405,8 @@ def change_note(request, year, week, day, meal):
 
 
 def menu(request, year, week):
+    today = date.today()
+    current_week = int(today.strftime('%V'))
     start = datetime.strptime(f'{year} {week} 1', '%G %V %u').date()
     end = datetime.strptime(f'{year} {week} 7', '%G %V %u').date()
     prev_week = start - timedelta(days=7)
@@ -427,7 +429,8 @@ def menu(request, year, week):
     dishes = Dishes.objects.get_or_create()[0]
     return render(request, 'menu.html', {
         'page': 'menu',
-        'day_of_week': DAYS_OF_THE_WEEK[date.today().weekday()],
+        'current_week': current_week,
+        'day_of_week': DAYS_OF_THE_WEEK[today.weekday()],
         'days': DAYS_OF_THE_WEEK,
         'meals': ['lunch', 'dinner'],
         'dishes': dishes.list,
