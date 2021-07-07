@@ -185,9 +185,9 @@ class RecipesTestCase(TestCase):
         ingredient_in_recipe = IngredientInRecipe.objects.first()
         ingredient_in_recipe.order = 3
         ingredient_in_recipe.save()
-        self.client.get(reverse('add_to_cart', args=[self.recipe1.pk]))
-        self.client.get(reverse('add_to_cart', args=[self.recipe1.pk]))
-        self.client.get(reverse('add_to_cart', args=[self.recipe2.pk]))
+        self.client.get(reverse('add_to_cart', args=[self.recipe1.pk, 1]))
+        self.client.get(reverse('add_to_cart', args=[self.recipe1.pk, 1]))
+        self.client.get(reverse('add_to_cart', args=[self.recipe2.pk, 1]))
         self.cat1.order = 3
         self.cat1.save()
 
@@ -199,7 +199,7 @@ class RecipesTestCase(TestCase):
         self.assertEqual(list(ctx['recipes']), [self.recipe2, self.recipe1])
 
         ctx = self.client.get(
-            reverse('recipe', args=[self.recipe1.pk])).context
+            reverse('recipe-qty', args=[self.recipe1.pk, 1])).context
         # ingredient in recipe order
         self.assertEqual(list(ctx['ingredient_units']),
                          [self.iir1_2ts, self.iir1_1])
@@ -216,7 +216,7 @@ class RecipesTestCase(TestCase):
 
     def test_recipe(self):
         ctx = self.client.get(
-            reverse('recipe', args=[self.recipe1.pk])).context
+            reverse('recipe-qty', args=[self.recipe1.pk, 1])).context
         self.assertEqual(ctx['page'], 'recipe')
         self.assertEqual(ctx['recipe'], self.recipe1)
         self.assertEqual(list(ctx['ingredient_units']),
@@ -224,9 +224,9 @@ class RecipesTestCase(TestCase):
 
     def test_cart(self):
         # Add to cart
-        self.client.get(reverse('add_to_cart', args=[self.recipe1.pk]))
-        self.client.get(reverse('add_to_cart', args=[self.recipe1.pk]))
-        self.client.get(reverse('add_to_cart', args=[self.recipe2.pk]))
+        self.client.get(reverse('add_to_cart', args=[self.recipe1.pk, 1]))
+        self.client.get(reverse('add_to_cart', args=[self.recipe1.pk, 1]))
+        self.client.get(reverse('add_to_cart', args=[self.recipe2.pk, 1]))
         ctx = self.client.get(reverse('cart')).context
         self.assertEqual(ctx['page'], 'cart')
         recipes = [(self.recipe1, Decimal(2)), (self.recipe2, Decimal(1))]
@@ -251,8 +251,8 @@ class RecipesTestCase(TestCase):
         self.assertEqual(ctx['ingredient_units'], ingredient_units)
 
     def test_multiple_units(self):
-        self.client.get(reverse('add_to_cart', args=[self.recipe1.pk]))
-        self.client.get(reverse('add_to_cart', args=[self.recipe2.pk]))
+        self.client.get(reverse('add_to_cart', args=[self.recipe1.pk, 1]))
+        self.client.get(reverse('add_to_cart', args=[self.recipe2.pk, 1]))
 
         self.ingredient2ts.factor = 10
         self.ingredient2ts.save()
@@ -274,7 +274,7 @@ class RecipesTestCase(TestCase):
         iir = IngredientInRecipe.objects.create(
             recipe=recipe, ingredient_unit=self.ingredient1pc, amount=1.5,
             order=1)
-        self.client.get(reverse('add_to_cart', args=[recipe.pk]))
+        self.client.get(reverse('add_to_cart', args=[recipe.pk, 1]))
         self.client.post(reverse('cart'), {
             'action': 'edit',
             'pk': recipe.pk,
@@ -283,7 +283,8 @@ class RecipesTestCase(TestCase):
 
         # EN
         # On recipe page
-        ctx = self.client.get(reverse('recipe', args=[recipe.pk])).context
+        ctx = self.client.get(
+            reverse('recipe-qty', args=[recipe.pk, 1])).context
         self.assertEqual(list(ctx['ingredient_units']), [iir])
         # On cart page
         ct = self.client.get(reverse('cart')).content.decode()
@@ -295,7 +296,8 @@ class RecipesTestCase(TestCase):
         # NL
         activate('nl')
         # On recipe page
-        ctx = self.client.get(reverse('recipe', args=[recipe.pk])).context
+        ctx = self.client.get(
+            reverse('recipe-qty', args=[recipe.pk, 1])).context
         self.assertEqual(list(ctx['ingredient_units']), [iir])
         # On cart page
         ct = self.client.get(reverse('cart')).content.decode()

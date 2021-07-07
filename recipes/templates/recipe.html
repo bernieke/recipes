@@ -22,7 +22,7 @@
             {{ recipe.title }}
             <a href="#"
                onclick="$.get(
-                          '{{ recipe.get_add_to_cart_url }}',
+                          '{{ recipe.get_add_to_cart_url }}' + '{{ qty }}',
                           function (data) {
                             location.href = '{% url 'cart' %}';
                           }

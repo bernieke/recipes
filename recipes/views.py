@@ -260,12 +260,12 @@ def cart(request):
     })
 
 
-def add_to_cart(request, pk):
+def add_to_cart(request, pk, qty):
     if not request.session.get('cart'):
         request.session['cart'] = {}
     if pk not in request.session['cart']:
         request.session['cart'][pk] = 0
-    request.session['cart'][pk] += 1
+    request.session['cart'][pk] += float(qty)
     request.session.save()
     return HttpResponse('')
 

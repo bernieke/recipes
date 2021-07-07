@@ -53,7 +53,7 @@
               {{ recipe.title }}
             </a>
             <a href="#"
-               onclick="$.get('{{ recipe.get_add_to_cart_url }}');
+               onclick="$.get('{{ recipe.get_add_to_cart_url }}' + '1');
                         event.preventDefault();">
               <i class="fas fa-cart-plus text-body"></i>
             </a>

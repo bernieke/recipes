@@ -314,7 +314,7 @@ class Recipe(models.Model):
         return reverse('recipe', args=[str(self.id)])
 
     def get_add_to_cart_url(self):
-        return reverse('add_to_cart', args=[str(self.id)])
+        return reverse('add_to_cart', args=[str(self.id), 0])[:-1]
 
     tag_list.short_description = _('tags')
 
