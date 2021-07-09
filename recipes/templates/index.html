@@ -3,7 +3,7 @@
 
 {% block content %}
       <div class="row pt-4">
-        <div class="col col-4 text-right">
+        <div class="col col-12 col-md-4 mb-5 text-center text-md-right">
           <h4>
             {% if not selected_tag %}
             <b>{% trans 'all' %}</b>
@@ -27,7 +27,7 @@
           {% if tag.break_after %}<h4>&nbsp;</h4>{% endif %}
           {% endfor %}
         </div>
-        <div class="col col-8">
+        <div class="col col-12 col-md-8">
           <h4>
             sort by
             {% if order == '-popularity' %}

@@ -1,3 +1,7 @@
+4.2.0
+=====
+* Improve mobile layout
+
 4.1.0
 =====
 * Only mark today in the current week

@@ -13,19 +13,34 @@
     {% fontawesome_5_static %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
+    <style>
+      @media (min-width: 768px) {
+        div.custom-control-right {
+          padding-right: 24px;
+          padding-left: 0;
+          margin-left: 16px;
+          margin-right: 0;
+        }
+        div.custom-control-right .custom-control-label::before,
+        div.custom-control-right .custom-control-label::after {
+          right: -1.5rem;
+          left: initial;
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="container vh-100">
       <div class="row text-center">
         <div class="col">
-          <h1 class="display-1 px-5 pt-4 pb-2 mx-5 mb-2 mt-4"
+          <h1 class="display-1 px-5 pt-4 pb-2 mb-2 mt-4"
               style="font-family:'Great Vibes'">
             {% filter capfirst %}{% trans 'recipes' %}{% endfilter %}
             </h1>
         </div>
       </div>
       <div class="row text-center pb-3 mb-3 border-bottom">
-        <div class="col">
+        <div class="col col-12 col-md-3">
           <h4>
             <a href="{% url 'index' %}"
                class="text-body" style="font-family:serif">
@@ -38,7 +53,7 @@
             </a>
           </h4>
         </div>
-        <div class="col">
+        <div class="col col-12 col-md-3">
           <h4>
             <a href="{% url 'cart' %}"
                class="text-body" style="font-family:serif">
@@ -50,7 +65,7 @@
             </a>
           </h4>
         </div>
-        <div class="col">
+        <div class="col col-12 col-md-3">
           <h4>
             <a href="{% url 'menu_today' %}"
                class="text-body" style="font-family:serif">
@@ -62,7 +77,7 @@
             </a>
           </h4>
         </div>
-        <div class="col">
+        <div class="col col-12 col-md-3">
           <h4>
             <a href="{% url 'admin:index' %}"
                class="text-body" style="font-family:serif">

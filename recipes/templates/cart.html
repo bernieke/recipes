@@ -4,7 +4,7 @@
 
 {% block content %}
       <div class="row pt-4 justify-content-end">
-        <div class="col col-4 text-right">
+        <div class="col col-12 col-md-4 text-md-right">
           <h3>
             {% filter capfirst %}{% trans 'ingredients' %}{% endfilter %}
           </h3>
@@ -15,24 +15,26 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="OurGroceries">
             {% for iu, total in ingredient_units %}
-              <div class="form-group form-check">
-                <label class="form-check-label mr-4"
+              <div class="custom-control custom-checkbox custom-control-right pl-0">
+                <input type="checkbox"
+                       class="custom-control-input"
+                       name="ingredient_unit"
+                       value="{{ iu.pk }}"
+                       {% if iu.pk in ingredient_sel %}checked{% endif %}
+                       id="ingredient_unit_{{ iu.pk }}">
+                <label class="custom-control-label ml-4"
                        for="ingredient_unit_{{ iu.pk }}">
                   {{ iu.name }}
                   {% if total %}
                   ({{ total }} {{ iu.unit }})
                   {% endif %}
                 </label>
-                <input type="checkbox"
-                       class="form-check-input"
-                       name="ingredient_unit"
-                       value="{{ iu.pk }}"
-                       {% if iu.pk in ingredient_sel %}checked{% endif %}
-                       id="ingredient_unit_{{ iu.pk }}">
               </div>
             {% endfor %}
             {% if ingredient_units %}
-            <button type="submit" class="btn btn-outline-dark" id="submitBtn">
+            <button type="submit"
+                    class="btn btn-outline-dark mb-3 mt-2"
+                    id="submitBtn">
               <i id="spinner" class="fas fa-spinner invisible"></i>
               {% trans 'add to OurGroceries' %}
               &nbsp;&nbsp;&nbsp;
@@ -87,7 +89,7 @@
             </div>
           </div>
         </div>
-        <div class="col col-8">
+        <div class="col col-12 col-md-8">
           <h3>{% filter capfirst %}{% trans 'recipes' %}{% endfilter %}</h3>
           <ul class="list-unstyled">
             {% for recipe, qty in recipes %}
