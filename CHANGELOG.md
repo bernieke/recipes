@@ -1,3 +1,8 @@
+4.2.1
+=====
+* Only add to dishes after successful add to OurGroceries, to prevent double add
+* Don't require OurGroceries to be configured if no ingredients are selected
+
 4.2.0
 =====
 * Improve mobile layout

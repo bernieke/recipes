@@ -224,30 +224,32 @@ def cart(request):
             return redirect(
                 f'{reverse(settings.LOGIN_URL)}?next={request.path}'
             )
-        if not (config.OURGROCERIES_USERNAME and
-                config.OURGROCERIES_PASSWORD and
-                config.OURGROCERIES_LIST):
+        if ingredient_sel and not (config.OURGROCERIES_USERNAME and
+                                   config.OURGROCERIES_PASSWORD and
+                                   config.OURGROCERIES_LIST):
             error = _('OurGroceries is not completely configured')
 
         if not error:
-            dishes = Dishes.objects.get_or_create()[0]
-            for recipe, qty in recipes:
-                dishes.add(recipe.pk, f'{recipe}', qty)
-                recipe.popularity += 1
-                recipe.save()
-            dishes.save()
-
             try:
                 add_to_ourgroceries(ingredient_units, ingredient_sel)
                 message = _('Items succesfully added to OurGroceries')
-                recipes, ingredient_sel, ingredient_units = [], [], []
             except Exception:
                 error = _('Encountered an error adding items to OurGroceries')
                 tb = traceback.format_exc()
             else:
+                # Save dishes and popularity
+                dishes = Dishes.objects.get_or_create()[0]
+                for recipe, qty in recipes:
+                    dishes.add(recipe.pk, f'{recipe}', qty)
+                    recipe.popularity += 1
+                    recipe.save()
+                dishes.save()
+
+                # Reset session
                 request.session['cart'] = {}
                 request.session['ingredient_sel'] = []
                 request.session.save()
+                recipes, ingredient_sel, ingredient_units = [], [], []
 
     return render(request, 'cart.html', context={
         'page': 'cart',
