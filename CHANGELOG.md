@@ -1,3 +1,7 @@
+4.2.2
+=====
+* Fix for recipes with comma in the title
+
 4.2.1
 =====
 * Only add to dishes after successful add to OurGroceries, to prevent double add

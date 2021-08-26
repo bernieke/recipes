@@ -109,6 +109,12 @@ def get_factor(ingredient_unit, unit, try_ingredient_units=True):
         return factor
 
 
+def split_dish(line):
+    pk, rest = line.split(',', 1)
+    title, qty = rest.rsplit(',', 1)
+    return (pk, title, qty)
+
+
 class Unit(models.Model):
     name = models.CharField(max_length=16, verbose_name=_('name'))
     order = models.PositiveSmallIntegerField(
@@ -429,7 +435,7 @@ class Dishes(models.Model):
         self._load_list()
 
     def _load_list(self):
-        self.list = [tuple(line.split(',', 2))
+        self.list = [split_dish(line)
                      for line in self.dishes.split('\n')
                      if line]
 
@@ -494,7 +500,7 @@ class Menu(models.Model):
 
     def list(self, day, meal):
         dishes = getattr(self, f'{day}_{meal}_dishes')
-        return [tuple(line.split(',', 2))
+        return [split_dish(line)
                 for line in dishes.split('\n')
                 if line]
 
