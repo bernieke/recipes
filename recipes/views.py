@@ -149,7 +149,8 @@ def cart(request):
         pk = request.POST.get('pk')
         qty = request.POST.get('qty')
         if request.session.get('cart') and pk in request.session['cart']:
-            if Decimal(qty) > 0:
+            qty = float(qty)
+            if qty > 0:
                 request.session['cart'][pk] = qty
             else:
                 del request.session['cart'][pk]
@@ -157,7 +158,7 @@ def cart(request):
 
     recipe_pks = request.session.get('cart', {})
     recipes = [
-        (recipe, Decimal(request.session['cart'][str(recipe.pk)]))
+        (recipe, request.session['cart'][str(recipe.pk)])
         for recipe in Recipe.objects.filter(pk__in=recipe_pks)]
 
     base_qs = (IngredientInRecipe.objects
@@ -196,7 +197,8 @@ def cart(request):
                 pk = ingredient_unit.pk
                 factor = 1
             if pk in totals:
-                totals[pk] += ingredient_in_recipe.amount * qty * factor
+                multiplier = Decimal(qty) * factor
+                totals[pk] += ingredient_in_recipe.amount * multiplier
 
     ingredient_units = []
     for ingredient_unit in (

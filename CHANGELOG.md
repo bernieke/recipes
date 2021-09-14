@@ -1,3 +1,7 @@
+4.2.3
+=====
+* Fix use of Decimal in cart
+
 4.2.2
 =====
 * Fix for recipes with comma in the title

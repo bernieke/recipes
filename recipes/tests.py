@@ -206,7 +206,7 @@ class RecipesTestCase(TestCase):
 
         ctx = self.client.get(reverse('cart')).context
         # recipe order by title on cart
-        recipes = [(self.recipe2, Decimal(1)), (self.recipe1, Decimal(2))]
+        recipes = [(self.recipe2, 1), (self.recipe1, 2)]
         self.assertEqual(ctx['recipes'], recipes)
         # ingredient cart order by category
         ingredient_units = [self.model_to_cart(self.ingredient2ts, 4),
@@ -229,7 +229,7 @@ class RecipesTestCase(TestCase):
         self.client.get(reverse('add_to_cart', args=[self.recipe2.pk, 1]))
         ctx = self.client.get(reverse('cart')).context
         self.assertEqual(ctx['page'], 'cart')
-        recipes = [(self.recipe1, Decimal(2)), (self.recipe2, Decimal(1))]
+        recipes = [(self.recipe1, 2), (self.recipe2, 1)]
         self.assertEqual(ctx['recipes'], recipes)
         ingredient_units = [self.model_to_cart(self.ingredient1pc, 8),
                             self.model_to_cart(self.ingredient2ts, 4),
@@ -243,7 +243,7 @@ class RecipesTestCase(TestCase):
             'qty': 1.5,
         })
         ctx = self.client.get(reverse('cart')).context
-        recipes = [(self.recipe1, Decimal(1.5)), (self.recipe2, Decimal(1))]
+        recipes = [(self.recipe1, 1.5), (self.recipe2, 1)]
         self.assertEqual(ctx['recipes'], recipes)
         ingredient_units = [self.model_to_cart(self.ingredient1pc, 6.5),
                             self.model_to_cart(self.ingredient2ts, 3),
