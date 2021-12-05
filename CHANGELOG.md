@@ -1,3 +1,7 @@
+4.3.0
+=====
+* When a word in an ingredient name ends with a dash, combine it without a space (and without the dash) to form the display name
+
 4.2.3
 =====
 * Fix use of Decimal in cart

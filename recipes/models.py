@@ -242,8 +242,13 @@ class Ingredient(models.Model):
                 return self.alias_set.first().name
             except AttributeError:
                 parts = self.name.split(', ')
+                for i in range(1, len(parts)):
+                    if parts[i].endswith('-'):
+                        parts[i] = parts[i][:-1]
+                    else:
+                        parts[i] += ' '
                 parts.reverse()
-                return ' '.join(parts)
+                return ''.join(parts)
         else:
             return self.name
 
