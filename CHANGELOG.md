@@ -1,6 +1,7 @@
 4.3.0
 =====
 * When a word in an ingredient name ends with a dash, combine it without a space (and without the dash) to form the display name
+* In the recipe admin, use the display name for the ingredient selection dropdown
 
 4.2.3
 =====

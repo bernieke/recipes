@@ -480,7 +480,7 @@ class IngredientAutoComplete(autocomplete.Select2QuerySetView):
             if alias:
                 self.name = alias.name
             else:
-                self.name = ingredient_unit.ingredient.name
+                self.name = ingredient_unit.ingredient.display_name
             self.pk = ingredient_unit.pk
             self.unit = ingredient_unit.unit
 
