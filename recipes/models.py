@@ -238,17 +238,14 @@ class Ingredient(models.Model):
     @property
     def display_name(self):
         if ', ' in self.name:
-            try:
-                return self.alias_set.first().name
-            except AttributeError:
-                parts = self.name.split(', ')
-                for i in range(1, len(parts)):
-                    if parts[i].endswith('-'):
-                        parts[i] = parts[i][:-1]
-                    else:
-                        parts[i] += ' '
-                parts.reverse()
-                return ''.join(parts)
+            parts = self.name.split(', ')
+            for i in range(1, len(parts)):
+                if parts[i].endswith('-'):
+                    parts[i] = parts[i][:-1]
+                else:
+                    parts[i] += ' '
+            parts.reverse()
+            return ''.join(parts)
         else:
             return self.name
 

@@ -1,3 +1,7 @@
+4.4.0
+=====
+* Remove use first alias as display name feature
+
 4.3.0
 =====
 * When a word in an ingredient name ends with a dash, combine it without a space (and without the dash) to form the display name
