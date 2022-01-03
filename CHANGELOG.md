@@ -1,3 +1,7 @@
+4.4.1
+=====
+* Default use in recipe to True
+
 4.4.0
 =====
 * Remove use first alias as display name feature

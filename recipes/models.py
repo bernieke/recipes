@@ -158,7 +158,7 @@ class IngredientUnit(models.Model):
         max_digits=7, decimal_places=3, blank=True, null=True, default=None,
         verbose_name=_('factor'))
     use_in_recipe = models.BooleanField(
-        default=False, verbose_name=_('use in recipe'))
+        default=True, verbose_name=_('use in recipe'))
 
     class Meta:
         unique_together = [['ingredient', 'unit']]
