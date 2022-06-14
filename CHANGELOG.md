@@ -1,3 +1,7 @@
+4.5.0
+=====
+* Add dark mode
+
 4.4.1
 =====
 * Default use in recipe to True
