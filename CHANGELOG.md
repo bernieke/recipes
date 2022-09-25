@@ -1,3 +1,7 @@
+4.6.1
+=====
+* Fix tagged=All recipe filter
+
 4.6.0
 =====
 * Add recipes tag filter and filter to show untagged recipes

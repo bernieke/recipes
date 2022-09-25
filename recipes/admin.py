@@ -70,9 +70,13 @@ class TaggedListFilter(admin.SimpleListFilter):
     parameter_name = 'tagged'
 
     def lookups(self, request, model_admin):
-        return (('tagged', 'tagged'), ('untagged', 'untagged'))
+        return (('true', 'tagged'), ('false', 'untagged'))
 
     def queryset(self, request, queryset):
+        tagged = self.value()
+        if tagged is None:
+            return queryset
+
         # Compile tag sets
         tag_sets = [[]]
         for tag in Tag.objects.all().order_by('order', 'name'):
@@ -91,10 +95,7 @@ class TaggedListFilter(admin.SimpleListFilter):
             q_untagged |= Q(**{f'tag_set{i}': 0})
 
         # Filter queryset
-        if self.value() == 'tagged':
-            return queryset.filter(~q_untagged)
-        else:
-            return queryset.filter(q_untagged)
+        return queryset.filter(~q_untagged if tagged == 'true' else q_untagged)
 
 
 class RecipeAdmin(admin.ModelAdmin):
