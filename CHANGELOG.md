@@ -1,3 +1,7 @@
+4.6.0
+=====
+* Add recipes tag filter and filter to show untagged recipes
+
 4.5.0
 =====
 * Add dark mode

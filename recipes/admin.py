@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Count, Q
 from django.urls import reverse_lazy
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 from martor.widgets import AdminMartorWidget
@@ -64,12 +65,45 @@ class IngredientInRecipeInline(SortableInlineAdminMixin, admin.TabularInline):
         return 0 if obj else self.extra
 
 
+class TaggedListFilter(admin.SimpleListFilter):
+    title = 'tagged'
+    parameter_name = 'tagged'
+
+    def lookups(self, request, model_admin):
+        return (('tagged', 'tagged'), ('untagged', 'untagged'))
+
+    def queryset(self, request, queryset):
+        # Compile tag sets
+        tag_sets = [[]]
+        for tag in Tag.objects.all().order_by('order', 'name'):
+            tag_sets[-1].append(tag)
+            if tag.break_after:
+                tag_sets.append([])
+        # Remove tag_sets of less than two elements (empty or properties)
+        tag_sets = [tag_set for tag_set in tag_sets if len(tag_set) > 1]
+
+        # Annotate queryset and build filter
+        q_untagged = Q()
+        for i, tag_set in enumerate(tag_sets):
+            queryset = queryset.annotate(**{
+                f'tag_set{i}': Count('tags', filter=Q(tags__in=tag_set)),
+            })
+            q_untagged |= Q(**{f'tag_set{i}': 0})
+
+        # Filter queryset
+        if self.value() == 'tagged':
+            return queryset.filter(~q_untagged)
+        else:
+            return queryset.filter(q_untagged)
+
+
 class RecipeAdmin(admin.ModelAdmin):
     form = RecipeForm
     list_display = ['title', 'tag_list']
     inlines = [IngredientInRecipeInline]
     formfield_overrides = {'recipe': {'widget': AdminMartorWidget}}
     search_fields = ['title', 'tags__name']
+    list_filter = [TaggedListFilter, 'tags']
 
     class Media:
         css = {

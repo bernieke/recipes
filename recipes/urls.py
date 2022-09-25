@@ -1,7 +1,6 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path, re_path
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 
@@ -16,7 +15,7 @@ urlpatterns = [
     path('martor/', include('martor.urls')),
 ]
 urlpatterns += i18n_patterns(
-    url(r'^login/$', views.login, name='account_login'),
+    re_path(r'^login/$', views.login, name='account_login'),
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('tag/<int:pk>/', views.tag, name='tag'),
