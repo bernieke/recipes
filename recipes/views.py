@@ -167,9 +167,9 @@ def cart(request):
                .exclude(ingredient_unit__unit__isnull=True)
                .exclude(ingredient_unit__ingredient__category__isnull=True))
     primary_filter = (
-        Q(ingredient_unit__ingredient__shopping_unit__isnull=True) |
-        Q(ingredient_unit__factor__isnull=True) |
-        Q(ingredient_unit__unit=F(
+        Q(ingredient_unit__ingredient__shopping_unit__isnull=True)
+        | Q(ingredient_unit__factor__isnull=True)
+        | Q(ingredient_unit__unit=F(
             'ingredient_unit__ingredient__shopping_unit'))
     )
     primary_qs = base_qs.filter(primary_filter)
@@ -226,9 +226,9 @@ def cart(request):
             return redirect(
                 f'{reverse(settings.LOGIN_URL)}?next={request.path}'
             )
-        if ingredient_sel and not (config.OURGROCERIES_USERNAME and
-                                   config.OURGROCERIES_PASSWORD and
-                                   config.OURGROCERIES_LIST):
+        if ingredient_sel and not (config.OURGROCERIES_USERNAME
+                                   and config.OURGROCERIES_PASSWORD
+                                   and config.OURGROCERIES_LIST):
             error = _('OurGroceries is not completely configured')
 
         if not error:
@@ -293,9 +293,8 @@ def add_to_ourgroceries(ingredient_units, selected):
                     localize(total)
                     if ingredient_unit['unit_pk'] == 1
                     else f'{localize(total)}{ingredient_unit["unit"]}')
-                if (total and
-                    (not ingredient_unit['unit_pk'] == 1 or
-                     total > 1))
+                if (total
+                    and (not ingredient_unit['unit_pk'] == 1 or total > 1))
                 else ''
             ),
             ingredient_unit['category']
@@ -364,8 +363,8 @@ def add_to_ourgroceries(ingredient_units, selected):
 def menu_today(request):
     today = date.today()
     return redirect(
-        reverse('menu', args=[today.year, int(today.strftime('%V'))]) +
-        f'#{DAYS_OF_THE_WEEK[today.weekday()]}')
+        reverse('menu', args=[today.year, int(today.strftime('%V'))])
+        + f'#{DAYS_OF_THE_WEEK[today.weekday()]}')
 
 
 def add_to_dishes(request):

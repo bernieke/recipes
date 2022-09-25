@@ -88,9 +88,9 @@ class BaseMenuAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         for key in form.base_fields:
-            if (key == 'name' or
-                    key.endswith('_note') or
-                    key.endswith('_dishes')):
+            if (key == 'name'
+                    or key.endswith('_note')
+                    or key.endswith('_dishes')):
                 form.base_fields[key].widget.attrs['style'] = 'width: 20em;'
                 form.base_fields[key].widget.attrs['rows'] = '1'
         return form

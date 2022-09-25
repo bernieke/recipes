@@ -166,8 +166,8 @@ class IngredientUnit(models.Model):
         verbose_name_plural = _('units')
 
     def save(self, *args, **kwargs):
-        if (self.factor is None and
-                not self.unit == self.ingredient.shopping_unit):
+        if (self.factor is None
+                and not self.unit == self.ingredient.shopping_unit):
             self.factor = get_factor(self, self.ingredient.shopping_unit,
                                      try_ingredient_units=False)
         return super().save(*args, **kwargs)
@@ -258,10 +258,10 @@ class Ingredient(models.Model):
     def units(self):
         return mark_safe(', '.join(
             ([f'<b>{self.shopping_unit}</b>']
-             if self.shopping_unit else []) +
-            list(self.ingredientunit_set.all()
-                 .exclude(unit=self.shopping_unit)
-                 .values_list('unit__name', flat=True))))
+             if self.shopping_unit else [])
+            + list(self.ingredientunit_set.all()
+                   .exclude(unit=self.shopping_unit)
+                   .values_list('unit__name', flat=True))))
 
     def recipes(self):
         ingredient_in_recipes = (IngredientInRecipe.objects
