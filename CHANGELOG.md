@@ -1,3 +1,7 @@
+4.7.1
+=====
+* Put replaced values in bold & italic so it's clear which have been replaced
+
 4.7.0
 =====
 * Add {{X}} marker to be used in recipes to automatically multiply a value X with the selected recipe quantity

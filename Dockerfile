@@ -1,5 +1,4 @@
 FROM python:3
-MAINTAINER Bernard Kerckenaere <bernieke@bernieke.com>
 
 EXPOSE 8000
 VOLUME /var/lib/recipes
