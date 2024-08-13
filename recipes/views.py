@@ -130,6 +130,7 @@ def recipe_qty(request, pk, qty):
     return render(request, 'recipe.html', context={
         'page': 'recipe',
         'recipe': recipe,
+        'recipe_qty': recipe.recipe_qty(qty),
         'qty': qty,
         'ingredient_units': ingredient_units,
     })

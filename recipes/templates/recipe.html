@@ -67,7 +67,7 @@
           <h4 class="pt-3">
             {% filter capfirst %}{% trans 'recipe' %}{% endfilter %}
           </h4>
-          {{ recipe.recipe | safe_markdown }}
+          {{ recipe_qty | safe_markdown }}
         </div>
       </div>
       <script>

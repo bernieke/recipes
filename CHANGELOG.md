@@ -1,3 +1,7 @@
+4.7.0
+=====
+* Add {{X}} marker to be used in recipes to automatically multiply a value X with the selected recipe quantity
+
 4.6.1
 =====
 * Fix tagged=All recipe filter

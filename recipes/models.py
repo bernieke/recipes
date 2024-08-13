@@ -1,3 +1,5 @@
+import re
+
 from decimal import Context, Decimal
 
 from django.conf import settings
@@ -9,6 +11,9 @@ from django.utils.safestring import mark_safe
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 from martor.models import MartorField
+
+
+QTY_MARKER_RE = re.compile(r'{{\s*\d+\.?,?\d*\s*}}')
 
 
 def fahrenheit_to_celcius(fahrenheit):
@@ -323,6 +328,20 @@ class Recipe(models.Model):
 
     def get_add_to_cart_url(self):
         return reverse('add_to_cart', args=[str(self.id), 0])[:-1]
+
+    def recipe_qty(self, qty):
+        qty = Decimal(qty)
+        try:
+            recipe = self.recipe
+            for marker in set(QTY_MARKER_RE.findall(recipe)):
+                value = marker.replace(',', '.')[2:-2].strip()
+                multiplied_value = round(Decimal(value) * qty, 1).normalize()
+                recipe = recipe.replace(marker, str(multiplied_value))
+            return recipe
+        except:
+            import traceback
+            traceback.print_exc()
+            raise
 
     tag_list.short_description = _('tags')
 
