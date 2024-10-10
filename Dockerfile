@@ -21,6 +21,6 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Start server
 USER recipes
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 CMD ["./run.sh"]
