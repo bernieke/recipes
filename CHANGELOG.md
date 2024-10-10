@@ -1,3 +1,7 @@
+4.7.2
+=====
+* Use recipe name as window title
+
 4.7.1
 =====
 * Put replaced values in bold & italic so it's clear which have been replaced

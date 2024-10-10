@@ -8,7 +8,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="color-scheme" content="light dark">
-    <title>{% filter capfirst %}{% trans 'recipes' %}{% endfilter %}</title>
+    <title>{% if recipe.title %}{{ recipe.title }}{% else %}{% filter capfirst %}{% trans 'recipes' %}{% endfilter %}{% endif %}</title>
     <link href="/static/favicon.png" rel="shortcut icon" type="image/png">
     <link href="/static/greatvibes.css" rel="stylesheet">
     {% fontawesome_5_static %}
