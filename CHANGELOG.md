@@ -1,3 +1,7 @@
+4.7.3
+=====
+* Pin python to 3.12
+
 4.7.2
 =====
 * Use recipe name as window title
