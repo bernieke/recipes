@@ -1,3 +1,7 @@
+4.7.4
+=====
+* Fix representation of calculated quantities to not show scientific notation
+
 4.7.3
 =====
 * Pin python to 3.12

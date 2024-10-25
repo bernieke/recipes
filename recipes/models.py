@@ -335,7 +335,8 @@ class Recipe(models.Model):
             recipe = self.recipe
             for marker in set(QTY_MARKER_RE.findall(recipe)):
                 value = marker.replace(',', '.')[2:-2].strip()
-                multiplied_value = round(Decimal(value) * qty, 1).normalize()
+                multiplied_value = (str(round(Decimal(value) * qty, 1))
+                                    .rstrip('0'))
                 recipe = recipe.replace(marker, f'***{multiplied_value}***')
                 print(recipe)
             return recipe
