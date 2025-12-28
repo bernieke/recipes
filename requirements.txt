@@ -5,6 +5,7 @@ django-admin-sortable2
 django-autocomplete-light
 django-admin-interface
 django-constance[database]
+django-csp
 django-vinaigrette
 martor
 pillow

@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 ROOT_URLCONF = 'recipes.urls'
@@ -79,7 +79,6 @@ TEMPLATES = [
     },
 ]
 WSGI_APPLICATION = 'recipes.wsgi.application'
-X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 SQL_DATABASE = os.environ.get('SQL_DATABASE')
 if not SQL_DATABASE:
@@ -141,6 +140,35 @@ MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'images/')
 
 LOGIN_URL = 'admin:login'
+
+CSP_CONNECT_SRC = (
+    "'self'",
+    'https://cdn.jsdelivr.net',
+)
+CSP_FONT_SRC = [
+    "'self'",
+    'data:',
+    'https://fonts.gstatic.com',
+]
+CSP_FRAME_ANCESTORS = [
+    "'self'",
+] + os.environ.get('CSP_FRAME_ANCESTORS', '').split()
+CSP_IMG_SRC = (
+    "'self'",
+    'data:',
+)
+CSP_SCRIPT_SRC = [
+    "'self'",
+    "'unsafe-inline'",
+    'https://cdn.jsdelivr.net',
+    'https://code.jquery.com',
+]
+CSP_STYLE_SRC = [
+    "'self'",
+    "'unsafe-inline'",
+    'https://cdn.jsdelivr.net',
+    'https://fonts.googleapis.com',
+]
 
 AMOUNT_PRECISION = 2
 

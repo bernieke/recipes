@@ -3,7 +3,6 @@
   font-family: 'Great Vibes';
   font-style: normal;
   font-weight: 400;
-  src: url('../fonts/great-vibes-v6-latin_latin-ext-regular.eot'); /* IE9 Compat Modes */
   src: local('Great Vibes'), local('GreatVibes-Regular'),
        url('/static/great-vibes-v6-latin_latin-ext-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
        url('/static/great-vibes-v6-latin_latin-ext-regular.woff2') format('woff2'), /* Super Modern Browsers */

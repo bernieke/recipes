@@ -1,3 +1,7 @@
+4.7.5
+=====
+* Replace xframe-options with django-csp
+
 4.7.4
 =====
 * Fix representation of calculated quantities to not show scientific notation

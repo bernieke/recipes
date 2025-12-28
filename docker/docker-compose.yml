@@ -19,6 +19,7 @@ services:
       - static:/var/www/recipes
     depends_on:
       - postgres
+
   postgres:
     image: postgres
     logging:
@@ -30,6 +31,7 @@ services:
       - POSTGRES_DB=recipes
       - POSTGRES_USER=recipes
       - POSTGRES_PASSWORD=recipes
+
   nginx:
     image: nginx
     logging:

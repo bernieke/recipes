@@ -53,6 +53,7 @@ Configuration of the docker image is done by following environment variables (th
 * SQL_PASSWORD: the database password (only for PostgreSQL)
 * SQL_HOST: the database hostname (only for PostgreSQL)
 * SQL_PORT: the database port (only for PostgreSQL)
+* CSP_FRAME_ANCESTORS: space separated list of allowed frame ancestors (optional)
 
 
 build and run development container
