@@ -1,12 +1,13 @@
 django>=3.2,<3.3
-django-bootstrap4
-django-fontawesome-5
+django-admin-interface
 django-admin-sortable2
 django-autocomplete-light
-django-admin-interface
+django-bootstrap4
 django-constance[database]
 django-csp
+django-fontawesome-5
 django-vinaigrette
+legacy-cgi
 martor
 pillow
 requests

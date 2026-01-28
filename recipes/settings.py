@@ -193,9 +193,10 @@ MARTOR_ENABLE_CONFIGS = {
     'mention': 'false',
     'jquery': 'false',
     'living': 'false',
-    'spellcheck': 'true',
-    'hljs': 'true',
+    'spellcheck': 'false',
+    'hljs': 'false',
 }
+MARTOR_ENABLE_ADMIN_CSS = False
 MARTOR_TOOLBAR_BUTTONS = [
     'bold', 'italic', 'horizontal', 'heading', 'pre-code',
     'blockquote', 'unordered-list', 'ordered-list',

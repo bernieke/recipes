@@ -1,3 +1,8 @@
+4.7.6
+=====
+* Add legacy-cgi so it runs on recent Python versions
+* Fix martor overruling django admin css
+
 4.7.5
 =====
 * Replace xframe-options with django-csp

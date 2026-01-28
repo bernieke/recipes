@@ -5,6 +5,7 @@ This is a Django application for keeping recipes and creating shopping lists whi
 
 It can be easily deployed using docker (against an existing PostgreSQL database or using an internal SQLite database) or as a full stack with PostgreSQL and nginx using docker-compose.
 
+
 screenshots
 ===========
 
