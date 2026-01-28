@@ -1,3 +1,7 @@
+4.7.7
+=====
+* Drop the python:3.12 limitation
+
 4.7.6
 =====
 * Add legacy-cgi so it runs on recent Python versions

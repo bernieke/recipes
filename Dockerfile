@@ -1,4 +1,4 @@
-FROM python:3.12
+FROM python
 
 EXPOSE 8000
 VOLUME /var/lib/recipes
